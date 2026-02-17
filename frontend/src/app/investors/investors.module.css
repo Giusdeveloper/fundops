@@ -1,0 +1,780 @@
+/* Layout principale pagina investitori */
+.investors-page {
+    display: flex;
+    min-height: 100vh;
+    background: var(--background);
+  }
+  
+  /* Wrapper contenuto (riutilizziamo sidebar/header della dashboard) */
+  .investors-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  
+  /* Header pagina */
+
+  .page-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .page-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  
+  .page-subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    margin-bottom: 0;
+  }
+  
+  .page-meta-row {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .page-pill {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .page-pill-warning {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(249, 115, 22, 0.15);
+    border: 1px solid rgba(249, 115, 22, 0.4);
+    font-size: 12px;
+    color: #f97316;
+    font-weight: 600;
+  }
+
+  .page-pill-info {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(37, 99, 235, 0.4);
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 600;
+  }
+  
+  /* Barra filtri / azioni */
+  .filters-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filters-left {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+.filters-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.import-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: rgba(30, 41, 59, 0.5);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.import-button:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+  
+  .search-input {
+    background: #020617;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    min-width: 220px;
+  }
+  
+  .filter-select {
+    background: #020617;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .filter-toggle-button {
+    background: #020617;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-toggle-button:hover {
+    background: rgba(30, 41, 59, 0.5);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* Filtri avanzati */
+  .advanced-filters {
+    background: #020617;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .filter-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .filters-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .filter-reset-button {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-reset-button:hover {
+    background: rgba(30, 41, 59, 0.5);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  
+  /* Lista investitori */
+  .investors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  /* Card investitore */
+  .investor-card {
+    background: #020617;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+  }
+
+  .investor-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    border-color: var(--primary);
+  }
+  
+  .investor-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .investor-name {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  .investor-email {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+  
+  .investor-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .tag-row {
+    margin-top: 0.25rem;
+  }
+
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(37, 99, 235, 0.4);
+    font-size: 0.75rem;
+    color: var(--text-primary);
+  }
+
+  /* Reconciliation info */
+  .reconciliation-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .match-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .match-badge-exact {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+
+  .match-badge-normalized {
+    background: rgba(37, 99, 235, 0.2);
+    color: var(--primary);
+    border: 1px solid rgba(37, 99, 235, 0.3);
+  }
+
+  .match-badge-manual {
+    background: rgba(168, 85, 247, 0.2);
+    color: #a855f7;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+  }
+
+  .matched-date {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+  }
+  
+  /* Badge numero LOI / status */
+  .badge {
+    background: var(--primary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .badge-warning {
+    background: #f97316;
+  }
+
+  .badge-danger {
+    background: #dc2626;
+  }
+  
+  /* Colonna destra (azioni / statistiche) */
+  .investor-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  
+  .investor-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  .small-button {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: rgba(37, 99, 235, 0.12);
+    color: var(--primary);
+  }
+
+  .small-button-link {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: rgba(37, 99, 235, 0.12);
+    color: var(--primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .small-button-link:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* Form card */
+  .form-card {
+    background: #020617;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    padding: 1.75rem 1.75rem 1.5rem;
+    margin-top: 2rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.32);
+  }
+
+  .form-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .form-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .form-field-full {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .form-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    background: #020617;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 0.45rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+  }
+
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.4);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .invite-link-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(37, 99, 235, 0.08);
+    border-radius: 8px;
+    border: 1px solid rgba(37, 99, 235, 0.25);
+  }
+
+  .invite-link-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .invite-link-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .invite-link-row .invite-link-input {
+    flex: 1;
+  }
+
+  .invite-link-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .invite-link-input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  .form-actions {
+    margin-top: 1.25rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .form-primary-button {
+    padding: 11px 17px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: #fff;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  .form-primary-button:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  }
+
+  .form-primary-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .form-secondary-button {
+    padding: 0.45rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    font-size: 0.85rem;
+    background: transparent;
+    color: var(--text-secondary);
+  }
+
+  /* Detail Grid per pagina dettaglio investitore */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .detail-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .detail-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+  }
+
+  .detail-value {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
+
+  .linkedin-link {
+    display: inline-flex;
+    align-items: center;
+    color: #0077b5;
+    transition: all 0.2s ease;
+  }
+
+  .linkedin-link:hover {
+    color: #005885;
+    transform: scale(1.1);
+  }
+
+  .detail-notes {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .loi-list-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .loi-mini-card {
+    background: #020617;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+  }
+
+  .loi-mini-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    border-color: var(--primary);
+  }
+
+  .loi-mini-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+  }
+
+  .mini-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+.mini-muted {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.loi-latest-activity {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  line-height: 1.4;
+}
+
+  .actions-row {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .empty-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+  }
+
+  /* Empty Company Card */
+  .empty-company-card {
+    background: var(--background-card);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    padding: 3rem 2rem;
+    text-align: center;
+    max-width: 500px;
+    margin: 4rem auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32);
+  }
+
+  .empty-company-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+  }
+
+  .empty-company-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .empty-company-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.5rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .empty-company-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+  }
+
+  /* KPI Section */
+  .kpi-section {
+    margin-bottom: 2rem;
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 1024px) {
+    .kpi-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .kpi-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .kpi-card {
+    background: var(--background-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .kpi-card:hover {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+    border-color: var(--primary);
+  }
+
+  .kpi-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .kpi-icon-investors {
+    background: rgba(37, 99, 235, 0.15);
+  }
+
+  .kpi-icon-active {
+    background: rgba(249, 115, 22, 0.15);
+  }
+
+  .kpi-icon-committed {
+    background: rgba(34, 197, 94, 0.15);
+  }
+
+  .kpi-icon-capital {
+    background: rgba(168, 85, 247, 0.15);
+  }
+
+  .kpi-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .kpi-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .kpi-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .kpi-sub {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+  }
+
+  .kpi-loading,
+  .kpi-empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    background: var(--background-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+  }

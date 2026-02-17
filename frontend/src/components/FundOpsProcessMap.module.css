@@ -1,0 +1,292 @@
+/* Container principale */
+.container {
+  background: var(--background-card, #23272f);
+  border-radius: 16px;
+  border: 2px solid var(--primary, #2563eb);
+  padding: 2rem 2.5rem;
+  margin-bottom: 0;
+  margin-top: 0;
+  width: 100%;
+  max-width: 100%;
+  box-shadow: 0 6px 32px rgba(37, 99, 235, 0.15), 0 4px 24px rgba(0, 0, 0, 0.22);
+  position: relative;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 1.75rem 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary, #f3f4f6);
+  margin: 0 0 0.25rem 0;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #a1a1aa);
+  margin: 0;
+}
+
+/* Layout fasi */
+.phases {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Layout orizzontale solo quando c'è abbastanza spazio (considerando sidebar) */
+@media (min-width: 1200px) {
+  .phases {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Card fase */
+.phaseCard {
+  flex: 1;
+  min-width: 200px;
+  background: var(--background, #18181b);
+  border: 2px solid var(--border-color, #27272a);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.phaseCard:hover {
+  border-color: var(--primary, #2563eb);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
+}
+
+/* Fase corrente - evidenziazione */
+.phaseCard.currentPhase {
+  border-color: var(--primary, #2563eb);
+  border-width: 2px;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+/* Status colors */
+.phaseCard.status-not_started {
+  opacity: 0.7;
+}
+
+.phaseCard.status-in_progress {
+  border-color: var(--primary, #2563eb);
+}
+
+.phaseCard.status-completed {
+  border-color: #34c759;
+}
+
+/* Placeholder per fasi non implementate */
+.phaseCard.placeholder {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Header fase */
+.phaseHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.phaseNumber {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary, #2563eb), var(--secondary, #a21caf));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.phaseTitleRow {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.phaseTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #f3f4f6);
+  margin: 0;
+}
+
+.currentBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary, #2563eb);
+  background: rgba(37, 99, 235, 0.15);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.phaseSubtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #a1a1aa);
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+/* Status indicator */
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dotNotStarted {
+  background: var(--text-secondary, #a1a1aa);
+  opacity: 0.5;
+}
+
+.dotInProgress {
+  background: var(--primary, #2563eb);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+  animation: pulse 2s infinite;
+}
+
+.dotCompleted {
+  background: #34c759;
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.statusText {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary, #a1a1aa);
+}
+
+.statusInProgress .statusText {
+  color: var(--primary, #2563eb);
+}
+
+.statusCompleted .statusText {
+  color: #34c759;
+}
+
+/* KPI Grid */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.kpiItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.kpiLabel {
+  font-size: 0.7rem;
+  color: var(--text-secondary, #a1a1aa);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpiValue {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary, #f3f4f6);
+}
+
+/* Placeholder note */
+.placeholderNote {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #a1a1aa);
+  margin-top: 0.75rem;
+  text-align: left;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.placeholderNoteMain {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.placeholderNoteSecondary {
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.placeholderNoteTertiary {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+/* Arrow tra le fasi */
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, #a1a1aa);
+  opacity: 0.5;
+  flex-shrink: 0;
+  padding: 0 0.5rem;
+}
+
+@media (max-width: 767px) {
+  .arrow {
+    transform: rotate(90deg);
+    padding: 0.5rem 0;
+  }
+}
+
+/* Loading */
+.loadingText {
+  color: var(--text-secondary, #a1a1aa);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 1rem;
+}

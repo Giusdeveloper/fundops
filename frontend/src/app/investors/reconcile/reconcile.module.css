@@ -1,0 +1,330 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.backButton:hover {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: var(--primary);
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+}
+
+/* Stats */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: var(--background-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.statValueSuccess {
+  color: #22c55e;
+}
+
+.statValueWarning {
+  color: #f97316;
+}
+
+.statValueDanger {
+  color: #dc2626;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: rgba(30, 41, 59, 0.5);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.filterButton:hover {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: var(--primary);
+  color: var(--text-primary);
+}
+
+.filterButtonActive {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+/* Table */
+.tableWrapper {
+  background: var(--background-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.table tbody tr:hover {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.emptyCell {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem !important;
+}
+
+.investorName {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.clientName {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.companyName {
+  color: var(--text-primary);
+}
+
+.candidatesCount {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.missing {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.autoMatch {
+  color: var(--primary);
+  font-size: 0.875rem;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badgeSuccess {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badgeWarning {
+  background: rgba(249, 115, 22, 0.2);
+  color: #f97316;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.badgeDanger {
+  background: rgba(220, 38, 38, 0.2);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.matchTypeBadge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Select */
+.select {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: rgba(30, 41, 59, 0.5);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.select:hover {
+  border-color: var(--primary);
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.applyButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.applyButton:hover:not(.applyButtonDisabled) {
+  background: var(--secondary);
+  transform: translateY(-1px);
+}
+
+.applyButtonDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Progress Bar */
+.progressSection {
+  background: var(--background-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progressLabel {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.progressPercentage {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.progressBarContainer {
+  width: 100%;
+  height: 8px;
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #3b82f6);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+}
+
+.progressDetails {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  text-align: center;
+}

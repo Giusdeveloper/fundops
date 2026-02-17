@@ -1,0 +1,126 @@
+.tableWrapper {
+  background: var(--background-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.tableTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.moreRowsHint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(30, 41, 59, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.15s ease;
+}
+
+.tr:hover {
+  background: rgba(30, 41, 59, 0.2);
+}
+
+.td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.emptyCell {
+  background: rgba(30, 41, 59, 0.1);
+}
+
+.emptyPlaceholder {
+  color: var(--text-secondary);
+  opacity: 0.4;
+  font-style: italic;
+}
+
+.emptyState {
+  padding: 4rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.emptyIcon {
+  color: var(--text-secondary);
+  opacity: 0.3;
+}
+
+.emptyText {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* Scrollbar styling */
+.tableContainer::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tableContainer::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 4px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}

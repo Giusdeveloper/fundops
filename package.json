@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@headlessui/react": "^2.2.4",
+    "@supabase/supabase-js": "^2.85.0",
+    "@tailwindcss/forms": "^0.5.10",
+    "react-simple-typewriter": "^5.0.1",
+    "recharts": "^3.1.0"
+  }
+}

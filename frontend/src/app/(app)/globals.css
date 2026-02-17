@@ -1,0 +1,14 @@
+/* Stile base FundOps (molto minimale, poi lo rifiniamo) */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: black;
+  color: white;
+}
+
+* {
+  box-sizing: border-box;
+}

@@ -1,0 +1,237 @@
+/* Container principale */
+.container {
+  background: var(--background-card, #23272f);
+  border-radius: 16px;
+  border: 1px solid var(--border-color, #27272a);
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.22);
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary, #f3f4f6);
+  margin: 0 0 0.25rem 0;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #a1a1aa);
+  margin: 0;
+}
+
+/* Grid layout */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card */
+.card {
+  background: var(--background, #18181b);
+  border: 2px solid var(--border-color, #27272a);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+  min-height: 180px;
+  height: 100%;
+}
+
+.card:hover {
+  border-color: var(--primary, #2563eb);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Card disabled */
+.card.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--background, #18181b);
+  filter: grayscale(0.3);
+}
+
+.card.disabled:hover {
+  border-color: var(--border-color, #27272a);
+  box-shadow: none;
+  transform: none;
+}
+
+/* Status colors */
+.card.status-not_started {
+  border-color: var(--border-color, #27272a);
+}
+
+.card.status-partial {
+  border-color: #f59e0b;
+}
+
+.card.status-complete {
+  border-color: #34c759;
+}
+
+.card.status-partial:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.15);
+}
+
+.card.status-complete:hover {
+  border-color: #34c759;
+  box-shadow: 0 4px 16px rgba(52, 199, 89, 0.15);
+}
+
+/* Card header */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.iconContainer {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary, #2563eb), var(--secondary, #a21caf));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card.disabled .iconContainer {
+  opacity: 0.5;
+  background: var(--background-card, #23272f);
+}
+
+.icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* Status badge */
+.statusBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.statusBadge.status-not_started {
+  background: rgba(161, 161, 170, 0.2);
+  color: var(--text-secondary, #a1a1aa);
+}
+
+.statusBadge.status-partial {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.statusBadge.status-complete {
+  background: rgba(52, 199, 89, 0.2);
+  color: #34c759;
+}
+
+/* Object name */
+.objectName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #f3f4f6);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.card.disabled .objectName {
+  color: var(--text-secondary, #a1a1aa);
+}
+
+/* Object description */
+.objectDescription {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #a1a1aa);
+  margin: 0;
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* CTA */
+.cta {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color, #27272a);
+}
+
+.ctaText {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary, #2563eb);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.card:hover .ctaText {
+  color: var(--primary-light, #3b82f6);
+}
+
+/* Disabled note */
+.disabledNote {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color, #27272a);
+}
+
+.disabledText {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #a1a1aa);
+  font-style: italic;
+}
+
+/* Loading */
+.loadingText {
+  color: var(--text-secondary, #a1a1aa);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 1rem;
+}
