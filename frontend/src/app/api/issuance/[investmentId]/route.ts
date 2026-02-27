@@ -86,6 +86,10 @@ function canTransition(fromStatus: string, toStatus: AllowedStatus): boolean {
   return false;
 }
 
+function isAuthorizedError(context: AuthorizedContext): context is AuthorizedError {
+  return "error" in context && Boolean(context.error);
+}
+
 async function getAuthorizedContext(investmentId: string, userId: string): Promise<AuthorizedContext> {
   const admin = createSupabaseAdmin();
 
@@ -153,7 +157,7 @@ export async function GET(
     const userId = authData.user.id;
 
     const authorized = await getAuthorizedContext(investmentId, userId);
-    if ("error" in authorized && authorized.error) {
+    if (isAuthorizedError(authorized)) {
       return json(authorized.error.status, authorized.error.body);
     }
 
@@ -301,7 +305,7 @@ export async function POST(
     const userId = authData.user.id;
 
     const authorized = await getAuthorizedContext(investmentId, userId);
-    if ("error" in authorized && authorized.error) {
+    if (isAuthorizedError(authorized)) {
       return json(authorized.error.status, authorized.error.body);
     }
     const { admin, investment } = authorized;
