@@ -74,7 +74,7 @@ async function persistLoiReceipt(params: {
   let loiId = rpcLoiId;
   if (!loiId) {
     const loi = await getLoiActiveSentForCompany(supabaseService, companyId);
-    loiId = loi?.id ?? null;
+    loiId = loi.data?.id ?? null;
   }
 
   if (!loiId) {
