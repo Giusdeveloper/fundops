@@ -30,6 +30,12 @@ export default function PortalClient({
 
   const refreshContext = useCallback(async () => {
     const next = await getPortalContext(slug);
+    if ("ok" in next) {
+      if (next.ok) {
+        setContext(next.ctx);
+      }
+      return;
+    }
     setContext(next);
   }, [slug]);
 

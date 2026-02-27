@@ -97,6 +97,10 @@ interface NextActionMetrics {
   bookingProgressPct: number | null;
 }
 
+interface SubmissionAmountRow {
+  amount_eur: number | string | null;
+}
+
 function computePhaseCards(
   round: DashboardRoundContext | null,
   signedLoiCount: number,
@@ -272,7 +276,8 @@ export default function DashboardPage() {
         console.warn("[dashboard] committed submissions query failed", submittedResult.error);
         setSubmittedCommittedTotal(0);
       } else {
-        const total = (submittedResult.data ?? []).reduce((sum, row) => {
+        const submittedRows = (submittedResult.data ?? []) as SubmissionAmountRow[];
+        const total = submittedRows.reduce((sum: number, row: SubmissionAmountRow) => {
           return sum + Number(row.amount_eur ?? 0);
         }, 0);
         setSubmittedCommittedTotal(total);

@@ -407,7 +407,7 @@ export async function getPortalContext(
       has_wire_proof: false,
       has_investment_form_signed: false,
       has_bank_transfer_proof: false,
-      is_round_closed,
+      is_round_closed: isRoundClosed,
     };
   }
 
