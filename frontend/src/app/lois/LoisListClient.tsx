@@ -34,6 +34,11 @@ export default function LoisListClient() {
   const [includeDraft, setIncludeDraft] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [inviteTargetLoi, setInviteTargetLoi] = useState<LOI | null>(null);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteName, setInviteName] = useState("");
+  const [inviteSending, setInviteSending] = useState(false);
 
   const fetchData = useCallback(async () => {
     if (!companyId?.trim()) return;
@@ -79,6 +84,65 @@ export default function LoisListClient() {
   const portalUrl = company?.public_slug
     ? `${typeof window !== "undefined" ? window.location.origin : ""}/portal/${company.public_slug}`
     : null;
+
+  const canInviteByEmail = (status?: string): boolean => {
+    const normalized = (status ?? "").toLowerCase();
+    return normalized === "sent" || normalized === "active";
+  };
+
+  const openInviteModal = (loi: LOI) => {
+    setInviteTargetLoi(loi);
+    setInviteEmail("");
+    setInviteName("");
+    setInviteModalOpen(true);
+  };
+
+  const closeInviteModal = () => {
+    if (inviteSending) return;
+    setInviteModalOpen(false);
+    setInviteTargetLoi(null);
+    setInviteEmail("");
+    setInviteName("");
+  };
+
+  const handleSendInvite = async () => {
+    if (!companyId || !company?.public_slug || !inviteTargetLoi?.id) {
+      showToast("Dati LOI/company mancanti", "error");
+      return;
+    }
+
+    const email = inviteEmail.trim();
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      showToast("Inserisci un'email valida", "warning");
+      return;
+    }
+
+    setInviteSending(true);
+    try {
+      const response = await fetch("/api/lois/send-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyId,
+          companySlug: company.public_slug,
+          toEmail: email,
+          investorName: inviteName.trim() || undefined,
+          loiId: inviteTargetLoi.id,
+        }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload?.error || "Errore invio email");
+      }
+
+      showToast("Email inviata", "success");
+      closeInviteModal();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Errore invio email", "error");
+    } finally {
+      setInviteSending(false);
+    }
+  };
 
   return (
     <RequireCompany>
@@ -177,12 +241,72 @@ export default function LoisListClient() {
                         Apri Portal
                       </a>
                     )}
+                    {canInviteByEmail(loi.status) && (
+                      <button
+                        type="button"
+                        className={styles["loi-cta-secondary"]}
+                        onClick={() => openInviteModal(loi)}
+                      >
+                        Invia invito
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           )}
         </>
+      )}
+
+      {inviteModalOpen && inviteTargetLoi && (
+        <div className={styles.inviteModalOverlay} role="dialog" aria-modal="true">
+          <div className={styles.inviteModalCard}>
+            <h3 className={styles.inviteModalTitle}>Invia invito alla firma</h3>
+            <p className={styles.inviteModalText}>
+              L&apos;investitore riceverà un link per accedere al portale e firmare.
+            </p>
+            <div className={styles.inviteModalField}>
+              <label htmlFor="invite-email">Email</label>
+              <input
+                id="invite-email"
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="nome@email.com"
+                disabled={inviteSending}
+              />
+            </div>
+            <div className={styles.inviteModalField}>
+              <label htmlFor="invite-name">Nome (opzionale)</label>
+              <input
+                id="invite-name"
+                type="text"
+                value={inviteName}
+                onChange={(e) => setInviteName(e.target.value)}
+                placeholder="Nome investitore"
+                disabled={inviteSending}
+              />
+            </div>
+            <div className={styles.inviteModalActions}>
+              <button
+                type="button"
+                className={styles["loi-cta-secondary"]}
+                onClick={closeInviteModal}
+                disabled={inviteSending}
+              >
+                Annulla
+              </button>
+              <button
+                type="button"
+                className={styles["loi-cta-primary"]}
+                onClick={handleSendInvite}
+                disabled={inviteSending || !inviteEmail.trim()}
+              >
+                {inviteSending ? "Invio..." : "Invia"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </RequireCompany>
   );

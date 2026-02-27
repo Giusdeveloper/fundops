@@ -1738,3 +1738,66 @@
   font-size: 0.75rem;
   letter-spacing: 0.05em;
 }
+
+.inviteModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 1rem;
+}
+
+.inviteModalCard {
+  width: 100%;
+  max-width: 460px;
+  background: #020617;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+.inviteModalTitle {
+  margin: 0 0 0.35rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.inviteModalText {
+  margin: 0 0 0.9rem 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.inviteModalField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.inviteModalField label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.inviteModalField input {
+  background: #020617;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.inviteModalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
