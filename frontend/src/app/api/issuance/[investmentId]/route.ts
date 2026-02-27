@@ -53,6 +53,22 @@ type StatusBody = {
   note?: string;
 };
 
+type SupabaseAdminClient = ReturnType<typeof createSupabaseAdmin>;
+
+type AuthorizedSuccess = {
+  admin: SupabaseAdminClient;
+  investment: InvestmentDetailRow;
+};
+
+type AuthorizedError = {
+  error: {
+    status: number;
+    body: { error: string; code?: string | null };
+  };
+};
+
+type AuthorizedContext = AuthorizedSuccess | AuthorizedError;
+
 const ALLOWED_STATUSES = ["under_review", "approved", "rejected"] as const;
 type AllowedStatus = (typeof ALLOWED_STATUSES)[number];
 
@@ -70,7 +86,7 @@ function canTransition(fromStatus: string, toStatus: AllowedStatus): boolean {
   return false;
 }
 
-async function getAuthorizedContext(investmentId: string, userId: string) {
+async function getAuthorizedContext(investmentId: string, userId: string): Promise<AuthorizedContext> {
   const admin = createSupabaseAdmin();
 
   const { data: investmentData, error: investmentErr } = await admin
@@ -137,7 +153,9 @@ export async function GET(
     const userId = authData.user.id;
 
     const authorized = await getAuthorizedContext(investmentId, userId);
-    if ("error" in authorized) return json(authorized.error.status, authorized.error.body);
+    if ("error" in authorized && authorized.error) {
+      return json(authorized.error.status, authorized.error.body);
+    }
 
     const { admin, investment } = authorized;
     const companyId = investment.company_id;
@@ -283,7 +301,9 @@ export async function POST(
     const userId = authData.user.id;
 
     const authorized = await getAuthorizedContext(investmentId, userId);
-    if ("error" in authorized) return json(authorized.error.status, authorized.error.body);
+    if ("error" in authorized && authorized.error) {
+      return json(authorized.error.status, authorized.error.body);
+    }
     const { admin, investment } = authorized;
 
     if (!canTransition(investment.status, nextStatus)) {
