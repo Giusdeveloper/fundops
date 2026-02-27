@@ -1,4 +1,49 @@
+import type { PostgrestError } from "@supabase/supabase-js";
 import type { SupabaseClient } from "@supabase/supabase-js";
+
+/** Errore Supabase normalizzato per log e debug */
+export interface SupabaseErrorObj {
+  message: string;
+  code: string;
+  details?: string;
+  hint?: string;
+}
+
+function toErrorObj(e: PostgrestError | null): SupabaseErrorObj | null {
+  if (!e) return null;
+  const err = e as unknown as Record<string, unknown>;
+  return {
+    message: String(err?.message ?? (e as Error)?.message ?? ""),
+    code: String(err?.code ?? ""),
+    details: err?.details != null ? String(err.details) : undefined,
+    hint: err?.hint != null ? String(err.hint) : undefined,
+  };
+}
+
+/** Log errore Supabase in modo sempre leggibile (evita "Error: {}") */
+function logSupabaseError(tag: string, err: SupabaseErrorObj | null, raw: unknown): void {
+  const payload = err ?? {
+    message: raw instanceof Error ? raw.message : String(raw),
+    code: "UNKNOWN",
+    details: undefined,
+    hint: undefined,
+  };
+  console.error(`[${tag}] Error:`, JSON.stringify(payload));
+}
+
+export interface PortalLoi {
+  id: string;
+  company_id?: string;
+  status?: string;
+  is_master?: boolean;
+  updated_at?: string;
+  loi_number?: string | null;
+  round_name?: string | null;
+  premessa_text?: string | null;
+  modalita_text?: string | null;
+  condizioni_text?: string | null;
+  regolamento_ref?: string | null;
+}
 
 export interface PortalCompany {
   id: string;
@@ -22,7 +67,9 @@ export async function fetchCompanyBySlug(
     .maybeSingle();
 
   if (error) {
-    console.error("[fetchCompanyBySlug] Error:", error.code, error.message, { slug });
+    const normalizedError = toErrorObj(error);
+    logSupabaseError("fetchCompanyBySlug", normalizedError, error);
+    console.error("[fetchCompanyBySlug] slug:", slug);
     return null;
   }
 
@@ -62,35 +109,16 @@ export async function hasSignedLoiForCompany(
   return (count ?? 0) > 0;
 }
 
-/** LOI master = ultima non archiviata per company */
-export async function getLoiMasterForCompany(
-  supabase: SupabaseClient,
-  companyId: string
-): Promise<{ id: string; title?: string } | null> {
-  const { data, error } = await supabase
-    .from("fundops_lois")
-    .select("id, title")
-    .eq("company_id", companyId)
-    .or("status.neq.archived,status.is.null")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+export type LoiMasterResult = { data: PortalLoi | null; error: SupabaseErrorObj | null };
 
-  if (error) {
-    console.error("[getLoiMasterForCompany] Error:", error);
-    return null;
-  }
-  return data as { id: string; title?: string } | null;
-}
-
-/** LOI master con status='sent' (pubblicata per firma) */
+/** LOI master con status='sent' (pubblicata per firma). Schema: id, company_id, status, is_master, updated_at, loi_number. */
 export async function getLoiMasterSentForCompany(
   supabase: SupabaseClient,
   companyId: string
-): Promise<{ id: string; title?: string } | null> {
+): Promise<LoiMasterResult> {
   const { data, error } = await supabase
     .from("fundops_lois")
-    .select("id, title")
+    .select("id, company_id, status, is_master, updated_at, loi_number")
     .eq("company_id", companyId)
     .eq("is_master", true)
     .eq("status", "sent")
@@ -99,37 +127,19 @@ export async function getLoiMasterSentForCompany(
     .maybeSingle();
 
   if (error) {
-    console.error("[getLoiMasterSentForCompany] Error:", error);
-    return null;
+    const normalizedError = toErrorObj(error);
+    logSupabaseError("getLoiMasterSentForCompany", normalizedError, error);
+    return { data: null, error: normalizedError };
   }
-  return data as { id: string; title?: string } | null;
+  return { data: data as PortalLoi | null, error: null };
 }
 
-/**
- * LOI attiva per portal: preferisci (is_master=true AND status='sent'),
- * fallback (status='sent' ORDER BY updated_at DESC).
- */
+/** LOI attiva per portal = master sent. Usa solo getLoiMasterSentForCompany. */
 export async function getLoiActiveSentForCompany(
   supabase: SupabaseClient,
   companyId: string
-): Promise<{ id: string; title?: string } | null> {
-  const master = await getLoiMasterSentForCompany(supabase, companyId);
-  if (master) return master;
-
-  const { data, error } = await supabase
-    .from("fundops_lois")
-    .select("id, title")
-    .eq("company_id", companyId)
-    .eq("status", "sent")
-    .order("updated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error) {
-    console.error("[getLoiActiveSentForCompany] Error:", error);
-    return null;
-  }
-  return data as { id: string; title?: string } | null;
+): Promise<LoiMasterResult> {
+  return getLoiMasterSentForCompany(supabase, companyId);
 }
 
 /** Verifica se fase è issuance o onboarding (usa process_status logic) */

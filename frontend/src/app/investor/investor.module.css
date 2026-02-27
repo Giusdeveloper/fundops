@@ -1,0 +1,205 @@
+/* Investor Area - palette coerente con app */
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem 2.5rem;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.35rem;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.statusBox {
+  margin: 1.25rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.stepsBox {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.stepsTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+
+.stepsList {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(120deg, var(--primary), var(--secondary));
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ctaPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.cardsGrid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.card {
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.35rem;
+}
+
+.cardMeta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btnLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btnPortal {
+  background: linear-gradient(120deg, #0284c7, #0ea5e9);
+  color: white;
+  border: none;
+}
+
+.btnPortal:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+}
+
+.btnAttestation {
+  background: transparent;
+  color: var(--primary-light);
+  border: 1px solid var(--border-color);
+}
+
+.btnAttestation:hover:not(.btnDisabled) {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: var(--primary);
+}
+
+.btnDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.noAccessBox {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-top: 1.5rem;
+}
+
+.noAccessTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem;
+}
+
+.noAccessText {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0 0 1.5rem;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btnLogout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btnLogout:hover {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+@media (min-width: 640px) {
+  .cardsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}

@@ -1,0 +1,74 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - button "Toggle sidebar" [ref=e104] [cursor=pointer]:
+      - img [ref=e105]
+    - complementary [ref=e3]:
+      - button "Collapse sidebar" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+      - navigation [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Dashboard" [ref=e9] [cursor=pointer]:
+              - /url: /dashboard
+              - generic [ref=e10]:
+                - img [ref=e11]
+                - generic [ref=e16]: Dashboard
+          - listitem [ref=e17]:
+            - link "Investitori" [ref=e18] [cursor=pointer]:
+              - /url: /investors
+              - generic [ref=e19]:
+                - img [ref=e20]
+                - generic [ref=e25]: Investitori
+          - listitem [ref=e26]:
+            - link "Investor Area" [ref=e27] [cursor=pointer]:
+              - /url: /investor/dashboard
+              - generic [ref=e28]:
+                - img [ref=e29]
+                - generic [ref=e34]: Investor Area
+          - listitem [ref=e35]:
+            - link "LOI" [ref=e36] [cursor=pointer]:
+              - /url: /lois
+              - generic [ref=e37]:
+                - img [ref=e38]
+                - generic [ref=e41]: LOI
+          - listitem [ref=e42]:
+            - link "Companies" [ref=e43] [cursor=pointer]:
+              - /url: /companies
+              - generic [ref=e44]:
+                - img [ref=e45]
+                - generic [ref=e49]: Companies
+          - listitem [ref=e50]:
+            - link "Admin" [ref=e51] [cursor=pointer]:
+              - /url: /admin
+              - generic [ref=e52]:
+                - img [ref=e53]
+                - generic [ref=e55]: Admin
+          - listitem [ref=e56]:
+            - link "Progetti Coming Soon" [ref=e57]:
+              - /url: "#"
+              - generic [ref=e58]:
+                - img [ref=e59]
+                - generic [ref=e61]: Progetti
+                - generic [ref=e62]: Coming Soon
+          - listitem [ref=e63]:
+            - link "Impostazioni Coming Soon" [ref=e64]:
+              - /url: "#"
+              - generic [ref=e65]:
+                - img [ref=e66]
+                - generic [ref=e69]: Impostazioni
+                - generic [ref=e70]: Coming Soon
+      - link "Logout" [ref=e72] [cursor=pointer]:
+        - /url: /login
+        - img [ref=e73]
+        - generic [ref=e76]: Logout
+    - generic [ref=e77]:
+      - banner [ref=e78]:
+        - heading "FundOps - Dashboard" [level=1] [ref=e79]
+        - button "Seleziona azienda" [ref=e86] [cursor=pointer]:
+          - generic [ref=e87]: Imment Srl
+          - img [ref=e88]
+      - main [ref=e80]:
+        - generic [ref=e178]: Caricamento dashboard...
+  - button "Open Next.js Dev Tools" [ref=e99] [cursor=pointer]:
+    - img [ref=e100]
+  - alert [ref=e103]

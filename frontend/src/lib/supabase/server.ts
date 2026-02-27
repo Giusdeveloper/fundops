@@ -1,10 +1,10 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient as createSsrServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export async function createClient() {
+export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(
+  return createSsrServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -25,3 +25,7 @@ export async function createClient() {
     }
   );
 }
+
+// Backward compatibility per codice esistente.
+export const createClient = createSupabaseServerClient;
+export const createServerClient = createSupabaseServerClient;

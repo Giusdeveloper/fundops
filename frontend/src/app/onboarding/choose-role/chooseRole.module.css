@@ -1,0 +1,69 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 460px;
+  background: var(--background-card, #020617);
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.35));
+  border-radius: 14px;
+  padding: 1.2rem;
+}
+
+.title {
+  margin: 0;
+  color: var(--text-primary, #f8fafc);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0.4rem 0 0;
+  color: var(--text-secondary, #cbd5e1);
+  font-size: 0.92rem;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryButton {
+  border: 1px solid var(--primary, #2563eb);
+  background: var(--primary, #2563eb);
+  color: #fff;
+}
+
+.secondaryButton {
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.35));
+  background: transparent;
+  color: var(--text-primary, #f8fafc);
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  margin: 0.7rem 0 0;
+  color: #fecaca;
+  font-size: 0.84rem;
+}
+

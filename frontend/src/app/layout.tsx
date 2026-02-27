@@ -4,6 +4,7 @@ import "./globals.css";
 import AppShell from "../components/AppShell";
 import { CompanyProvider } from "../context/CompanyContext";
 import { ToastProvider } from "../components/ToastProvider";
+import { getUserUiContext } from "@/lib/auth/getUserUiContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -16,17 +17,19 @@ export const metadata: Metadata = {
   description: "Gestisci investor, LOI e data room",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const uiContext = await getUserUiContext();
+
   return (
     <html lang="it">
       <body className={poppins.variable}>
         <CompanyProvider>
           <ToastProvider>
-            <AppShell>{children}</AppShell>
+            <AppShell uiContext={uiContext}>{children}</AppShell>
           </ToastProvider>
         </CompanyProvider>
       </body>

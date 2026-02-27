@@ -1,0 +1,20 @@
+- generic [active] [ref=e1]:
+  - main [ref=e4]:
+    - img "Form cover" [ref=e6]
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - progressbar [ref=e9]: Pagina 6 di 6
+        - generic [ref=e10]:
+          - heading "Grazie per aver compilato il questionario" [level=1] [ref=e1058]
+          - heading "Scarica subito il PDF che svela i metodi innovativi per investire in una startup." [level=3] [ref=e1062]
+          - heading "Scarica il PDF Qui" [level=3] [ref=e1066]:
+            - link "Scarica il PDF Qui" [ref=e1067] [cursor=pointer]:
+              - /url: https://docs.google.com/presentation/d/1JD3vTuOYWa_NUorG7_QCEBthB_8we5YLd7boNZtwJl8/edit?usp=sharing
+      - generic:
+        - generic:
+          - link "Realizzato con Tally":
+            - /url: https://tally.so?utm_source=tally&utm_medium=website&utm_campaign=powered-by_web_typ&version=7&device=desktop
+            - generic [ref=e1070] [cursor=pointer]:
+              - img [ref=e1071]
+              - generic [ref=e1073]: Realizzato con Tally
+  - alert [ref=e234]

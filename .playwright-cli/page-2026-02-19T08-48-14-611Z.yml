@@ -1,0 +1,41 @@
+- generic [ref=e1]:
+  - main [ref=e4]:
+    - img "Form cover" [ref=e6]
+    - generic [ref=e7]:
+      - button "Indietro" [ref=e240] [cursor=pointer]:
+        - img [ref=e242]
+        - generic [ref=e244]: Indietro
+        - generic:
+          - img
+      - generic [ref=e8]:
+        - progressbar [ref=e9]: Pagina 5 di 6
+        - generic [ref=e10]:
+          - generic [ref=e1035]: "Imment S.r.l. si impegna a proteggere e rispettare la privacy degli utenti: le informazioni raccolte vengono utilizzate solo per amministrare i dati e fornire i prodotti e servizi richiesti. Gli utenti potrebbero essere contattati con suggerimenti su prodotti, servizi o altri contenuti che a nostro giudizio potrebbero interessare loro . Alla luce dei dati forniti se si desidera essere contattati a questo scopo, selezionare una delle seguenti modalità di contatto:"
+          - generic [ref=e1036]:
+            - generic [ref=e1037]: Consenso trattamento dati
+            - generic [ref=e1040]:
+              - checkbox "Consento a Imment S.r.l. di archiviare e elaborare i miei dati personali." [ref=e1042]
+              - generic [ref=e1043] [cursor=pointer]: Consento a Imment S.r.l. di archiviare e elaborare i miei dati personali.
+              - generic [ref=e1045] [cursor=pointer]: "*"
+          - generic [ref=e1047]:
+            - text: Puoi annullare l'iscrizione a queste comunicazioni in qualsiasi momento. Per ulteriori informazioni su come eseguire questa operazione, consultare le nostre normative sulla privacy e altre indicazioni su protezione e rispetto della privacy, leggi la nostra informativa sulla
+            - link "privacy" [ref=e1048] [cursor=pointer]:
+              - /url: https://www.imment.it/informativa-privacy
+            - text: e sui
+            - link "cookie" [ref=e1049] [cursor=pointer]:
+              - /url: https://www.imment.it/cookie-policy
+            - text: .
+        - generic [ref=e222]:
+          - button "Invia" [active] [ref=e1052] [cursor=pointer]:
+            - generic [ref=e225]: Invia
+            - img [ref=e227]
+            - generic:
+              - img
+          - generic [ref=e229]:
+            - generic:
+              - link "Realizzato con Tally":
+                - /url: https://tally.so?utm_source=tally&utm_medium=website&utm_campaign=powered-by_web&version=7&device=desktop
+                - generic [ref=e230] [cursor=pointer]:
+                  - img [ref=e231]
+                  - generic [ref=e233]: Realizzato con Tally
+  - alert [ref=e234]

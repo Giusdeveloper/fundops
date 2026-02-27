@@ -1,0 +1,17 @@
+-- Fix: stack depth limit exceeded (54001) nelle policy RLS del portal
+-- La ricorsione avviene quando fundops_lois -> fundops_investor_accounts -> current_investor_id() -> fundops_investor_users
+-- crea una catena che supera max_stack_depth.
+--
+-- SOLUZIONE A (preferita): Le API portal usano supabaseServer (service role) per fetch LOI/company.
+-- Il service role bypassa RLS. Vedi: loi-sign/route.ts, getPortalContext.ts.
+--
+-- SOLUZIONE B (se serve RLS): Semplificare le policy per evitare ricorsione.
+-- 1. fundops_investor_users: policy che usa SOLO user_id = auth.uid() (no is_imment_admin)
+-- 2. Assicurarsi che rls_portal_no_company_users sia applicato (no is_company_admin nelle policy portal)
+
+-- Opzionale: policy semplificata su fundops_investor_users
+-- NOTA: Rimuovere is_imment_admin() significa che gli admin non vedono tutte le righe.
+-- Valutare se necessario per il vostro caso.
+-- DROP POLICY IF EXISTS "fundops_investor_users_select_own" ON public.fundops_investor_users;
+-- CREATE POLICY "fundops_investor_users_select_own" ON public.fundops_investor_users
+-- FOR SELECT USING (user_id = auth.uid());

@@ -1,0 +1,162 @@
+- generic [ref=e11]:
+  - button "Sign in" [ref=e13] [cursor=pointer]
+  - generic [ref=e16]:
+    - generic [ref=e21]: Modulo di sottoscrizione di Strumenti Finanziari Partecipativi
+    - generic [ref=e23]:
+      - generic [ref=e27]:
+        - generic [ref=e32]: Introduzione
+        - generic "Introduzione" [ref=e35]
+      - generic [ref=e39]:
+        - generic [ref=e41]:
+          - generic [ref=e44]: Nome
+          - generic [ref=e45]: "*"
+        - textbox [ref=e48]
+      - generic [ref=e54]:
+        - generic [ref=e56]:
+          - generic [ref=e59]: Cognome
+          - generic [ref=e60]: "*"
+        - textbox [ref=e63]
+      - generic [ref=e69]:
+        - generic [ref=e71]:
+          - generic [ref=e74]: Numero di telefono
+          - generic [ref=e75]: "*"
+        - textbox [ref=e78]
+      - generic [ref=e84]:
+        - generic [ref=e86]:
+          - generic [ref=e89]: Email
+          - generic [ref=e90]: "*"
+        - generic "Email" [ref=e93]:
+          - generic [ref=e95]: 
+      - generic [ref=e99]:
+        - generic [ref=e104]: Azienda
+        - textbox [ref=e107]
+      - generic [ref=e113]:
+        - generic [ref=e115]:
+          - generic [ref=e118]: Data di nascita
+          - generic [ref=e119]: "*"
+        - generic "Data di nascita" [ref=e122]:
+          - button "date picker" [ref=e123] [cursor=pointer]
+      - generic [ref=e127]:
+        - generic [ref=e129]:
+          - generic [ref=e132]: Luogo di nascita
+          - generic [ref=e133]: "*"
+        - textbox [ref=e136]
+      - generic [ref=e142]:
+        - generic [ref=e144]:
+          - generic [ref=e147]: Indirizzo
+          - generic [ref=e148]: "*"
+        - textbox [ref=e151]
+      - generic [ref=e154]:
+        - generic [ref=e157]:
+          - generic [ref=e159]:
+            - generic [ref=e162]: Città
+            - generic [ref=e163]: "*"
+          - textbox [ref=e166]
+        - generic [ref=e171]:
+          - generic [ref=e173]:
+            - generic [ref=e176]: CAP
+            - generic [ref=e177]: "*"
+          - textbox [ref=e180]
+      - generic [ref=e183]:
+        - generic [ref=e186]:
+          - generic [ref=e188]:
+            - generic [ref=e191]: Regione
+            - generic [ref=e192]: "*"
+          - textbox [ref=e195]
+        - generic [ref=e200]:
+          - generic [ref=e202]:
+            - generic [ref=e205]: Provincia
+            - generic [ref=e206]: "*"
+          - textbox [ref=e209]
+      - generic [ref=e215]:
+        - generic [ref=e217]:
+          - generic [ref=e220]: Paese
+          - generic [ref=e221]: "*"
+        - textbox [ref=e224]
+      - generic [ref=e230]:
+        - generic [ref=e235]: La tua PEC
+        - generic "La tua PEC" [ref=e238]:
+          - generic [ref=e240]: 
+      - generic [ref=e244]:
+        - generic [ref=e245]:
+          - generic [ref=e246]:
+            - generic [ref=e249]: "Dichiaro di voler investire in SFP per un corrispettivo di euro:"
+            - generic [ref=e250]: "*"
+          - generic [ref=e251]: Inserire la cifra che si intende investire.
+        - textbox [ref=e254]
+      - generic [ref=e260]:
+        - generic [ref=e261]:
+          - generic [ref=e262]:
+            - generic [ref=e265]: Copia del Modulo di investimento compilato e firmato
+            - generic [ref=e266]: "*"
+          - generic [ref=e267]: Il modulo di investimento da compilare e firmare lo troverai all'interno della Landing Page
+        - generic "Copia del Modulo di investimento compilato e firmato" [ref=e270]:
+          - button "Add file" [ref=e277] [cursor=pointer]:
+            - generic [ref=e278]: 
+            - text: Add file
+      - generic [ref=e282]:
+        - generic [ref=e283]:
+          - generic [ref=e287]: Copia del Modulo di investimento Società compilato e firmato
+          - generic [ref=e288]: Il modulo di investimento da compilare e firmare lo troverai all'interno della Landing Page
+        - generic "Copia del Modulo di investimento Società compilato e firmato" [ref=e291]:
+          - button "Add file" [ref=e298] [cursor=pointer]:
+            - generic [ref=e299]: 
+            - text: Add file
+      - generic [ref=e303]:
+        - generic [ref=e305]:
+          - generic [ref=e308]: Copia dell' Informativa Privacy Investitori
+          - generic [ref=e309]: "*"
+        - generic "Copia dell' Informativa Privacy Investitori" [ref=e312]:
+          - button "Add file" [ref=e319] [cursor=pointer]:
+            - generic [ref=e320]: 
+            - text: Add file
+      - generic [ref=e324]:
+        - generic [ref=e325]:
+          - generic [ref=e326]:
+            - generic [ref=e329]: Passaporto o Carta d'identità
+            - generic [ref=e330]: "*"
+          - generic [ref=e331]: Inserire una scansione o foto di un documento di identità in corso di validità (Passaporto o Carta d'identità)
+        - generic "Passaporto o Carta d'identità" [ref=e334]:
+          - button "Add file" [ref=e341] [cursor=pointer]:
+            - generic [ref=e342]: 
+            - text: Add file
+      - generic [ref=e346]:
+        - generic [ref=e347]:
+          - generic [ref=e348]:
+            - generic [ref=e351]: Copia del Codice Fiscale (Tessera Sanitaria)
+            - generic [ref=e352]: "*"
+          - generic [ref=e353]: Inserire una scansione o foto del Codice Fiscale (Tessera Sanitaria)
+        - generic "Copia del Codice Fiscale (Tessera Sanitaria)" [ref=e356]:
+          - button "Add file" [ref=e363] [cursor=pointer]:
+            - generic [ref=e364]: 
+            - text: Add file
+      - generic [ref=e368]:
+        - generic [ref=e369]:
+          - generic [ref=e373]: Dichiarazione antiriciclaggio
+          - generic [ref=e374]: In caso di Società
+        - generic "Dichiarazione antiriciclaggio" [ref=e377]:
+          - button "Add file" [ref=e384] [cursor=pointer]:
+            - generic [ref=e385]: 
+            - text: Add file
+      - generic [ref=e389]:
+        - generic [ref=e391]:
+          - generic [ref=e394]: Contabile del bonifico
+          - generic [ref=e395]: "*"
+        - generic "Contabile del bonifico" [ref=e398]:
+          - button "Add file" [ref=e405] [cursor=pointer]:
+            - generic [ref=e406]: 
+            - text: Add file
+      - generic [ref=e410]:
+        - generic [ref=e415]: Privacy
+        - textbox [ref=e418]
+      - generic [ref=e423]:
+        - generic [ref=e425]:
+          - generic [ref=e428]: Consento alla Società sopra citata di trattare e archiviare i miei dati personali e acconsento alla condivisione degli stessi con Imment come società terza.
+          - generic [ref=e429]: "*"
+        - generic "Consento alla Società sopra citata di trattare e archiviare i miei dati personali e acconsento alla condivisione degli stessi con Imment come società terza." [ref=e432]:
+          - checkbox "Consento alla Società sopra citata di trattare e archiviare i miei dati personali e acconsento alla condivisione degli stessi con Imment come società terza." [ref=e433] [cursor=pointer]:
+            - generic [ref=e434]: 
+      - generic [ref=e438]:
+        - generic [ref=e443]: Unsubscribe
+        - textbox [ref=e446]
+    - button "Submit" [ref=e449] [cursor=pointer]

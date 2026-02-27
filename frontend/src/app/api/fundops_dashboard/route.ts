@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { canAccessCompany, getUserRoleContext } from "@/lib/companyAccess";
+import { getDashboardContext } from "@/lib/dashboard/getDashboardContext";
 
 interface InvestorNameRow {
   id: string;
@@ -85,6 +86,8 @@ export async function GET(request: Request) {
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
     thirtyDaysFromNow.setHours(23, 59, 59, 999);
     const thirtyDaysFromNowISO = thirtyDaysFromNow.toISOString();
+
+    const dashboardContext = await getDashboardContext(supabase, companyId);
 
     // 1. KPI: Pipeline totale (somma ticket_amount per LOI draft/sent)
     const { data: pipelineLois, error: pipelineError } = await supabase
@@ -444,6 +447,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(
       {
+        dashboardContext,
         kpis: {
           pipelineTotal,
           committedTotal,

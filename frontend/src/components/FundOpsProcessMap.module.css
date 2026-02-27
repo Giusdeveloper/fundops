@@ -95,6 +95,18 @@
   border-color: #34c759;
 }
 
+.statusNotStarted {
+  opacity: 0.7;
+}
+
+.statusInProgress {
+  border-color: var(--primary, #2563eb);
+}
+
+.statusCompleted {
+  border-color: #34c759;
+}
+
 /* Placeholder per fasi non implementate */
 .phaseCard.placeholder {
   opacity: 0.6;
@@ -152,8 +164,18 @@
 .phaseSubtitle {
   font-size: 0.8rem;
   color: var(--text-secondary, #a1a1aa);
+  margin: 0 0 0.4rem 0;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.phaseDescription {
+  font-size: 0.78rem;
+  color: var(--text-secondary, #a1a1aa);
+  opacity: 0.82;
   margin: 0 0 1rem 0;
   line-height: 1.4;
+  max-width: 38ch;
 }
 
 /* Status indicator */
@@ -161,7 +183,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .statusDot {
@@ -216,6 +238,35 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
   margin-top: 0.5rem;
+}
+
+.phaseActionRow {
+  margin-bottom: 0.9rem;
+}
+
+.phaseCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--text-primary, #f3f4f6);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.4rem 0.65rem;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.phaseCta:hover {
+  background: rgba(37, 99, 235, 0.18);
+  border-color: rgba(37, 99, 235, 0.5);
+}
+
+.phaseCtaDisabled {
+  pointer-events: none;
+  opacity: 0.55;
 }
 
 .kpiItem {

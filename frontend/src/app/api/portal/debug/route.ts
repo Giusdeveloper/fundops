@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 import {
   fetchCompanyBySlug,
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "slug richiesto" }, { status: 400 });
   }
 
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   const debug: Record<string, unknown> = {
@@ -79,8 +79,9 @@ export async function GET(request: NextRequest) {
   debug.investor_account_found = !!account;
 
   // 4. LOI
-  const loi = await getLoiActiveSentForCompany(supabaseForCompany, company.id);
+  const { data: loi, error: loiError } = await getLoiActiveSentForCompany(supabaseForCompany, company.id);
   debug.loi = loi;
+  debug.loi_error = loiError;
   debug.loi_found = !!loi;
 
   debug.summary = {

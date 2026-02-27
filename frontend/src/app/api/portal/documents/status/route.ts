@@ -1,10 +1,9 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 import {
   fetchCompanyBySlug,
   hasSignedLoiForCompany,
-  getPhaseForCompany,
   getLoiActiveSentForCompany,
 } from "@/lib/portalHelpers";
 
@@ -14,10 +13,12 @@ function err(msg: string, status: number) {
     headers: { "Content-Type": "application/json" },
   });
 }
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export async function GET(request: NextRequest) {
   const supabase = supabaseServer;
-  const supabaseAuth = await createClient();
+  const supabaseAuth = await createSupabaseServerClient();
 
   if (!supabase) {
     return err("Configurazione server mancante", 500);
@@ -31,8 +32,12 @@ export async function GET(request: NextRequest) {
   }
 
   const slug = request.nextUrl.searchParams.get("slug");
+  const investmentId = request.nextUrl.searchParams.get("investmentId")?.trim() ?? null;
   if (!slug) {
     return err("slug è richiesto", 400);
+  }
+  if (investmentId && !UUID_RE.test(investmentId)) {
+    return err("investmentId non valido", 400);
   }
 
   const company = await fetchCompanyBySlug(supabase, slug);
@@ -40,10 +45,16 @@ export async function GET(request: NextRequest) {
     return err("Company non trovata", 404);
   }
 
-  const phase = await getPhaseForCompany(supabase, company.id);
+  const phaseRaw = (company.phase ?? "").toLowerCase();
+  const phase =
+    phaseRaw === "issuance" || phaseRaw === "issuing"
+      ? "issuance"
+      : phaseRaw === "onboarding"
+      ? "onboarding"
+      : "booking";
   const hasSignedLoi = await hasSignedLoiForCompany(supabase, company.id);
 
-  if ((phase === "issuing" || phase === "onboarding") && !hasSignedLoi) {
+  if ((phase === "issuance" || phase === "onboarding") && !hasSignedLoi) {
     return err(
       "LOI non ancora firmata. Completa la firma della LOI per procedere.",
       403
@@ -84,7 +95,7 @@ export async function GET(request: NextRequest) {
     loiSignedName = acct?.loi_signed_name ?? null;
   }
 
-  const loiActiveSent = await getLoiActiveSentForCompany(supabase, company.id);
+  const { data: loiActiveSent } = await getLoiActiveSentForCompany(supabase, company.id);
   const hasLoiMaster = !!loiActiveSent;
   let hasSigner = false;
   if (investorId && loiActiveSent) {
@@ -97,21 +108,39 @@ export async function GET(request: NextRequest) {
     hasSigner = !!signer;
   }
 
-  const { data: docs } = await supabase
+  const docsQuery = supabase
     .from("fundops_documents")
-    .select("id, type, investor_id")
+    .select("id, type, investor_id, investment_id")
     .eq("company_id", company.id)
     .eq("status", "active");
+
+  if (investmentId) {
+    docsQuery.eq("investment_id", investmentId);
+    if (investorId) docsQuery.eq("investor_id", investorId);
+  }
+  const { data: docs } = await docsQuery;
 
   let hasNotaryDeed = false;
   let hasInvestmentForm = false;
   let hasWireProof = false;
+  let hasInvestmentFormSigned = false;
+  let hasBankTransferProof = false;
+  let hasPrivacyNotice = false;
+  let hasIdDocument = false;
+  let hasTaxCode = false;
+  let hasBankTransferReceipt = false;
   let receiptDocumentId: string | null = null;
 
   for (const d of docs ?? []) {
     if (d.type === "notary_deed" && !d.investor_id) hasNotaryDeed = true;
     if (d.type === "investment_form" && d.investor_id === investorId) hasInvestmentForm = true;
     if (d.type === "wire_proof" && d.investor_id === investorId) hasWireProof = true;
+    if (d.type === "investment_form_signed" && d.investor_id === investorId) hasInvestmentFormSigned = true;
+    if (d.type === "bank_transfer_proof" && d.investor_id === investorId) hasBankTransferProof = true;
+    if (d.type === "privacy_notice" && d.investor_id === investorId) hasPrivacyNotice = true;
+    if (d.type === "id_document" && d.investor_id === investorId) hasIdDocument = true;
+    if (d.type === "tax_code" && d.investor_id === investorId) hasTaxCode = true;
+    if (d.type === "bank_transfer_receipt" && d.investor_id === investorId) hasBankTransferReceipt = true;
     if (d.type === "loi_receipt" && d.investor_id === investorId) receiptDocumentId = d.id;
   }
 
@@ -120,6 +149,13 @@ export async function GET(request: NextRequest) {
       hasNotaryDeed,
       hasInvestmentForm,
       hasWireProof,
+      hasInvestmentFormSigned,
+      hasBankTransferProof,
+      hasPrivacyNotice,
+      hasIdDocument,
+      hasTaxCode,
+      hasBankTransferReceipt,
+      investmentId,
       phase,
       lifecycleStage,
       loiSignedAt,

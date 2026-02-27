@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import styles from "./page.module.css";
 
 export default function Home() {
   const router = useRouter();
@@ -13,13 +14,7 @@ export default function Home() {
 
   // Mostra un messaggio di caricamento durante il redirect
   return (
-    <div style={{ 
-      display: "flex", 
-      justifyContent: "center", 
-      alignItems: "center", 
-      minHeight: "100vh",
-      color: "var(--text-primary)"
-    }}>
+    <div className={styles.redirectContainer}>
       <p>Reindirizzamento...</p>
     </div>
   );

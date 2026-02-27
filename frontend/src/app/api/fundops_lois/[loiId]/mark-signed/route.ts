@@ -27,7 +27,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     const { loiId } = await params;
     const { searchParams } = new URL(request.url);
-    const companyId = searchParams.get("companyId");
+    const companyId = searchParams.get("companyId")?.trim();
 
     if (!companyId) {
       return NextResponse.json(

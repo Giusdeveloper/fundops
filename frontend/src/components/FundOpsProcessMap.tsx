@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useCompany } from "@/context/CompanyContext";
 import styles from "./FundOpsProcessMap.module.css";
 
@@ -20,7 +21,66 @@ interface ProcessStatus {
   current_phase: "booking" | "issuing" | "onboarding";
 }
 
-export default function FundOpsProcessMap() {
+interface PhaseCardData {
+  title: string;
+  subtitle: string;
+  message: string;
+  ctaLabel: string | null;
+  ctaHref: string | null;
+  statusLabel: string;
+  ctaDisabled?: boolean;
+}
+
+interface PhaseCardsData {
+  booking: PhaseCardData;
+  issuing: PhaseCardData;
+  onboarding: PhaseCardData;
+}
+
+const DEFAULT_PHASE_CARDS: PhaseCardsData = {
+  booking: {
+    title: "Booking",
+    subtitle: "Attivazione investitori e raccolta LOI",
+    message: "Avvia attivazione investitori e raccolta LOI.",
+    ctaLabel: "Vai agli investitori",
+    ctaHref: "/investors",
+    statusLabel: "Da avviare",
+  },
+  issuing: {
+    title: "Issuing",
+    subtitle: "Formalizzazione investimento",
+    message: "Issuing non attiva. Aprila quando sei pronto a formalizzare.",
+    ctaLabel: "Configura Issuing",
+    ctaHref: "/admin",
+    statusLabel: "Non attiva",
+  },
+  onboarding: {
+    title: "Onboarding",
+    subtitle: "Gestione investitori post-emissione",
+    message: "Onboarding disponibile dopo la chiusura del round.",
+    ctaLabel: null,
+    ctaHref: null,
+    statusLabel: "In attesa",
+    ctaDisabled: true,
+  },
+};
+
+function getStatusDotClass(statusLabel: string): string {
+  const label = statusLabel.toLowerCase();
+  if (label === "pronto" || label === "attiva" || label === "disponibile") {
+    return styles.dotCompleted;
+  }
+  if (label === "in corso") {
+    return styles.dotInProgress;
+  }
+  return styles.dotNotStarted;
+}
+
+export default function FundOpsProcessMap({
+  phaseCards = DEFAULT_PHASE_CARDS,
+}: {
+  phaseCards?: PhaseCardsData;
+}) {
   const { activeCompanyId: companyId } = useCompany();
   const [processStatus, setProcessStatus] = useState<ProcessStatus | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -102,33 +162,29 @@ export default function FundOpsProcessMap() {
           <div className={styles.phaseHeader}>
             <div className={styles.phaseNumber}>1</div>
             <div className={styles.phaseTitleRow}>
-              <h3 className={styles.phaseTitle}>Booking</h3>
+              <h3 className={styles.phaseTitle}>{phaseCards.booking.title}</h3>
               {current_phase === "booking" && (
                 <span className={styles.currentBadge}>Sei qui</span>
               )}
             </div>
           </div>
           <p className={styles.phaseSubtitle}>
-            Investors + LOI (soft commitment)
+            {phaseCards.booking.subtitle}
+          </p>
+          <p className={styles.phaseDescription}>
+            {phaseCards.booking.message}
           </p>
           <div className={styles.statusIndicator}>
-            <div
-              className={`${styles.statusDot} ${
-                booking.status === "not_started"
-                  ? styles.dotNotStarted
-                  : booking.status === "in_progress"
-                  ? styles.dotInProgress
-                  : styles.dotCompleted
-              }`}
-            />
-            <span className={styles.statusText}>
-              {booking.status === "not_started"
-                ? "Non iniziata"
-                : booking.status === "in_progress"
-                ? "In corso"
-                : "Completata"}
-            </span>
+            <div className={`${styles.statusDot} ${getStatusDotClass(phaseCards.booking.statusLabel)}`} />
+            <span className={styles.statusText}>{phaseCards.booking.statusLabel}</span>
           </div>
+          {phaseCards.booking.ctaLabel && phaseCards.booking.ctaHref && (
+            <div className={styles.phaseActionRow}>
+              <Link href={phaseCards.booking.ctaHref} className={styles.phaseCta}>
+                {phaseCards.booking.ctaLabel}
+              </Link>
+            </div>
+          )}
           <div className={styles.kpiGrid}>
             <div className={styles.kpiItem}>
               <span className={styles.kpiLabel}>Investitori</span>
@@ -170,32 +226,27 @@ export default function FundOpsProcessMap() {
           <div className={styles.phaseHeader}>
             <div className={styles.phaseNumber}>2</div>
             <div className={styles.phaseTitleRow}>
-              <h3 className={styles.phaseTitle}>Issuing</h3>
+              <h3 className={styles.phaseTitle}>{phaseCards.issuing.title}</h3>
               {current_phase === "issuing" && (
                 <span className={styles.currentBadge}>Sei qui</span>
               )}
             </div>
           </div>
-          <p className={styles.phaseSubtitle}>
-            Fase di Issuing non ancora attiva
+          <p className={styles.phaseSubtitle}>{phaseCards.issuing.subtitle}</p>
+          <p className={styles.phaseDescription}>
+            {phaseCards.issuing.message}
           </p>
           <div className={styles.statusIndicator}>
-            <div
-              className={`${styles.statusDot} ${styles.dotNotStarted}`}
-            />
-            <span className={styles.statusText}>Non disponibile</span>
+            <div className={`${styles.statusDot} ${getStatusDotClass(phaseCards.issuing.statusLabel)}`} />
+            <span className={styles.statusText}>{phaseCards.issuing.statusLabel}</span>
           </div>
-          <div className={styles.placeholderNote}>
-            <div className={styles.placeholderNoteMain}>
-              L&apos;avvio della fase di Issuing è consigliato quando il round ha raggiunto una massa critica di impegni.
+          {phaseCards.issuing.ctaLabel && phaseCards.issuing.ctaHref && (
+            <div className={styles.phaseActionRow}>
+              <Link href={phaseCards.issuing.ctaHref} className={styles.phaseCta}>
+                {phaseCards.issuing.ctaLabel}
+              </Link>
             </div>
-            <div className={styles.placeholderNoteSecondary}>
-              In genere, FundOps raccomanda di raccogliere almeno 5–10 LOI firmate prima di procedere.
-            </div>
-            <div className={styles.placeholderNoteTertiary}>
-              La decisione finale dipende dal contesto del round e dalla strategia della società.
-            </div>
-          </div>
+          )}
         </div>
 
         {/* ARROW */}
@@ -222,24 +273,38 @@ export default function FundOpsProcessMap() {
           <div className={styles.phaseHeader}>
             <div className={styles.phaseNumber}>3</div>
             <div className={styles.phaseTitleRow}>
-              <h3 className={styles.phaseTitle}>Onboarding</h3>
+              <h3 className={styles.phaseTitle}>{phaseCards.onboarding.title}</h3>
               {current_phase === "onboarding" && (
                 <span className={styles.currentBadge}>Sei qui</span>
               )}
             </div>
           </div>
-          <p className={styles.phaseSubtitle}>
-            Investor onboarding post-issuance
+          <p className={styles.phaseSubtitle}>{phaseCards.onboarding.subtitle}</p>
+          <p className={styles.phaseDescription}>
+            {phaseCards.onboarding.message}
           </p>
           <div className={styles.statusIndicator}>
-            <div
-              className={`${styles.statusDot} ${styles.dotNotStarted}`}
-            />
-            <span className={styles.statusText}>Non disponibile</span>
+            <div className={`${styles.statusDot} ${getStatusDotClass(phaseCards.onboarding.statusLabel)}`} />
+            <span className={styles.statusText}>{phaseCards.onboarding.statusLabel}</span>
           </div>
-          <div className={styles.placeholderNote}>
-            Funzionalità in arrivo
-          </div>
+          {phaseCards.onboarding.ctaLabel && phaseCards.onboarding.ctaHref && (
+            <div className={styles.phaseActionRow}>
+              <Link
+                href={phaseCards.onboarding.ctaHref}
+                className={`${styles.phaseCta} ${
+                  phaseCards.onboarding.ctaDisabled ? styles.phaseCtaDisabled : ""
+                }`}
+                aria-disabled={phaseCards.onboarding.ctaDisabled}
+                onClick={(event) => {
+                  if (phaseCards.onboarding.ctaDisabled) {
+                    event.preventDefault();
+                  }
+                }}
+              >
+                {phaseCards.onboarding.ctaLabel}
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

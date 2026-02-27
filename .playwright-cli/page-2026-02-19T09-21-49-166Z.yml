@@ -1,0 +1,22 @@
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - button "Accedi con Google" [ref=e6] [cursor=pointer]:
+      - img [ref=e7]
+      - text: Google
+    - button "Accedi con Microsoft" [ref=e13] [cursor=pointer]:
+      - img [ref=e14]
+      - text: Microsoft
+  - generic [ref=e21]: oppure
+  - generic [ref=e22]:
+    - textbox "Email" [ref=e23]
+    - generic [ref=e24]:
+      - textbox "Password" [ref=e25]
+      - button "Mostra/Nascondi password" [ref=e26] [cursor=pointer]:
+        - img [ref=e27]
+  - link "Password dimenticata?" [ref=e30] [cursor=pointer]:
+    - /url: "#"
+  - button "Accedi" [ref=e31] [cursor=pointer]
+  - generic [ref=e32]:
+    - text: Non hai un account?
+    - link "Registrati" [ref=e33] [cursor=pointer]:
+      - /url: "#"

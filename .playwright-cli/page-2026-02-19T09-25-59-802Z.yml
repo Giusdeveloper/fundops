@@ -1,0 +1,149 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - button "Toggle sidebar" [ref=e104] [cursor=pointer]:
+      - img [ref=e105]
+    - complementary [ref=e3]:
+      - button "Collapse sidebar" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+      - navigation [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Dashboard" [ref=e9] [cursor=pointer]:
+              - /url: /dashboard
+              - generic [ref=e10]:
+                - img [ref=e11]
+                - generic [ref=e16]: Dashboard
+          - listitem [ref=e17]:
+            - link "Investitori" [ref=e18] [cursor=pointer]:
+              - /url: /investors
+              - generic [ref=e19]:
+                - img [ref=e20]
+                - generic [ref=e25]: Investitori
+          - listitem [ref=e26]:
+            - link "Investor Area" [ref=e27] [cursor=pointer]:
+              - /url: /investor/dashboard
+              - generic [ref=e28]:
+                - img [ref=e29]
+                - generic [ref=e34]: Investor Area
+          - listitem [ref=e35]:
+            - link "LOI" [ref=e36] [cursor=pointer]:
+              - /url: /lois
+              - generic [ref=e37]:
+                - img [ref=e38]
+                - generic [ref=e41]: LOI
+          - listitem [ref=e42]:
+            - link "Companies" [ref=e43] [cursor=pointer]:
+              - /url: /companies
+              - generic [ref=e44]:
+                - img [ref=e45]
+                - generic [ref=e49]: Companies
+          - listitem [ref=e50]:
+            - link "Admin" [ref=e51] [cursor=pointer]:
+              - /url: /admin
+              - generic [ref=e52]:
+                - img [ref=e53]
+                - generic [ref=e55]: Admin
+          - listitem [ref=e56]:
+            - link "Progetti Coming Soon" [ref=e57]:
+              - /url: "#"
+              - generic [ref=e58]:
+                - img [ref=e59]
+                - generic [ref=e61]: Progetti
+                - generic [ref=e62]: Coming Soon
+          - listitem [ref=e63]:
+            - link "Impostazioni Coming Soon" [ref=e64]:
+              - /url: "#"
+              - generic [ref=e65]:
+                - img [ref=e66]
+                - generic [ref=e69]: Impostazioni
+                - generic [ref=e70]: Coming Soon
+      - link "Logout" [ref=e72] [cursor=pointer]:
+        - /url: /login
+        - img [ref=e73]
+        - generic [ref=e76]: Logout
+    - generic [ref=e77]:
+      - banner [ref=e78]:
+        - heading "FundOps - Dashboard" [level=1] [ref=e79]
+        - generic [ref=e85]:
+          - button "Seleziona azienda" [expanded] [active] [ref=e86] [cursor=pointer]:
+            - generic [ref=e87]: Seleziona azienda
+            - img [ref=e88]
+          - generic [ref=e106]:
+            - button "12 Venture" [ref=e107] [cursor=pointer]
+            - button "2f2t Srl" [ref=e108] [cursor=pointer]
+            - button "Accelasearch" [ref=e109] [cursor=pointer]
+            - button "Aceper Srl" [ref=e110] [cursor=pointer]
+            - button "Adopto" [ref=e111] [cursor=pointer]
+            - button "Affinoro Srl" [ref=e112] [cursor=pointer]
+            - button "AmagisTech Italia Srl" [ref=e113] [cursor=pointer]
+            - button "Auralyt Srl" [ref=e114] [cursor=pointer]
+            - button "Awentia" [ref=e115] [cursor=pointer]
+            - button "Babylon Vines" [ref=e116] [cursor=pointer]
+            - button "Benefico Srl" [ref=e117] [cursor=pointer]
+            - button "Bookelot Srl" [ref=e118] [cursor=pointer]
+            - button "Caffè Italia" [ref=e119] [cursor=pointer]
+            - button "Casa Profitto Veloce" [ref=e120] [cursor=pointer]
+            - button "Cementum.ai Srl" [ref=e121] [cursor=pointer]
+            - button "Centro Clinico San Giorgio" [ref=e122] [cursor=pointer]
+            - button "DBN Communication" [ref=e123] [cursor=pointer]
+            - button "Digiduu" [ref=e124] [cursor=pointer]
+            - button "Docudrop" [ref=e125] [cursor=pointer]
+            - button "Dokimazo" [ref=e126] [cursor=pointer]
+            - button "Epimelea Srls" [ref=e127] [cursor=pointer]
+            - button "Evoluzione Geometra" [ref=e128] [cursor=pointer]
+            - button "Famkare" [ref=e129] [cursor=pointer]
+            - button "Farmacie Mypharma" [ref=e130] [cursor=pointer]
+            - button "Fitporn" [ref=e131] [cursor=pointer]
+            - button "FloreMoria" [ref=e132] [cursor=pointer]
+            - button "Funding42" [ref=e133] [cursor=pointer]
+            - button "Genuiny Block Mail" [ref=e134] [cursor=pointer]
+            - button "GoldSprint" [ref=e135] [cursor=pointer]
+            - button "H24 Pharma Srl" [ref=e136] [cursor=pointer]
+            - button "Hodamy.com" [ref=e137] [cursor=pointer]
+            - button "Huulke" [ref=e138] [cursor=pointer]
+            - button "Idra Water" [ref=e139] [cursor=pointer]
+            - button "Imment Srl" [ref=e140] [cursor=pointer]
+            - button "Khoraline" [ref=e141] [cursor=pointer]
+            - button "Kiwui" [ref=e142] [cursor=pointer]
+            - button "La Orange" [ref=e143] [cursor=pointer]
+            - button "Maia Management" [ref=e144] [cursor=pointer]
+            - button "Markeplay" [ref=e145] [cursor=pointer]
+            - button "Maybind Srl" [ref=e146] [cursor=pointer]
+            - button "Mianzi" [ref=e147] [cursor=pointer]
+            - button "Miglior Dottore" [ref=e148] [cursor=pointer]
+            - button "Mo' Sto Bene" [ref=e149] [cursor=pointer]
+            - button "Mokapen" [ref=e150] [cursor=pointer]
+            - button "Moneyviz" [ref=e151] [cursor=pointer]
+            - button "Natura Scientifica" [ref=e152] [cursor=pointer]
+            - button "Newco Devid Zaina" [ref=e153] [cursor=pointer]
+            - button "Nutrinsect" [ref=e154] [cursor=pointer]
+            - button "Over The Code" [ref=e155] [cursor=pointer]
+            - button "Pink Different" [ref=e156] [cursor=pointer]
+            - button "Plantzcare" [ref=e157] [cursor=pointer]
+            - button "ProPositive" [ref=e158] [cursor=pointer]
+            - button "Reskilla" [ref=e159] [cursor=pointer]
+            - button "Ris8 Guru" [ref=e160] [cursor=pointer]
+            - button "Satori Srl" [ref=e161] [cursor=pointer]
+            - button "Sherpa 42" [ref=e162] [cursor=pointer]
+            - button "Silla" [ref=e163] [cursor=pointer]
+            - button "SpaceVerse" [ref=e164] [cursor=pointer]
+            - button "TechBricks" [ref=e165] [cursor=pointer]
+            - button "THE JOB GAME" [ref=e166] [cursor=pointer]
+            - button "The Real Economy" [ref=e167] [cursor=pointer]
+            - button "THE ROOM fitness experience" [ref=e168] [cursor=pointer]
+            - button "The Spiritual Machine" [ref=e169] [cursor=pointer]
+            - button "Tuduu" [ref=e170] [cursor=pointer]
+            - button "Wego Srl" [ref=e171] [cursor=pointer]
+            - button "Working Mom" [ref=e172] [cursor=pointer]
+            - button "Wow Srl" [ref=e173] [cursor=pointer]
+            - button "Gestisci aziende" [ref=e175] [cursor=pointer]
+            - button "Reset selezione" [ref=e176] [cursor=pointer]
+      - main [ref=e80]:
+        - generic [ref=e90]:
+          - heading "Nessuna azienda selezionata" [level=2] [ref=e91]
+          - paragraph [ref=e92]: Seleziona un'azienda per iniziare a lavorare su investitori e LOI.
+          - link "Vai alle companies" [ref=e93] [cursor=pointer]:
+            - /url: /companies
+  - button "Open Next.js Dev Tools" [ref=e99] [cursor=pointer]:
+    - img [ref=e100]
+  - alert [ref=e103]

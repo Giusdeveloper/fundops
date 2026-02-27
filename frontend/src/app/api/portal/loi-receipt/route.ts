@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { fetchCompanyBySlug } from "@/lib/portalHelpers";
 import { generateLoiReceiptPdf } from "@/lib/loiReceiptPdf";
@@ -13,7 +13,7 @@ function err(msg: string, status: number) {
 
 export async function GET(request: NextRequest) {
   const supabase = supabaseServer;
-  const supabaseAuth = await createClient();
+  const supabaseAuth = await createSupabaseServerClient();
 
   if (!supabase) {
     return err("Configurazione server mancante", 500);

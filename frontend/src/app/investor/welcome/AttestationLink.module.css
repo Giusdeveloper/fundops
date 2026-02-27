@@ -1,0 +1,27 @@
+/* Pulsante download attestazione - stile coerente con area investor */
+
+.attestationBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.25rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--primary-light);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.attestationBtn:hover:not(:disabled) {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: var(--primary);
+}
+
+.attestationBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

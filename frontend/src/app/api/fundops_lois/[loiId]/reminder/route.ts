@@ -26,7 +26,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     const { loiId } = await params;
     const body = await request.json();
-    const { companyId } = body;
+    const companyId = typeof body?.companyId === "string" ? body.companyId.trim() : "";
 
     if (!companyId) {
       return NextResponse.json(

@@ -1,0 +1,53 @@
+.toggleRoot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.32rem 0.42rem;
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.35));
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.toggleLabel {
+  font-size: 0.7rem;
+  color: var(--text-secondary, #cbd5e1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.88;
+  padding: 0 0.2rem;
+}
+
+.toggleButton {
+  padding: 0.3rem 0.62rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary, #cbd5e1);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.toggleButton:hover:not(:disabled) {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-primary, #f8fafc);
+}
+
+.toggleButtonActive {
+  background: rgba(37, 99, 235, 0.25);
+  border-color: rgba(37, 99, 235, 0.55);
+  color: #dbeafe;
+}
+
+.toggleButton:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.statusText {
+  font-size: 0.78rem;
+  color: var(--text-secondary, #cbd5e1);
+  opacity: 0.88;
+}
+

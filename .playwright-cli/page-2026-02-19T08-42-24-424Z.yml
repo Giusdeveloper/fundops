@@ -1,0 +1,124 @@
+- generic [ref=e1]:
+  - main [ref=e4]:
+    - img "Form cover" [ref=e6]
+    - generic [ref=e8]:
+      - progressbar [ref=e9]: Pagina 1 di 6
+      - generic [ref=e10]:
+        - heading "INVESTOR SCORING" [level=1] [ref=e12]
+        - img "https://storage.tally.so/ee86ab8d-f563-4360-bafb-c76c8f407ef2/ChatGPT-Image-15-lug-2025-11_46_59.png" [ref=e16]
+        - generic [ref=e18]: Questo form è pensato per comprendere meglio le esigenze, le esperienze e le preferenze delle persone interessate ad investire in startup. Attraverso tre sezioni mirate, raccoglieremo informazioni sul tuo profilo personale e professionale, sulla tua esperienza pregressa negli investimenti in startup, e sulle tue strategie e preferenze future in questo ambito. Le informazioni raccolte ci permetteranno di comprendere meglio le tue esigenze e preferenze, facilitando così l'accesso a opportunità in linea con i tuoi interessi e obiettivi. Ti invitiamo a rispondere con sincerità e dettaglio, e ti garantiamo che ogni informazione sarà trattata con la massima riservatezza e professionalità.
+        - separator [ref=e21]
+        - heading "PROFILO PERSONALE DELL'INVESTOR" [level=2] [ref=e27]
+        - heading "Raccontaci di te per iniziare il percorso insieme" [level=3] [ref=e31]
+        - separator [ref=e34]
+        - generic [ref=e37]:
+          - heading "Nome" [level=3] [ref=e38]
+          - generic [ref=e40] [cursor=pointer]: "*"
+        - textbox "Nome" [ref=e44]:
+          - /placeholder: ""
+          - text: Mario
+        - generic [ref=e47]:
+          - heading "Cognome" [level=3] [ref=e48]
+          - generic [ref=e50] [cursor=pointer]: "*"
+        - textbox "Cognome" [ref=e54]:
+          - /placeholder: ""
+          - text: Rossi
+        - generic [ref=e57]:
+          - heading "Email" [level=3] [ref=e58]
+          - generic [ref=e60] [cursor=pointer]: "*"
+        - textbox "Email" [ref=e64]:
+          - /placeholder: ""
+          - text: mario.rossi@example.com
+        - heading "Profilo Linkedin" [level=3] [ref=e68]
+        - textbox "Profilo Linkedin" [ref=e72]:
+          - /placeholder: ""
+        - generic [ref=e75]:
+          - heading "Da quanti anni lavori?" [level=3] [ref=e76]
+          - generic [ref=e78] [cursor=pointer]: "*"
+        - generic [ref=e79]:
+          - generic [ref=e80]: Da quanti anni lavori?
+          - generic [ref=e83] [cursor=pointer]:
+            - generic [ref=e84]: A
+            - radio "1-5 anni" [ref=e85]
+            - generic [ref=e86]: 1-5 anni
+        - generic [ref=e90] [cursor=pointer]:
+          - generic [ref=e91]: B
+          - radio "5-15 anni" [checked] [ref=e92]
+          - generic [ref=e93]: 5-15 anni
+        - generic [ref=e97] [cursor=pointer]:
+          - generic [ref=e98]: C
+          - radio "15+ anni" [ref=e99]
+          - generic [ref=e100]: 15+ anni
+        - generic [ref=e103]:
+          - heading "Qual è la tua area di competenza?" [level=3] [ref=e104]
+          - generic [ref=e106] [cursor=pointer]: "*"
+        - generic [ref=e108]: Selezionare una o più opzioni.
+        - generic [ref=e109]:
+          - generic [ref=e110]: Qual è la tua area di competenza?
+          - generic [ref=e113]:
+            - checkbox "Marketing e vendite" [ref=e115]
+            - generic [ref=e116] [cursor=pointer]: Marketing e vendite
+        - generic [ref=e120]:
+          - generic [ref=e121]:
+            - img [ref=e235]
+            - checkbox "Investimenti" [checked] [active] [ref=e122]
+          - generic [ref=e123] [cursor=pointer]: Investimenti
+        - generic [ref=e127]:
+          - checkbox "Amministrazione, finanza e controllo" [ref=e129]
+          - generic [ref=e130] [cursor=pointer]: Amministrazione, finanza e controllo
+        - generic [ref=e134]:
+          - checkbox "Operations" [ref=e136]
+          - generic [ref=e137] [cursor=pointer]: Operations
+        - generic [ref=e141]:
+          - checkbox "Consulenza" [ref=e143]
+          - generic [ref=e144] [cursor=pointer]: Consulenza
+        - generic [ref=e148]:
+          - checkbox "Altro" [ref=e150]
+          - generic [ref=e151] [cursor=pointer]: Altro
+        - generic [ref=e153]: "Se hai selezionato \"Altro\", indicare l'area di competenza:"
+        - textbox "Altra area di competenza" [ref=e157]:
+          - /placeholder: ""
+        - generic [ref=e160]:
+          - heading "In quale settore lavori attualmente?" [level=3] [ref=e161]
+          - generic [ref=e163] [cursor=pointer]: "*"
+        - generic [ref=e165]: Selezionare una o più opzioni.
+        - generic [ref=e166]:
+          - generic [ref=e167]: In quale settore lavori attualmente?
+          - generic [ref=e170]:
+            - checkbox "Finanziario" [ref=e172]
+            - generic [ref=e173] [cursor=pointer]: Finanziario
+        - generic [ref=e177]:
+          - checkbox "Tecnologico" [ref=e179]
+          - generic [ref=e180] [cursor=pointer]: Tecnologico
+        - generic [ref=e184]:
+          - checkbox "Industriale" [ref=e186]
+          - generic [ref=e187] [cursor=pointer]: Industriale
+        - generic [ref=e191]:
+          - checkbox "Consulenza" [ref=e193]
+          - generic [ref=e194] [cursor=pointer]: Consulenza
+        - generic [ref=e198]:
+          - checkbox "Servizi professionali" [ref=e200]
+          - generic [ref=e201] [cursor=pointer]: Servizi professionali
+        - generic [ref=e205]:
+          - checkbox "Commerciale, Servizi, Turismo" [ref=e207]
+          - generic [ref=e208] [cursor=pointer]: Commerciale, Servizi, Turismo
+        - generic [ref=e212]:
+          - checkbox "Altro" [ref=e214]
+          - generic [ref=e215] [cursor=pointer]: Altro
+        - generic [ref=e217]: "Se hai selezionato \"Altro\", indicare il settore nel quale lavori:"
+        - textbox "Altro settore lavorativo" [ref=e221]:
+          - /placeholder: ""
+      - generic [ref=e222]:
+        - button "Avanti" [ref=e224] [cursor=pointer]:
+          - generic [ref=e225]: Avanti
+          - img [ref=e227]
+          - generic:
+            - img
+        - generic [ref=e229]:
+          - generic:
+            - link "Realizzato con Tally":
+              - /url: https://tally.so?utm_source=tally&utm_medium=website&utm_campaign=powered-by_web&version=7&device=desktop
+              - generic [ref=e230] [cursor=pointer]:
+                - img [ref=e231]
+                - generic [ref=e233]: Realizzato con Tally
+  - alert [ref=e234]

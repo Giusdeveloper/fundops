@@ -1,0 +1,31 @@
+- generic [ref=e1]:
+  - main [ref=e4]:
+    - img "Form cover" [ref=e6]
+    - generic [ref=e7]:
+      - button "Indietro" [ref=e240] [cursor=pointer]:
+        - img [ref=e242]
+        - generic [ref=e244]: Indietro
+        - generic:
+          - img
+      - generic [ref=e8]:
+        - progressbar [ref=e9]: Pagina 4 di 6
+        - generic [ref=e10]:
+          - generic [ref=e1024]:
+            - heading "Quali sono 3 caratteristiche della startup ideale?" [level=3] [ref=e1025]
+            - generic [ref=e1027] [cursor=pointer]: "*"
+          - textbox "Quali sono 3 caratteristiche della startup ideale?" [active] [ref=e1031]:
+            - /placeholder: ""
+        - generic [ref=e222]:
+          - button "Avanti" [ref=e224] [cursor=pointer]:
+            - generic [ref=e225]: Avanti
+            - img [ref=e227]
+            - generic:
+              - img
+          - generic [ref=e229]:
+            - generic:
+              - link "Realizzato con Tally":
+                - /url: https://tally.so?utm_source=tally&utm_medium=website&utm_campaign=powered-by_web&version=7&device=desktop
+                - generic [ref=e230] [cursor=pointer]:
+                  - img [ref=e231]
+                  - generic [ref=e233]: Realizzato con Tally
+  - alert [ref=e234]

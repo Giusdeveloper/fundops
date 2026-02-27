@@ -1,0 +1,205 @@
+- generic [ref=e1]:
+  - main [ref=e4]:
+    - img "Form cover" [ref=e6]
+    - generic [ref=e7]:
+      - button "Indietro" [ref=e240] [cursor=pointer]:
+        - img [ref=e242]
+        - generic [ref=e244]: Indietro
+        - generic:
+          - img
+      - generic [ref=e8]:
+        - progressbar [ref=e9]: Pagina 2 di 6
+        - generic [ref=e10]:
+          - heading "Esperienza in investimenti startup" [level=2] [ref=e248]:
+            - generic [ref=e249]: Esperienza in investimenti startup
+          - heading "Condividi la tua esperienza e le tue aspirazioni negli investimenti in startup" [level=3] [ref=e253]
+          - generic [ref=e256]:
+            - heading "Hai effettuato investimenti in startup in passato?" [level=3] [ref=e257]
+            - generic [ref=e259] [cursor=pointer]: "*"
+          - generic [ref=e260]:
+            - generic [ref=e261]: Hai effettuato investimenti in startup in passato?
+            - generic [ref=e264] [cursor=pointer]:
+              - generic [ref=e265]: A
+              - radio "Si" [ref=e266]
+              - generic [ref=e267]: Si
+          - generic [ref=e271] [cursor=pointer]:
+            - generic [ref=e272]: B
+            - radio "No" [ref=e273]
+            - generic [ref=e274]: "No"
+          - generic [ref=e277]:
+            - heading "In quante startup hai investito?" [level=3] [ref=e278]
+            - generic [ref=e280] [cursor=pointer]: "*"
+          - generic [ref=e281]:
+            - generic [ref=e282]: In quante startup hai investito?
+            - generic [ref=e285] [cursor=pointer]:
+              - generic [ref=e286]: A
+              - radio "0-3" [ref=e287]
+              - generic [ref=e288]: 0-3
+          - generic [ref=e292] [cursor=pointer]:
+            - generic [ref=e293]: B
+            - radio "3-10" [ref=e294]
+            - generic [ref=e295]: 3-10
+          - generic [ref=e299] [cursor=pointer]:
+            - generic [ref=e300]: C
+            - radio "10+" [ref=e301]
+            - generic [ref=e302]: 10+
+          - heading "In quali startup hai investito?" [level=3] [ref=e306]
+          - textbox "In quali startup hai investito?" [ref=e310]:
+            - /placeholder: ""
+          - generic [ref=e313]:
+            - heading "Hai investito in startup negli ultimi 12 mesi?" [level=3] [ref=e314]
+            - generic [ref=e316] [cursor=pointer]: "*"
+          - generic [ref=e317]:
+            - generic [ref=e318]: Hai investito in startup negli ultimi 12 mesi?
+            - generic [ref=e321] [cursor=pointer]:
+              - generic [ref=e322]: A
+              - radio "Si" [ref=e323]
+              - generic [ref=e324]: Si
+          - generic [ref=e328] [cursor=pointer]:
+            - generic [ref=e329]: B
+            - radio "No" [ref=e330]
+            - generic [ref=e331]: "No"
+          - heading "Investi in startup attraverso uno o più fondi di investimento specializzati?" [level=3] [ref=e335]
+          - generic [ref=e336]:
+            - generic [ref=e337]: Investi in startup attraverso uno o più fondi di investimento specializzati?
+            - generic [ref=e340] [cursor=pointer]:
+              - generic [ref=e341]: A
+              - radio "Si" [ref=e342]
+              - generic [ref=e343]: Si
+          - generic [ref=e347] [cursor=pointer]:
+            - generic [ref=e348]: B
+            - radio "No" [ref=e349]
+            - generic [ref=e350]: "No"
+          - generic [ref=e353]:
+            - heading "Perché investi in startup?" [level=3] [ref=e354]
+            - generic [ref=e356] [cursor=pointer]: "*"
+          - generic [ref=e358]: Selezionare una o più opzioni.
+          - generic [ref=e359]:
+            - generic [ref=e360]: Perché investi in startup?
+            - generic [ref=e363]:
+              - checkbox "Diversificare il portafoglio di investimenti" [ref=e365]
+              - generic [ref=e366] [cursor=pointer]: Diversificare il portafoglio di investimenti
+          - generic [ref=e370]:
+            - checkbox "Instaurare un rapporto continuativo con la startup di carattere professionale/commerciale" [ref=e372]
+            - generic [ref=e373] [cursor=pointer]: Instaurare un rapporto continuativo con la startup di carattere professionale/commerciale
+          - generic [ref=e377]:
+            - checkbox "Ottenere detrazioni fiscali" [ref=e379]
+            - generic [ref=e380] [cursor=pointer]: Ottenere detrazioni fiscali
+          - generic [ref=e384]:
+            - checkbox "Altro" [ref=e386]
+            - generic [ref=e387] [cursor=pointer]: Altro
+          - generic [ref=e389]: "Se hai selezionato \"Altro\", indicare la motivazione:"
+          - 'textbox "Altro: perchè investi in startup" [ref=e393]':
+            - /placeholder: ""
+          - heading "Quante aziende vorresti nel tuo portafoglio ideale?" [level=3] [ref=e397]
+          - generic [ref=e398]:
+            - generic [ref=e399]: Quante aziende vorresti nel tuo portafoglio ideale?
+            - generic [ref=e402] [cursor=pointer]:
+              - generic [ref=e403]: A
+              - radio "0-5" [ref=e404]
+              - generic [ref=e405]: 0-5
+          - generic [ref=e409] [cursor=pointer]:
+            - generic [ref=e410]: B
+            - radio "5-10" [ref=e411]
+            - generic [ref=e412]: 5-10
+          - generic [ref=e416] [cursor=pointer]:
+            - generic [ref=e417]: C
+            - radio "10-20" [ref=e418]
+            - generic [ref=e419]: 10-20
+          - generic [ref=e423] [cursor=pointer]:
+            - generic [ref=e424]: D
+            - radio "20+" [ref=e425]
+            - generic [ref=e426]: 20+
+          - generic [ref=e430] [cursor=pointer]:
+            - generic [ref=e431]: E
+            - radio "Altro" [ref=e432]
+            - generic [ref=e433]: Altro
+          - generic [ref=e435]: "Se hai selezionato \"Altro\", indicare la motivazione:"
+          - textbox "Altre aziende nel portafoglio ideale" [ref=e439]:
+            - /placeholder: ""
+          - generic [ref=e442]:
+            - heading "Ricopri il ruolo di advisor in una o più startup in cui hai investito?" [level=3] [ref=e443]
+            - generic [ref=e445] [cursor=pointer]: "*"
+          - generic [ref=e446]:
+            - generic [ref=e447]: Ricopri il ruolo di advisor in una o più startup in cui hai investito?
+            - generic [ref=e450] [cursor=pointer]:
+              - generic [ref=e451]: A
+              - radio "Si, lo rifarei" [ref=e452]
+              - generic [ref=e453]: Si, lo rifarei
+          - generic [ref=e457] [cursor=pointer]:
+            - generic [ref=e458]: B
+            - radio "Si, non lo rifarei" [ref=e459]
+            - generic [ref=e460]: Si, non lo rifarei
+          - generic [ref=e464] [cursor=pointer]:
+            - generic [ref=e465]: C
+            - radio "No, ma vorrei farlo" [ref=e466]
+            - generic [ref=e467]: No, ma vorrei farlo
+          - generic [ref=e471] [cursor=pointer]:
+            - generic [ref=e472]: D
+            - radio "No, non mi interessa" [ref=e473]
+            - generic [ref=e474]: No, non mi interessa
+          - generic [ref=e478] [cursor=pointer]:
+            - generic [ref=e479]: E
+            - radio "Non ho ancora investito" [ref=e480]
+            - generic [ref=e481]: Non ho ancora investito
+          - generic [ref=e484]:
+            - heading "Hai intenzione di effettuare nuovi investimenti in startup nei prossimi 12 mesi?" [level=3] [ref=e485]
+            - generic [ref=e487] [cursor=pointer]: "*"
+          - generic [ref=e489]: Selezionare una o più opzioni.
+          - generic [ref=e490]:
+            - generic [ref=e491]: Hai intenzione di effettuare nuovi investimenti in startup nei prossimi 12 mesi?
+            - generic [ref=e494] [cursor=pointer]:
+              - generic [ref=e495]: A
+              - radio "Si, sono alla ricerca di nuove startup" [ref=e496]
+              - generic [ref=e497]: Si, sono alla ricerca di nuove startup
+          - generic [ref=e501] [cursor=pointer]:
+            - generic [ref=e502]: B
+            - radio "Si, in quelle in cui ho già investito" [ref=e503]
+            - generic [ref=e504]: Si, in quelle in cui ho già investito
+          - generic [ref=e508] [cursor=pointer]:
+            - generic [ref=e509]: C
+            - radio "Si, se si presentano opportunità" [ref=e510]
+            - generic [ref=e511]: Si, se si presentano opportunità
+          - generic [ref=e515] [cursor=pointer]:
+            - generic [ref=e516]: D
+            - radio "No, ma valuterei se ci fossero opportunità" [ref=e517]
+            - generic [ref=e518]: No, ma valuterei se ci fossero opportunità
+          - generic [ref=e522] [cursor=pointer]:
+            - generic [ref=e523]: E
+            - radio "No" [ref=e524]
+            - generic [ref=e525]: "No"
+          - generic [ref=e528]:
+            - heading "Quanto saresti disposto ad investire in una startup?" [level=3] [ref=e529]
+            - generic [ref=e531] [cursor=pointer]: "*"
+          - generic [ref=e533]: Selezionare una o più opzioni.
+          - generic [ref=e534]:
+            - generic [ref=e535]: Quanto saresti disposto ad investire in una startup?
+            - generic [ref=e538]:
+              - checkbox "Meno di 1.000 €" [ref=e540]
+              - generic [ref=e541] [cursor=pointer]: Meno di 1.000 €
+          - generic [ref=e545]:
+            - checkbox "1.000 - 5.000 €" [ref=e547]
+            - generic [ref=e548] [cursor=pointer]: 1.000 - 5.000 €
+          - generic [ref=e552]:
+            - checkbox "5.000 - 25.000 €" [ref=e554]
+            - generic [ref=e555] [cursor=pointer]: 5.000 - 25.000 €
+          - generic [ref=e559]:
+            - checkbox "25.000 - 50.000 €" [ref=e561]
+            - generic [ref=e562] [cursor=pointer]: 25.000 - 50.000 €
+          - generic [ref=e566]:
+            - checkbox "Oltre 50.000 €" [ref=e568]
+            - generic [ref=e569] [cursor=pointer]: Oltre 50.000 €
+        - generic [ref=e222]:
+          - button "Avanti" [active] [ref=e224] [cursor=pointer]:
+            - generic [ref=e225]: Avanti
+            - img [ref=e227]
+            - generic:
+              - img
+          - generic [ref=e229]:
+            - generic:
+              - link "Realizzato con Tally":
+                - /url: https://tally.so?utm_source=tally&utm_medium=website&utm_campaign=powered-by_web&version=7&device=desktop
+                - generic [ref=e230] [cursor=pointer]:
+                  - img [ref=e231]
+                  - generic [ref=e233]: Realizzato con Tally
+  - alert [ref=e234]

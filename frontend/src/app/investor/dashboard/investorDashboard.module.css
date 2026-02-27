@@ -1,0 +1,299 @@
+/* Investor Dashboard - palette coerente con app */
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 2.5rem;
+  width: 100%;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.toggleRow {
+  margin: -0.7rem 0 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.35rem;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.cardsGrid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.cardSelected {
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.logoPlaceholder {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #7dd3fc;
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badgePhase {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #7dd3fc;
+}
+
+.badgeLifecycle {
+  background: rgba(148, 163, 184, 0.15);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.stepper {
+  margin: 1rem 0;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.stepperList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stepperItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.stepperItemCompleted {
+  color: var(--text-primary);
+}
+
+.stepperDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-color);
+  flex-shrink: 0;
+}
+
+.stepperDotCompleted {
+  background: #4ade80;
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  background: linear-gradient(120deg, #0284c7, #0ea5e9);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btnPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+}
+
+.btnPrimary:disabled,
+.btnPrimaryDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  background: transparent;
+  color: var(--primary-light);
+  border: 1px solid var(--border-color);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btnSecondary:hover {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: var(--primary);
+}
+
+.btnSecondaryDisabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.attestationPending {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.attestationPendingText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.nextStepSection {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.nextStepTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin: 0 0 0.5rem;
+}
+
+.nextStepText {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem;
+}
+
+.nextStepLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-light);
+  text-decoration: none;
+}
+
+.nextStepLink:hover {
+  text-decoration: underline;
+}
+
+.unauthorizedBox {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-top: 1.5rem;
+}
+
+.unauthorizedTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem;
+}
+
+.unauthorizedText {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .stepperList {
+    gap: 0.35rem;
+  }
+}

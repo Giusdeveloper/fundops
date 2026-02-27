@@ -52,6 +52,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Verifica accesso esplicito anche alle company target presenti negli update
+    const targetCompanyIds = Array.from(
+      new Set(
+        body.updates
+          .map((u) => (typeof u.company_id === "string" ? u.company_id.trim() : ""))
+          .filter((id) => id.length > 0)
+      )
+    );
+
+    for (const targetCompanyId of targetCompanyIds) {
+      const hasTargetAccess = await canAccessCompany(
+        supabase,
+        user.id,
+        targetCompanyId,
+        roleContext
+      );
+      if (!hasTargetAccess) {
+        return NextResponse.json(
+          { error: `Forbidden for target companyId: ${targetCompanyId}` },
+          { status: 403 }
+        );
+      }
+    }
+
     const force = body.force === true;
     let updated = 0;
     let skipped = 0;
@@ -59,8 +83,11 @@ export async function POST(request: NextRequest) {
 
     // Processa ogni update
     for (const update of body.updates) {
+      const normalizedTargetCompanyId =
+        typeof update.company_id === "string" ? update.company_id.trim() : "";
+
       // Validazione update
-      if (!update.investor_id || !update.company_id || !update.match_type) {
+      if (!update.investor_id || !normalizedTargetCompanyId || !update.match_type) {
         errors.push({
           investor_id: update.investor_id || "unknown",
           reason: "Campi mancanti: investor_id, company_id, match_type sono richiesti",
@@ -81,7 +108,7 @@ export async function POST(request: NextRequest) {
       try {
         // Costruisci query update
         const updateData: Record<string, string> = {
-          client_company_id: update.company_id,
+          client_company_id: normalizedTargetCompanyId,
           client_company_match_type: update.match_type,
           client_company_matched_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

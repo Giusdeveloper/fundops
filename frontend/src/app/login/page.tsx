@@ -123,11 +123,64 @@ function LoginPageContent() {
   const [mode, setMode] = useState<'login' | 'register'>("login");
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") ?? "/dashboard";
+  const redirectTo = searchParams.get("redirect") ?? "";
+
+  function setRedirectCookie(path: string) {
+    const safe = path?.startsWith("/") ? path : `/${path ?? ""}`;
+    document.cookie = `fundops_redirect=${encodeURIComponent(safe)}; path=/; samesite=lax`;
+  }
 
   useEffect(() => {
     if (searchParams.get("mode") === "register") setMode("register");
   }, [searchParams]);
+
+  async function handleOAuth(provider: "google" | "azure") {
+    setMessage(null);
+    setLoading(true);
+
+    try {
+      const supabase = createClient();
+      const redirectNow =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get("redirect") ?? redirectTo
+          : redirectTo;
+      const roleFromQuery =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get("role")
+          : null;
+      const safeRedirect = redirectNow
+        ? redirectNow.startsWith("/")
+          ? redirectNow
+          : `/${redirectNow}`
+        : "";
+      if (safeRedirect) {
+        setRedirectCookie(safeRedirect);
+      }
+
+      const callbackUrl = new URL("/auth/callback", window.location.origin);
+      if (safeRedirect) callbackUrl.searchParams.set("redirect", safeRedirect);
+      if (roleFromQuery === "investor" || roleFromQuery === "founder") {
+        callbackUrl.searchParams.set("role", roleFromQuery);
+      }
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: callbackUrl.toString(),
+          queryParams: {
+            redirect: safeRedirect,
+            role: roleFromQuery ?? "",
+          },
+        },
+      });
+
+      if (error) {
+        setMessage(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -157,12 +210,34 @@ function LoginPageContent() {
         return;
       }
       setMessage("Login effettuato! Benvenuto.");
-      // Leggi redirect dall'URL al momento del submit (evita stale closure)
-      const redirectNow = typeof window !== "undefined"
-        ? new URLSearchParams(window.location.search).get("redirect") ?? redirectTo
-        : redirectTo;
-      // window.location.href forza reload completo: session cookies arrivano al server
-      window.location.href = redirectNow.startsWith("/") ? redirectNow : `/${redirectNow}`;
+
+      // 1) se l'URL contiene ?redirect=..., lo rispettiamo (deep link)
+      const redirectNow =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get("redirect") ?? redirectTo
+          : redirectTo;
+
+      if (redirectNow) {
+        window.location.href = redirectNow.startsWith("/") ? redirectNow : `/${redirectNow}`;
+        return;
+      }
+
+      // 2) altrimenti chiediamo al server dove mandare l'utente (role-based)
+      try {
+        const res = await fetch("/api/auth/home-route", { cache: "no-store" });
+        const json = await res.json().catch(() => ({}));
+        const homeRoute = json?.homeRoute;
+
+        if (res.ok && typeof homeRoute === "string" && homeRoute.startsWith("/")) {
+          window.location.href = homeRoute;
+          return;
+        }
+      } catch {
+        // fallback sotto
+      }
+
+      // fallback ultimo (solo se API non risponde)
+      window.location.href = "/dashboard";
     } finally {
       setLoading(false);
     }
@@ -176,11 +251,25 @@ function LoginPageContent() {
         <div className="login-typewriter login-typewriter-margin">{displayed}</div>
         <form className="login-form-glass" onSubmit={handleSubmit}>
           <div className="login-sso-row">
-            <button type="button" className="login-sso-btn google" tabIndex={0} aria-label="Accedi con Google">
+            <button
+              type="button"
+              className="login-sso-btn google"
+              tabIndex={0}
+              aria-label="Accedi con Google"
+              onClick={() => handleOAuth("google")}
+              disabled={loading}
+            >
               <svg width="22" height="22" viewBox="0 0 48 48" className="login-sso-icon"><g><path fill="#4285F4" d="M24 9.5c3.54 0 6.36 1.46 7.82 2.68l5.8-5.8C34.64 3.36 29.74 1 24 1 14.61 1 6.44 6.98 2.69 15.09l6.74 5.23C11.13 14.36 17.02 9.5 24 9.5z"/><path fill="#34A853" d="M46.15 24.5c0-1.64-.15-3.22-.43-4.74H24v9.24h12.44c-.54 2.9-2.18 5.36-4.64 7.04l7.18 5.59C43.98 37.36 46.15 31.36 46.15 24.5z"/><path fill="#FBBC05" d="M9.43 28.32A14.5 14.5 0 0 1 9.5 19.5v-6H2.69A23.98 23.98 0 0 0 0 24c0 3.77.9 7.34 2.69 10.5l6.74-5.23z"/><path fill="#EA4335" d="M24 46c6.48 0 11.92-2.14 15.91-5.82l-7.18-5.59c-2.01 1.35-4.6 2.16-8.73 2.16-6.98 0-12.87-4.86-14.57-11.27l-6.74 5.23C6.44 41.02 14.61 46 24 46z"/></g></svg>
               Google
             </button>
-            <button type="button" className="login-sso-btn outlook" tabIndex={0} aria-label="Accedi con Microsoft">
+            <button
+              type="button"
+              className="login-sso-btn outlook"
+              tabIndex={0}
+              aria-label="Accedi con Microsoft"
+              onClick={() => handleOAuth("azure")}
+              disabled={loading}
+            >
               <svg width="22" height="22" viewBox="0 0 32 32" className="login-sso-icon"><g><rect width="32" height="32" rx="6" fill="#fff"/><rect x="7" y="7" width="8" height="8" fill="#F35325"/><rect x="17" y="7" width="8" height="8" fill="#81BC06"/><rect x="7" y="17" width="8" height="8" fill="#05A6F0"/><rect x="17" y="17" width="8" height="8" fill="#FFBA08"/></g></svg>
               Microsoft
             </button>

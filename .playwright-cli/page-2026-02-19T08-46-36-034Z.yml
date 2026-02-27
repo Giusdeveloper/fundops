@@ -1,0 +1,249 @@
+- generic [ref=e1]:
+  - main [ref=e4]:
+    - img "Form cover" [ref=e6]
+    - generic [ref=e7]:
+      - button "Indietro" [ref=e240] [cursor=pointer]:
+        - img [ref=e242]
+        - generic [ref=e244]: Indietro
+        - generic:
+          - img
+      - generic [ref=e8]:
+        - progressbar [ref=e9]: Pagina 3 di 6
+        - generic [ref=e10]:
+          - heading "Preferenze e strategie di investimento" [level=2] [ref=e579]:
+            - generic [ref=e580]: Preferenze e strategie di investimento
+          - heading "Approfondiamo la tua visione e strategia di investimento" [level=3] [ref=e584]
+          - generic [ref=e587]:
+            - heading "Vorresti investire in un settore specifico? Se si, quale?" [level=3] [ref=e588]
+            - generic [ref=e590] [cursor=pointer]: "*"
+          - textbox "Vorresti investire in un settore specifico? Se si, quale?" [ref=e594]:
+            - /placeholder: ""
+            - text: Tecnologia B2B
+          - generic [ref=e597]:
+            - heading "In quale delle seguenti fasi del ciclo di vita di una startup vorresti investire?" [level=3] [ref=e598]
+            - generic [ref=e600] [cursor=pointer]: "*"
+          - generic [ref=e601]:
+            - generic [ref=e602]: In quale delle seguenti fasi del ciclo di vita di una startup vorresti investire?
+            - generic [ref=e605]:
+              - generic [ref=e606]:
+                - img [ref=e1012]
+                - checkbox "Pre-Seed → Idea iniziale, team e validazione del problema" [checked] [ref=e607]
+              - generic [ref=e608] [cursor=pointer]: Pre-Seed → Idea iniziale, team e validazione del problema
+          - generic [ref=e612]:
+            - checkbox "Seed → MVP, prime traction e raccolta fondi iniziale" [ref=e614]
+            - generic [ref=e615] [cursor=pointer]: Seed → MVP, prime traction e raccolta fondi iniziale
+          - generic [ref=e619]:
+            - checkbox "Early Stage → Prodotto sul mercato, crescita dei clienti" [ref=e621]
+            - generic [ref=e622] [cursor=pointer]: Early Stage → Prodotto sul mercato, crescita dei clienti
+          - generic [ref=e626]:
+            - checkbox "Growth → Ricavi in aumento, espansione su scala" [ref=e628]
+            - generic [ref=e629] [cursor=pointer]: Growth → Ricavi in aumento, espansione su scala
+          - generic [ref=e633]:
+            - checkbox "Non lo so" [ref=e635]
+            - generic [ref=e636] [cursor=pointer]: Non lo so
+          - generic [ref=e639]:
+            - heading "Quali caratteristiche ricerchi in una startup per investire?" [level=3] [ref=e640]
+            - generic [ref=e642] [cursor=pointer]: "*"
+          - generic [ref=e644]: Selezionare una o più opzioni.
+          - generic [ref=e645]:
+            - generic [ref=e646]: Quali caratteristiche ricerchi in una startup per investire?
+            - generic [ref=e649]:
+              - generic [ref=e650]:
+                - img [ref=e1014]
+                - checkbox "Il prodotto/servizio risolve un problema" [checked] [ref=e651]
+              - generic [ref=e652] [cursor=pointer]: Il prodotto/servizio risolve un problema
+          - generic [ref=e656]:
+            - checkbox "Descrizione e risultati degli esperimenti di validazione" [ref=e658]
+            - generic [ref=e659] [cursor=pointer]: Descrizione e risultati degli esperimenti di validazione
+          - generic [ref=e663]:
+            - checkbox "Business Model validato e metriche come LTV, MRR, CAC, ecc." [ref=e665]
+            - generic [ref=e666] [cursor=pointer]: Business Model validato e metriche come LTV, MRR, CAC, ecc.
+          - generic [ref=e670]:
+            - checkbox "Competenze e motivazione del Team" [ref=e672]
+            - generic [ref=e673] [cursor=pointer]: Competenze e motivazione del Team
+          - generic [ref=e677]:
+            - checkbox "Facilità di accesso a fonti di finanziamento" [ref=e679]
+            - generic [ref=e680] [cursor=pointer]: Facilità di accesso a fonti di finanziamento
+          - generic [ref=e684]:
+            - checkbox "Altro" [ref=e686]
+            - generic [ref=e687] [cursor=pointer]: Altro
+          - generic [ref=e689]: "Se hai selezionato \"Altro\", indicare la motivazione:"
+          - textbox "Altre caratteristiche ideali" [ref=e693]:
+            - /placeholder: ""
+          - heading "In che modo hai contribuito al successo di una startup?" [level=3] [ref=e697]
+          - generic [ref=e699]: Selezionare una o più opzioni.
+          - generic [ref=e700]:
+            - generic [ref=e701]: In che modo hai contribuito al successo di una startup?
+            - generic [ref=e704]:
+              - checkbox "Apporto Capitale" [ref=e706]
+              - generic [ref=e707] [cursor=pointer]: Apporto Capitale
+          - generic [ref=e711]:
+            - checkbox "Altro (competenze tecniche, relazioni strategiche ecc.....)" [ref=e713]
+            - generic [ref=e714] [cursor=pointer]: Altro (competenze tecniche, relazioni strategiche ecc.....)
+          - generic [ref=e716]: "Se hai selezionato \"Altro\", indicare la motivazione:"
+          - textbox "Altro contributo alla startup effettuato" [ref=e720]:
+            - /placeholder: ""
+          - generic [ref=e723]:
+            - heading "In che modo potresti contribuire al successo di una startup?" [level=3] [ref=e724]
+            - generic [ref=e726] [cursor=pointer]: "*"
+          - generic [ref=e728]: Selezionare una o più opzioni.
+          - generic [ref=e729]:
+            - generic [ref=e730]: In che modo potresti contribuire al successo di una startup?
+            - generic [ref=e733]:
+              - generic [ref=e734]:
+                - img [ref=e1016]
+                - checkbox "Apporto Capitale" [checked] [ref=e735]
+              - generic [ref=e736] [cursor=pointer]: Apporto Capitale
+          - generic [ref=e740]:
+            - checkbox "Apporto di competenze tecniche" [ref=e742]
+            - generic [ref=e743] [cursor=pointer]: Apporto di competenze tecniche
+          - generic [ref=e747]:
+            - checkbox "Sviluppo di relazioni strategiche" [ref=e749]
+            - generic [ref=e750] [cursor=pointer]: Sviluppo di relazioni strategiche
+          - generic [ref=e754]:
+            - checkbox "Altro" [ref=e756]
+            - generic [ref=e757] [cursor=pointer]: Altro
+          - generic [ref=e759]: "Se hai selezionato \"Altro\", indicare la motivazione:"
+          - textbox "Altro contributo alla startup" [ref=e763]:
+            - /placeholder: ""
+          - heading "Investi per primo in un progetto o aspetti che prima investa qualcun altro?" [level=3] [ref=e767]
+          - generic [ref=e768]:
+            - generic [ref=e769]: Investi per primo in un progetto o aspetti che prima investa qualcun altro?
+            - generic [ref=e772] [cursor=pointer]:
+              - generic [ref=e773]: A
+              - radio "Investo per primo" [ref=e774]
+              - generic [ref=e775]: Investo per primo
+          - generic [ref=e779] [cursor=pointer]:
+            - generic [ref=e780]: B
+            - radio "Aspetto che qualcun altro investa" [ref=e781]
+            - generic [ref=e782]: Aspetto che qualcun altro investa
+          - generic [ref=e786] [cursor=pointer]:
+            - generic [ref=e787]: C
+            - radio "Non ho mai investito" [ref=e788]
+            - generic [ref=e789]: Non ho mai investito
+          - heading "Hai mai coinvolto altri investitori del tuo network in un progetto in cui hai investito?" [level=3] [ref=e793]
+          - generic [ref=e794]:
+            - generic [ref=e795]: Hai mai coinvolto altri investitori del tuo network in un progetto in cui hai investito?
+            - generic [ref=e798] [cursor=pointer]:
+              - generic [ref=e799]: A
+              - radio "Si" [ref=e800]
+              - generic [ref=e801]: Si
+          - generic [ref=e805] [cursor=pointer]:
+            - generic [ref=e806]: B
+            - radio "No" [ref=e807]
+            - generic [ref=e808]: "No"
+          - generic [ref=e812] [cursor=pointer]:
+            - generic [ref=e813]: C
+            - radio "Non ho mai investito" [ref=e814]
+            - generic [ref=e815]: Non ho mai investito
+          - heading "Hai già realizzato delle Exit dai tuoi investimenti in startup? Se si, quante?" [level=3] [ref=e819]
+          - generic [ref=e820]:
+            - generic [ref=e821]: Hai già realizzato delle Exit dai tuoi investimenti in startup? Se si, quante?
+            - generic [ref=e824] [cursor=pointer]:
+              - generic [ref=e825]: A
+              - radio "1-5" [ref=e826]
+              - generic [ref=e827]: 1-5
+          - generic [ref=e831] [cursor=pointer]:
+            - generic [ref=e832]: B
+            - radio "5+" [ref=e833]
+            - generic [ref=e834]: 5+
+          - generic [ref=e838] [cursor=pointer]:
+            - generic [ref=e839]: C
+            - radio "Nessuna" [ref=e840]
+            - generic [ref=e841]: Nessuna
+          - generic [ref=e845] [cursor=pointer]:
+            - generic [ref=e846]: D
+            - radio "Non ho mai investito" [ref=e847]
+            - generic [ref=e848]: Non ho mai investito
+          - generic [ref=e851]:
+            - heading "Quanto tempo saresti disposto ad aspettare prima di realizzare una exit?" [level=3] [ref=e852]
+            - generic [ref=e854] [cursor=pointer]: "*"
+          - generic [ref=e855]:
+            - generic [ref=e856]: Quanto tempo saresti disposto ad aspettare prima di realizzare una exit?
+            - generic [ref=e859] [cursor=pointer]:
+              - generic [ref=e860]: A
+              - radio "1 - 3 anni" [ref=e861]
+              - generic [ref=e862]: 1 - 3 anni
+          - generic [ref=e866] [cursor=pointer]:
+            - generic [ref=e867]: B
+            - radio "3 - 5 anni" [checked] [active] [ref=e868]
+            - generic [ref=e869]: 3 - 5 anni
+          - generic [ref=e873] [cursor=pointer]:
+            - generic [ref=e874]: C
+            - radio "5-10 anni" [ref=e875]
+            - generic [ref=e876]: 5-10 anni
+          - generic [ref=e880] [cursor=pointer]:
+            - generic [ref=e881]: D
+            - radio "10 +" [ref=e882]
+            - generic [ref=e883]: 10 +
+          - generic [ref=e888]:
+            - heading "Quali sono le metriche che cerchi in una startup?" [level=3] [ref=e889]
+            - generic [ref=e891] [cursor=pointer]: "*"
+          - generic [ref=e893]: Selezionare una o più opzioni.
+          - generic [ref=e894]:
+            - generic [ref=e895]: Quali sono le metriche che cerchi in una startup?
+            - generic [ref=e898]:
+              - checkbox "MRR (Monthly Recurring Revenue) → Ricavi ricorrenti ogni mese." [ref=e900]
+              - generic [ref=e901] [cursor=pointer]: MRR (Monthly Recurring Revenue) → Ricavi ricorrenti ogni mese.
+          - generic [ref=e905]:
+            - checkbox "LTV (Lifetime Value) → Valore totale generato da un cliente." [ref=e907]
+            - generic [ref=e908] [cursor=pointer]: LTV (Lifetime Value) → Valore totale generato da un cliente.
+          - generic [ref=e912]:
+            - checkbox "CAC (Customer Acquisition Cost) → Costo per acquisire un cliente." [ref=e914]
+            - generic [ref=e915] [cursor=pointer]: CAC (Customer Acquisition Cost) → Costo per acquisire un cliente.
+          - generic [ref=e919]:
+            - checkbox "DAU / MAU (Daily/Month Active User) → Utenti attivi giornalieri/mensili." [ref=e921]
+            - generic [ref=e922] [cursor=pointer]: DAU / MAU (Daily/Month Active User) → Utenti attivi giornalieri/mensili.
+          - generic [ref=e926]:
+            - checkbox "Retention → Percentuale di utenti che rimangono nel tempo." [ref=e928]
+            - generic [ref=e929] [cursor=pointer]: Retention → Percentuale di utenti che rimangono nel tempo.
+          - generic [ref=e933]:
+            - checkbox "Burn Rate → Velocità con cui la startup consuma cassa." [ref=e935]
+            - generic [ref=e936] [cursor=pointer]: Burn Rate → Velocità con cui la startup consuma cassa.
+          - generic [ref=e940]:
+            - checkbox "TAM - SAM - SOM → Stime del mercato totale, accessibile e servito." [ref=e942]
+            - generic [ref=e943] [cursor=pointer]: TAM - SAM - SOM → Stime del mercato totale, accessibile e servito.
+          - generic [ref=e947]:
+            - checkbox "Altro" [ref=e949]
+            - generic [ref=e950] [cursor=pointer]: Altro
+          - generic [ref=e952]: "Se hai selezionato \"Altro\", indicare la motivazione:"
+          - textbox "Altre metriche" [ref=e958]:
+            - /placeholder: ""
+          - generic [ref=e963]:
+            - heading "Come gestisci le tue partecipazioni?" [level=3] [ref=e964]
+            - generic [ref=e966] [cursor=pointer]: "*"
+          - generic [ref=e968]: Selezionare una o più opzioni.
+          - generic [ref=e969]:
+            - generic [ref=e970]: Come gestisci le tue partecipazioni?
+            - generic [ref=e973]:
+              - checkbox "Utilizzo un gestionale specifico" [ref=e975]
+              - generic [ref=e976] [cursor=pointer]: Utilizzo un gestionale specifico
+          - generic [ref=e980]:
+            - checkbox "Ho creato un CRM" [ref=e982]
+            - generic [ref=e983] [cursor=pointer]: Ho creato un CRM
+          - generic [ref=e987]:
+            - checkbox "Email" [ref=e989]
+            - generic [ref=e990] [cursor=pointer]: Email
+          - generic [ref=e994]:
+            - checkbox "Whatsapp" [ref=e996]
+            - generic [ref=e997] [cursor=pointer]: Whatsapp
+          - generic [ref=e1001]:
+            - checkbox "Vengo contattato da loro" [ref=e1003]
+            - generic [ref=e1004] [cursor=pointer]: Vengo contattato da loro
+          - generic [ref=e1008]:
+            - checkbox "Non uso nessuno strumento" [ref=e1010]
+            - generic [ref=e1011] [cursor=pointer]: Non uso nessuno strumento
+        - generic [ref=e222]:
+          - button "Avanti" [ref=e224] [cursor=pointer]:
+            - generic [ref=e225]: Avanti
+            - img [ref=e227]
+            - generic:
+              - img
+          - generic [ref=e229]:
+            - generic:
+              - link "Realizzato con Tally":
+                - /url: https://tally.so?utm_source=tally&utm_medium=website&utm_campaign=powered-by_web&version=7&device=desktop
+                - generic [ref=e230] [cursor=pointer]:
+                  - img [ref=e231]
+                  - generic [ref=e233]: Realizzato con Tally
+  - alert [ref=e234]

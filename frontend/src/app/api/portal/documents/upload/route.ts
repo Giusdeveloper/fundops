@@ -1,21 +1,34 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 import {
   resolveCompanyBySlug,
   hasSignedLoiForCompany,
-  getPhaseForCompany,
 } from "@/lib/portalHelpers";
 
 const BUCKET = "fundops-documents";
-const PORTAL_DOC_TYPES = ["notary_deed", "investment_form", "wire_proof"] as const;
+const PORTAL_DOC_TYPES = [
+  "notary_deed",
+  "investment_form",
+  "privacy_notice",
+  "wire_proof",
+  "investment_form_signed",
+  "bank_transfer_proof",
+  "investment_module",
+  "privacy_investor",
+  "id_document",
+  "tax_code",
+  "bank_transfer_receipt",
+] as const;
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function err(msg: string, status: number) {
   return NextResponse.json({ error: msg }, { status });
 }
 
 export async function POST(request: Request) {
-  const supabaseAuth = await createClient();
+  const supabaseAuth = await createSupabaseServerClient();
   const supabase = supabaseServer;
 
   if (!supabase) {
@@ -41,6 +54,7 @@ export async function POST(request: Request) {
 
   let slug: string;
   let type: string;
+  let investmentId: string | null = null;
   let fileBase64: string | null = null;
   let file: File | null = null;
 
@@ -49,11 +63,13 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     slug = formData.get("slug") as string;
     type = formData.get("type") as string;
+    investmentId = (formData.get("investmentId") as string | null)?.trim() ?? null;
     file = formData.get("file") as File;
   } else {
     const body = await request.json();
     slug = body.slug;
     type = body.type;
+    investmentId = typeof body.investmentId === "string" ? body.investmentId.trim() : null;
     fileBase64 = body.fileBase64 ?? null;
   }
 
@@ -62,7 +78,13 @@ export async function POST(request: Request) {
   }
 
   if (!PORTAL_DOC_TYPES.includes(type as (typeof PORTAL_DOC_TYPES)[number])) {
-    return err("type deve essere notary_deed, investment_form o wire_proof", 400);
+    return err(
+      "type non valido",
+      400
+    );
+  }
+  if (investmentId && !UUID_RE.test(investmentId)) {
+    return err("investmentId non valido", 400);
   }
 
   const company = await resolveCompanyBySlug(supabase, slug);
@@ -70,10 +92,16 @@ export async function POST(request: Request) {
     return err("Company non trovata", 404);
   }
 
-  const phase = await getPhaseForCompany(supabase, company.id);
+  const phaseRaw = (company.phase ?? "").toLowerCase();
+  const phase =
+    phaseRaw === "issuance" || phaseRaw === "issuing"
+      ? "issuance"
+      : phaseRaw === "onboarding"
+      ? "onboarding"
+      : "booking";
   const hasSignedLoi = await hasSignedLoiForCompany(supabase, company.id);
 
-  if (phase === "issuing" || phase === "onboarding") {
+  if (phase === "issuance" || phase === "onboarding") {
     if (!hasSignedLoi) {
       return err(
         "Non puoi caricare documenti: la LOI deve essere firmata prima di procedere",
@@ -83,6 +111,9 @@ export async function POST(request: Request) {
   }
 
   let investorId: string | null = null;
+  let investmentRecord:
+    | { id: string; status: string | null }
+    | null = null;
 
   if (type === "notary_deed") {
     const isAdmin = profile.role_global === "imment_admin" || profile.role_global === "imment_operator";
@@ -121,6 +152,29 @@ export async function POST(request: Request) {
     }
 
     investorId = iu.investor_id;
+
+    if (!investmentId) {
+      return err("investmentId richiesto per documenti investitore", 400);
+    }
+
+    const { data: investment, error: investmentError } = await supabase
+      .from("fundops_investments")
+      .select("id, status")
+      .eq("id", investmentId)
+      .eq("company_id", company.id)
+      .eq("investor_id", investorId)
+      .maybeSingle();
+
+    if (investmentError) {
+      return err(`Errore lookup investimento: ${investmentError.message}`, 500);
+    }
+    if (!investment) {
+      return err("Investimento non trovato", 404);
+    }
+    if (investment.status !== "draft" && investment.status !== "rejected") {
+      return err("Investimento non modificabile", 409);
+    }
+    investmentRecord = investment;
   }
 
   let buffer: Buffer;
@@ -143,7 +197,7 @@ export async function POST(request: Request) {
   const sanitized = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
   const subPath = type === "notary_deed"
     ? `portal/${company.id}/notary_deed`
-    : `portal/${company.id}/investors/${investorId}/${type}`;
+    : `portal/${company.id}/investors/${investorId}/investments/${investmentRecord?.id}/${type}`;
   const filePath = `${subPath}/${timestamp}_${sanitized}`;
 
   const { error: uploadError } = await supabase.storage
@@ -157,16 +211,21 @@ export async function POST(request: Request) {
     return err(`Errore upload: ${uploadError.message}`, 500);
   }
 
-  const { data: maxVersion } = await supabase
+  const maxVersionQuery = supabase
     .from("fundops_documents")
     .select("version")
-    .eq("company_id", company.id)
-    .is("investor_id", investorId)
     .eq("type", type)
     .eq("status", "active")
     .order("version", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
+
+  if (investmentRecord?.id) {
+    maxVersionQuery.eq("investment_id", investmentRecord.id);
+  } else {
+    maxVersionQuery.eq("company_id", company.id).is("investor_id", null);
+  }
+
+  const { data: maxVersion } = await maxVersionQuery.maybeSingle();
 
   const nextVersion = (maxVersion?.version ?? 0) + 1;
 
@@ -176,6 +235,7 @@ export async function POST(request: Request) {
       company_id: company.id,
       loi_id: null,
       investor_id: investorId,
+      investment_id: investmentRecord?.id ?? null,
       type,
       title: filename,
       file_path: filePath,

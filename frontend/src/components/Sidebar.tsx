@@ -4,16 +4,30 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCompany } from "../context/CompanyContext";
-import { LayoutDashboard, FolderKanban, Users, Settings, LogOut, FileText, Building2, Menu, AlignJustify, Shield } from 'lucide-react';
+import { createClient } from "@/lib/supabase/client";
+import { LayoutDashboard, FolderKanban, Users, LogOut, FileText, Building2, Menu, AlignJustify, Shield } from 'lucide-react';
 import './Sidebar.css';
+import type { UserUiContext } from "@/lib/auth/getUserUiContext";
 
-const Sidebar = () => {
+interface SidebarProps {
+  uiContext: UserUiContext;
+}
+
+interface MenuItem {
+  href: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  label: string;
+  requiresCompany: boolean;
+}
+
+const Sidebar = ({ uiContext }: SidebarProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const { activeCompanyId } = useCompany();
   
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [switchingViewMode, setSwitchingViewMode] = useState(false);
 
   // Load collapsed state from localStorage
   useEffect(() => {
@@ -36,28 +50,64 @@ const Sidebar = () => {
     setIsMobileOpen(!isMobileOpen);
   };
 
-  const menuItems = [
-    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', requiresCompany: true, disabled: false },
-    { href: '/investors', icon: Users, label: 'Investitori', requiresCompany: true, disabled: false },
-    { href: '/investor', icon: Users, label: 'Area Investitore', requiresCompany: false, disabled: false },
-    { href: '/lois', icon: FileText, label: 'LOI', requiresCompany: true, disabled: false },
-    { href: '/companies', icon: Building2, label: 'Companies', requiresCompany: false, disabled: false },
-    { href: '/admin', icon: Shield, label: 'Admin', requiresCompany: false, disabled: false },
-    { href: '/progetti', icon: FolderKanban, label: 'Progetti', requiresCompany: false, disabled: true },
-    { href: '/impostazioni', icon: Settings, label: 'Impostazioni', requiresCompany: false, disabled: true }
+  const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsMobileOpen(false);
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch {
+      // Se signOut fallisce lato client, procediamo comunque verso login.
+    } finally {
+      window.location.href = "/login";
+    }
+  };
+
+  const startupMenuItems: MenuItem[] = [
+    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', requiresCompany: true },
+    { href: '/investors', icon: Users, label: 'Investitori', requiresCompany: true },
+    { href: '/lois', icon: FileText, label: 'LOI', requiresCompany: true },
+    { href: '/issuance', icon: FolderKanban, label: 'Issuance', requiresCompany: true },
+    { href: '/companies', icon: Building2, label: 'Companies', requiresCompany: false },
   ];
 
-  const handleLinkClick = (e: React.MouseEvent, item: typeof menuItems[0]) => {
-    // Prevenire navigazione solo per item disabled
-    if (item.disabled) {
-      e.preventDefault();
-      return;
-    }
+  if (uiContext.isImmentAdmin) {
+    startupMenuItems.push({
+      href: '/admin',
+      icon: Shield,
+      label: 'Admin',
+      requiresCompany: false,
+    });
+  }
+
+  const investorMenuItems: MenuItem[] = [
+    { href: '/investor/dashboard', icon: Users, label: 'Investor Area', requiresCompany: false },
+  ];
+
+  const menuItems = uiContext.effectiveArea === "investor" ? investorMenuItems : startupMenuItems;
+
+  const handleLinkClick = (e: React.MouseEvent, item: MenuItem) => {
     // Se richiede company e non c'è activeCompanyId, redirect a /companies
     if (item.requiresCompany && !activeCompanyId) {
       e.preventDefault();
       router.push('/companies');
       return;
+    }
+  };
+
+  const handleSwitchViewMode = async (nextMode: "startup" | "investor") => {
+    if (!uiContext.isImmentAdmin || switchingViewMode) return;
+    setSwitchingViewMode(true);
+    try {
+      const res = await fetch("/api/auth/set-view-mode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ view_mode: nextMode }),
+      });
+      if (!res.ok) return;
+      window.location.href = nextMode === "investor" ? "/investor/dashboard" : "/dashboard";
+    } finally {
+      setSwitchingViewMode(false);
     }
   };
 
@@ -91,39 +141,49 @@ const Sidebar = () => {
         </button>
 
         <nav className="sidebar-nav">
+          {uiContext.isImmentAdmin && (
+            <div className="sidebar-viewmode-switcher">
+              <button
+                type="button"
+                className={`sidebar-viewmode-btn ${uiContext.effectiveArea === "startup" ? "active" : ""}`}
+                disabled={switchingViewMode || uiContext.effectiveArea === "startup"}
+                onClick={() => handleSwitchViewMode("startup")}
+              >
+                Vista Startup
+              </button>
+              <button
+                type="button"
+                className={`sidebar-viewmode-btn ${uiContext.effectiveArea === "investor" ? "active" : ""}`}
+                disabled={switchingViewMode || uiContext.effectiveArea === "investor"}
+                onClick={() => handleSwitchViewMode("investor")}
+              >
+                Vista Investitore
+              </button>
+            </div>
+          )}
           <ul>
             {menuItems.map((item) => {
               const Icon = item.icon;
-            const isActive = !item.disabled && (pathname?.startsWith(item.href) || (item.href === '/dashboard' && (pathname === '/' || pathname === '/dashboard')));
-            const isDisabled = item.disabled;
-            // Link puliti senza querystring - il context gestisce la company
-            const href = item.disabled ? '#' : item.href;
+            const isActive = pathname?.startsWith(item.href) || (item.href === '/dashboard' && (pathname === '/' || pathname === '/dashboard'));
+            const href = item.href;
 
               return (
-                <li key={item.href} className={isActive && !item.disabled ? 'active' : ''}>
+                <li key={item.href} className={isActive ? 'active' : ''}>
                   <Link 
                     href={href} 
-                    className={`sidebar-link ${isDisabled ? 'sidebar-link-disabled' : ''}`}
+                    className="sidebar-link"
                     onClick={(e) => {
                       handleLinkClick(e, item);
                       setIsMobileOpen(false);
                     }}
-                    title={isCollapsed || item.disabled ? (item.disabled ? "Coming Soon" : item.label) : undefined}
+                    title={isCollapsed ? item.label : undefined}
                   >
                     <div className="sidebar-link-left">
                       <Icon size={18} className="sidebar-icon"/>
                       {!isCollapsed && (
-                        <>
-                          <span className="sidebar-label">{item.label}</span>
-                          {item.disabled && (
-                            <span className="sidebar-coming-soon">Coming Soon</span>
-                          )}
-                        </>
+                        <span className="sidebar-label">{item.label}</span>
                       )}
                     </div>
-                    {isCollapsed && item.disabled && (
-                      <span className="sidebar-tooltip-collapsed">Coming Soon</span>
-                    )}
                   </Link>
                 </li>
               );
@@ -134,7 +194,7 @@ const Sidebar = () => {
         <a 
           href="/login" 
           className="sidebar-logout-link"
-          onClick={() => setIsMobileOpen(false)}
+          onClick={handleLogout}
           title={isCollapsed ? "Logout" : undefined}
         >
           <LogOut size={18} />

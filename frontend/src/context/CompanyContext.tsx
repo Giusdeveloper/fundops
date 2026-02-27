@@ -24,8 +24,6 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
     const bootstrapCompany = async () => {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (!stored) return;
-
         const response = await fetch("/api/my_companies");
         if (!response.ok) {
           // Sessione non valida o permessi mancanti: evita stato stale.
@@ -38,6 +36,23 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
 
         const payload = await response.json();
         const companies = Array.isArray(payload?.data) ? payload.data : [];
+
+        if (!stored) {
+          const firstCompanyId = companies[0]?.id ?? null;
+          if (firstCompanyId) {
+            localStorage.setItem(STORAGE_KEY, firstCompanyId);
+            if (!cancelled) {
+              setActiveCompanyIdState(firstCompanyId);
+            }
+          } else {
+            localStorage.removeItem(STORAGE_KEY);
+            if (!cancelled) {
+              setActiveCompanyIdState(null);
+            }
+          }
+          return;
+        }
+
         const isValidCompany = companies.some((company: { id: string }) => company.id === stored);
 
         if (!isValidCompany) {
