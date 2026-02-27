@@ -166,7 +166,7 @@ function computePhaseCards(
       message: onboardingIsAvailable
         ? "Onboarding disponibile."
         : "In attesa chiusura round.",
-      ctaLabel: onboardingIsAvailable ? "Vai a Investor Area" : null,
+      ctaLabel: onboardingIsAvailable ? "Vai a Supporter Area" : null,
       ctaHref: onboardingIsAvailable ? "/investor/dashboard" : null,
       statusLabel: onboardingIsAvailable ? "Disponibile" : "In attesa",
       ctaDisabled: !onboardingIsAvailable,

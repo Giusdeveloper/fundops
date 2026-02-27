@@ -358,7 +358,7 @@ export const generateLOIDocument = (data: LOIDocumentData): string => {
         
         <ol type="a">
             <li>Visura camerale aggiornata;</li>
-            <li>Investor deck.</li>
+            <li>Pitch deck.</li>
         </ol>
         
         <h2 class="section-title">Attività successive</h2>

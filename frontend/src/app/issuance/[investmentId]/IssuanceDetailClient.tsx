@@ -167,7 +167,7 @@ export default function IssuanceDetailClient({
           <>
             <article className={styles.summaryCard}>
               <p>
-                <strong>Investor:</strong>{" "}
+                <strong>Supporter:</strong>{" "}
                 {data.investor?.full_name || data.investor?.email || "—"}
               </p>
               <p>

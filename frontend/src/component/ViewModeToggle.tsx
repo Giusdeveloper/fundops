@@ -64,7 +64,7 @@ export default function ViewModeToggle({
   if (!canSwitch) {
     return (
       <div className={styles.statusText}>
-        Modalità: <strong>{mode === "investor" ? "Investor" : "Startup"}</strong>{" "}
+        Modalità: <strong>{mode === "investor" ? "Supporter" : "Startup"}</strong>{" "}
         {role ? <span>(role: {role})</span> : null}
       </div>
     );
@@ -91,7 +91,7 @@ export default function ViewModeToggle({
         disabled={loading || mode === "investor"}
         className={`${styles.toggleButton} ${mode === "investor" ? styles.toggleButtonActive : ""}`}
       >
-        Investor
+        Supporter
       </button>
     </div>
   );

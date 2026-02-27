@@ -135,7 +135,7 @@ export default function IssuanceListClient() {
                 <table className={styles.table}>
                   <thead>
                     <tr>
-                      <th>Investor</th>
+                      <th>Supporter</th>
                       <th>Importo €</th>
                       <th>Stato</th>
                       <th>Documenti</th>

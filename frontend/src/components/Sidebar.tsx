@@ -81,7 +81,7 @@ const Sidebar = ({ uiContext }: SidebarProps) => {
   }
 
   const investorMenuItems: MenuItem[] = [
-    { href: '/investor/dashboard', icon: Users, label: 'Investor Area', requiresCompany: false },
+    { href: '/investor/dashboard', icon: Users, label: 'Supporter Area', requiresCompany: false },
   ];
 
   const menuItems = uiContext.effectiveArea === "investor" ? investorMenuItems : startupMenuItems;
@@ -157,7 +157,7 @@ const Sidebar = ({ uiContext }: SidebarProps) => {
                 disabled={switchingViewMode || uiContext.effectiveArea === "investor"}
                 onClick={() => handleSwitchViewMode("investor")}
               >
-                Vista Investitore
+                Vista Supporter
               </button>
             </div>
           )}

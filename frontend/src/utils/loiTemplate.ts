@@ -219,7 +219,7 @@ export const generateLOIDocument = (loi: LOI): string => {
         <p>Alla sottoscrizione della presente Lettera d'Intenti, l'Investitore riceverà dall'Organo Amministrativo di ${loi.companyName}:</p>
         <ul>
             <li>a) Visura camerale aggiornata;</li>
-            <li>b) Investor deck.</li>
+            <li>b) Pitch deck.</li>
         </ul>
 
         <div class="section-title">Attività successive</div>

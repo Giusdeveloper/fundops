@@ -9,7 +9,7 @@ import styles from "./userDetail.module.css";
 const FLAG_LABELS: Record<string, string> = {
   allow_dashboard: "Dashboard",
   allow_companies: "Companies",
-  allow_investors: "Investors",
+  allow_investors: "Supporters",
   allow_lois: "LOI",
   allow_issuance: "Issuance",
   allow_onboarding: "Onboarding",
