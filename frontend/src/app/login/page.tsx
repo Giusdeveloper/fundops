@@ -9,7 +9,7 @@ import { Suspense } from "react";
 
 function LoginPageContent() {
   // Typewriter effect lento, testo su una riga
-  const fullText = "Smart Equity – Gestisci il tuo equity in modo intelligente.";
+  const fullText = "FundOps – Gestisci Booking, Issuance e Onboarding in un unico flusso.";
   const [displayed, setDisplayed] = useState("");
   useEffect(() => {
     let i = 0;
