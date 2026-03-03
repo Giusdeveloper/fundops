@@ -9,6 +9,7 @@ const PROTECTED_PATHS = [
   "/investor",
   "/investors",
   "/lois",
+  "/dossier",
   "/admin",
   "/onboarding",
 ];
@@ -34,6 +35,7 @@ function isStartupAreaPath(pathname: string): boolean {
     pathname === "/issuance" || pathname.startsWith("/issuance/") ||
     pathname === "/investors" || pathname.startsWith("/investors/") ||
     pathname === "/lois" || pathname.startsWith("/lois/") ||
+    pathname === "/dossier" || pathname.startsWith("/dossier/") ||
     pathname === "/admin" || pathname.startsWith("/admin/") ||
     pathname === "/onboarding" || pathname.startsWith("/onboarding/")
   );
@@ -140,6 +142,16 @@ export async function middleware(request: NextRequest) {
   .maybeSingle();
 
   const roleGlobal = profile?.role_global?.trim() ?? null;
+
+  if (pathname.startsWith("/dossier") && roleGlobal === "investor") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/investor/dashboard";
+    url.search = "";
+    const res = NextResponse.redirect(url);
+    supabaseResponse.cookies.getAll().forEach((c) => res.cookies.set(c.name, c.value));
+    return res;
+  }
+
   const isRoleMissing = !roleGlobal;
   const isChooseRolePath = pathname === "/onboarding/choose-role";
   const isRoleApiPath =

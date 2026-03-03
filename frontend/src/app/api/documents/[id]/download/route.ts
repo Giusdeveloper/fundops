@@ -36,7 +36,7 @@ export async function GET(
     .from("fundops_documents")
     .select("id, file_path, mime_type, title")
     .eq("id", id)
-    .eq("status", "active")
+    .in("status", ["active", "uploaded", "ready"])
     .maybeSingle();
 
   if (docError || !document) {

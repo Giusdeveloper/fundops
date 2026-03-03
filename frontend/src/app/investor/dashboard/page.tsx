@@ -22,7 +22,7 @@ export default async function InvestorDashboardPage() {
     return (
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Area Investitore</h1>
+          <h1 className={styles.title}>Area Supporter</h1>
           <p className={styles.subtitle}>Le tue campagne attive</p>
         </header>
         <div className={styles.toggleRow}>
@@ -39,7 +39,7 @@ export default async function InvestorDashboardPage() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Area Investitore</h1>
+        <h1 className={styles.title}>Area Supporter</h1>
         <p className={styles.subtitle}>Le tue campagne attive</p>
       </header>
       <div className={styles.toggleRow}>

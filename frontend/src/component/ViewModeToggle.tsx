@@ -13,7 +13,6 @@ export default function ViewModeToggle({
   const [loading, setLoading] = useState(true);
   const [canSwitch, setCanSwitch] = useState(false);
   const [mode, setMode] = useState<ViewMode>("startup");
-  const [role, setRole] = useState<string>("");
 
   async function fetchCurrent() {
     setLoading(true);
@@ -23,7 +22,6 @@ export default function ViewModeToggle({
       if (r.ok) {
         setMode(j.view_mode as ViewMode);
         setCanSwitch(Boolean(j.can_switch));
-        setRole(j.role_global ?? "");
       }
     } finally {
       setLoading(false);
@@ -53,21 +51,12 @@ export default function ViewModeToggle({
   }, []);
 
   if (loading) {
-    return (
-      <div className={styles.statusText}>
-        Modalità: caricamento…
-      </div>
-    );
+    return null;
   }
 
   // Se non può switchare, mostro solo stato
   if (!canSwitch) {
-    return (
-      <div className={styles.statusText}>
-        Modalità: <strong>{mode === "investor" ? "Supporter" : "Startup"}</strong>{" "}
-        {role ? <span>(role: {role})</span> : null}
-      </div>
-    );
+    return null;
   }
 
   return (

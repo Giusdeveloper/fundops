@@ -107,7 +107,7 @@ function computePhaseCards(
   companyPhase: "booking" | "issuance" | "onboarding" | null
 ): PhaseCardsData {
   let bookingStatusLabel = "Da avviare";
-  let bookingMessage = "Avvia raccolta LOI e attivazione investitori.";
+  let bookingMessage = "Avvia raccolta LOI e attivazione supporters.";
 
   if (signedLoiCount >= 1 && signedLoiCount <= 4) {
     bookingStatusLabel = "In corso";
@@ -126,15 +126,15 @@ function computePhaseCards(
   return {
     booking: {
       title: "Booking",
-      subtitle: "Attivazione investitori e raccolta LOI",
+      subtitle: "Attivazione supporters e raccolta LOI",
       description:
         "Raccogli soft-commitment tramite LOI e validi l’interesse reale sul round.",
       actions: [
-        "Inviti e onboarding investitori",
+        "Inviti e onboarding supporters",
         "Firma LOI e attestazioni",
       ],
       message: bookingMessage,
-      ctaLabel: signedLoiCount >= 5 ? "Vai a LOI" : "Vai agli investitori",
+      ctaLabel: signedLoiCount >= 5 ? "Vai a LOI" : "Vai ai supporters",
       ctaHref: signedLoiCount >= 5 ? "/lois" : "/investors",
       statusLabel: bookingStatusLabel,
     },

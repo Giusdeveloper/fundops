@@ -302,7 +302,7 @@ export default function InvestorIssuanceClient({
         </section>
       )}
 
-      <div className={styles.footnote}>Percorso: /investor/issuance/{slug}</div>
+      <div className={styles.footnote}>Area Supporter · /investor/issuance/{slug}</div>
     </div>
   );
 }

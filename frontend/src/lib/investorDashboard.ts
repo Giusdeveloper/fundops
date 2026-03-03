@@ -9,7 +9,7 @@ export type InvestorCompanyCard = {
   publicSlug: string | null;
   phase: "booking" | "issuing" | "onboarding" | string;
   lifecycleStage: string;
-  /** Stato investitore per display: Registrato, LOI firmata, ecc. */
+  /** Stato supporter per display: Registrato, LOI firmata, ecc. */
   investorStatusLabel: string;
   /** true se LOI già firmata (signer signed o lifecycle loi_signed) */
   loiSigned: boolean;
@@ -37,7 +37,7 @@ export type InvestorDashboardResult =
   | { ok: false; reason: "no_accounts"; message: string };
 
 /**
- * Recupera dati per Investor Dashboard.
+ * Recupera dati per Supporter Dashboard.
  * Usa supabaseServer per fundops per evitare RLS recursion.
  */
 export async function getInvestorDashboardData(): Promise<InvestorDashboardResult> {
@@ -66,7 +66,7 @@ export async function getInvestorDashboardData(): Promise<InvestorDashboardResul
     return {
       ok: false,
       reason: "no_investor_profile",
-      message: "Nessun profilo investitore collegato",
+      message: "Nessun profilo supporter collegato",
     };
   }
 
@@ -81,7 +81,7 @@ export async function getInvestorDashboardData(): Promise<InvestorDashboardResul
     return {
       ok: false,
       reason: "no_accounts",
-      message: "Nessun profilo investitore collegato",
+      message: "Nessun profilo supporter collegato",
     };
   }
 

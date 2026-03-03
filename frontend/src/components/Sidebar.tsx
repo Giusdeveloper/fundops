@@ -65,11 +65,20 @@ const Sidebar = ({ uiContext }: SidebarProps) => {
 
   const startupMenuItems: MenuItem[] = [
     { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', requiresCompany: true },
-    { href: '/investors', icon: Users, label: 'Investitori', requiresCompany: true },
+    { href: '/investors', icon: Users, label: 'Supporters', requiresCompany: true },
     { href: '/lois', icon: FileText, label: 'LOI', requiresCompany: true },
     { href: '/issuance', icon: FolderKanban, label: 'Issuance', requiresCompany: true },
     { href: '/companies', icon: Building2, label: 'Companies', requiresCompany: false },
   ];
+
+  if (uiContext.roleGlobal !== "investor") {
+    startupMenuItems.push({
+      href: '/dossier',
+      icon: FolderKanban,
+      label: 'Dossier',
+      requiresCompany: true,
+    });
+  }
 
   if (uiContext.isImmentAdmin) {
     startupMenuItems.push({

@@ -12,7 +12,7 @@ export default async function InvestorNoAccessPage() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Area Investitore</h1>
+        <h1 className={styles.title}>Area Supporter</h1>
         <p className={styles.subtitle}>
           Non hai accesso a nessuna campagna
         </p>
@@ -21,7 +21,7 @@ export default async function InvestorNoAccessPage() {
       <div className={styles.noAccessBox}>
         <h2 className={styles.noAccessTitle}>Accesso non disponibile</h2>
         <p className={styles.noAccessText}>
-          Per accedere all&apos;area investitore serve un invito o un&apos;associazione
+          Per accedere all&apos;area supporter serve un invito o un&apos;associazione
           a una campagna. Contatta l&apos;azienda che ti ha invitato per ottenere
           l&apos;accesso.
         </p>

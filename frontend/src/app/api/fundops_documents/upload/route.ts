@@ -21,16 +21,17 @@ export async function POST(request: Request) {
 
     const formData = await request.formData();
     const file = formData.get("file") as File;
-    const companyIdRaw = formData.get("companyId") as string;
+    const companyIdRaw =
+      (formData.get("companyId") as string) ||
+      (formData.get("company_id") as string);
     const loiId = formData.get("loiId") as string;
     const type = formData.get("type") as string;
     const title = formData.get("title") as string;
+    const folder = (formData.get("folder") as string | null)?.trim() || null;
+    const uploadMode = (formData.get("uploadMode") as string | null)?.trim() || "";
 
-    if (!file || !companyIdRaw || !loiId || !type || !title) {
-      return NextResponse.json(
-        { error: "file, companyId, loiId, type e title sono richiesti" },
-        { status: 400 }
-      );
+    if (!file || !companyIdRaw) {
+      return NextResponse.json({ error: "file e companyId sono richiesti" }, { status: 400 });
     }
 
     const companyId = companyIdRaw.trim();
@@ -42,6 +43,62 @@ export async function POST(request: Request) {
     const hasAccess = await canAccessCompany(supabase, user.id, companyId, roleContext);
     if (!hasAccess) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const timestamp = Date.now();
+    const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+    let filePath = "";
+    if (uploadMode === "raw") {
+      const defaultFolder = `fundops/${companyId}/uploads`;
+      const safeFolder = folder
+        ? folder.replace(/^\/+/, "").replace(/\.\./g, "")
+        : defaultFolder;
+      filePath = `${safeFolder}/${timestamp}_${sanitizedFilename}`;
+    }
+
+    if (uploadMode === "raw") {
+      // Converti File in ArrayBuffer
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      if (!supabaseServer) {
+        return NextResponse.json(
+          { error: "Configurazione storage server mancante" },
+          { status: 500 }
+        );
+      }
+
+      const { error: uploadError } = await supabaseServer.storage
+        .from("fundops-documents")
+        .upload(filePath, buffer, {
+          contentType: file.type || "application/octet-stream",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("Error uploading file:", uploadError);
+        return NextResponse.json(
+          { error: `Errore nel caricamento: ${uploadError.message}` },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          file_path: filePath,
+          mime_type: file.type || "application/octet-stream",
+          size_bytes: file.size,
+          original_name: file.name,
+        },
+        { status: 201 }
+      );
+    }
+
+    if (!loiId || !type || !title) {
+      return NextResponse.json(
+        { error: "file, companyId, loiId, type e title sono richiesti" },
+        { status: 400 }
+      );
     }
 
     if (type !== "attachment") {
@@ -67,9 +124,7 @@ export async function POST(request: Request) {
     }
 
     // Genera path nel bucket: fundops/<companyId>/lois/<loiId>/attachments/<filename>
-    const timestamp = Date.now();
-    const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-    const filePath = `fundops/${companyId}/lois/${loiId}/attachments/${timestamp}_${sanitizedFilename}`;
+    filePath = `fundops/${companyId}/lois/${loiId}/attachments/${timestamp}_${sanitizedFilename}`;
 
     // Converti File in ArrayBuffer
     const arrayBuffer = await file.arrayBuffer();
@@ -145,7 +200,16 @@ export async function POST(request: Request) {
       // Non bloccare se l'evento non viene creato
     }
 
-    return NextResponse.json({ data: document }, { status: 201 });
+    return NextResponse.json(
+      {
+        data: document,
+        file_path: filePath,
+        mime_type: file.type || "application/pdf",
+        size_bytes: file.size,
+        original_name: file.name,
+      },
+      { status: 201 }
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : "Errore sconosciuto";
     console.error("Error in upload endpoint:", err);

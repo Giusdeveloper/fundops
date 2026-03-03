@@ -1,0 +1,137 @@
+.panelCard {
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.controlsRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.roundMeta {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+}
+
+.uploadRow {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr 1.4fr auto;
+  gap: 0.7rem;
+  align-items: end;
+  margin-bottom: 0.9rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+}
+
+.select,
+.input,
+.fileInput {
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: #020617;
+  color: var(--text-primary);
+  padding: 0.45rem 0.55rem;
+  font-size: 0.86rem;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+}
+
+.btnPrimary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btnSecondary {
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.docTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.docTable th,
+.docTable td {
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  padding: 0.55rem 0.35rem;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+}
+
+.docTable th {
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.muted {
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+}
+
+.errorText {
+  color: #fca5a5;
+  font-size: 0.82rem;
+  margin: 0 0 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .uploadRow {
+    grid-template-columns: 1fr;
+  }
+
+  .btnPrimary {
+    width: 100%;
+  }
+}
+
