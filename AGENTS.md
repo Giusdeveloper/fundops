@@ -68,3 +68,4 @@ Linee guida per agenti AI che lavorano su questo repository.
 - 2026-02-17 | Codex | Completato hardening documentale: rimosso fallback implicito `supabaseServer || supabase` in `fundops_documents/upload`, `generate-loi-pdf`, `signed-url`; aggiunti auth+check company espliciti in `signed-url` e `lois/[id]/booking-kpi`.
 - 2026-02-17 | Codex | Hardening area portal: rimosso fallback implicito `supabaseServer ?? supabase` da `getPortalContext` e `api/portal/debug`, con comportamento esplicito fail-closed in assenza configurazione server.
 - 2026-02-17 | Codex | Completata rimozione fallback impliciti residui: `app/lois/[id]/page.tsx` ora usa solo client auth (`createClient`) senza `supabaseServer ?? supabase`.
+- 2026-03-03 | Codex | Snapshot avanzamento FundOps: OAuth/login redirect robusto, RBAC middleware/view mode, supporter UX copy, invio LOI via Resend, API documenti round, pagina Dossier e integrazione Google Drive MVP con migrazioni dedicate.
