@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import TutorialModal from "@/components/onboarding/TutorialModal";
 import { useCompany } from "@/context/CompanyContext";
@@ -151,7 +151,7 @@ function formatDate(value: string | null) {
   return date.toLocaleString("it-IT", { dateStyle: "short", timeStyle: "short" });
 }
 
-export default function DossierPage() {
+function DossierPageClient() {
   const { activeCompanyId } = useCompany();
   const { showToast } = useToast();
   const searchParams = useSearchParams();
@@ -1227,5 +1227,13 @@ export default function DossierPage() {
         </aside>
       </div>
     </section>
+  );
+}
+
+export default function DossierPage() {
+  return (
+    <Suspense fallback={<section className={styles.page} aria-busy="true" />}>
+      <DossierPageClient />
+    </Suspense>
   );
 }
