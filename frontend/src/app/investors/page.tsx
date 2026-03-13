@@ -54,6 +54,7 @@ export default function InvestorsPage() {
   const searchParams = useSearchParams();
   const { activeCompanyId: companyId } = useCompany();
   const onlyMissingLoi = searchParams.get("only_missing_loi") === "1";
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -111,7 +112,7 @@ export default function InvestorsPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Errore nel caricamento degli investitori");
+        throw new Error(errorData.error || "Errore nel caricamento dei supporter");
       }
 
       const result: ApiResponse<Investor> = await response.json();
@@ -169,7 +170,6 @@ export default function InvestorsPage() {
       }
 
       const data = await response.json();
-      console.log("KPI data loaded:", data);
       setKpis(data);
     } catch (err) {
       console.error("Errore nel caricamento delle KPI:", err);
@@ -178,6 +178,24 @@ export default function InvestorsPage() {
       setKpisLoading(false);
     }
   }, [companyId]);
+
+  const fetchProfileContext = useCallback(async () => {
+    try {
+      const response = await fetch("/api/profile/view-mode", { cache: "no-store" });
+      if (!response.ok) {
+        setIsSuperAdmin(false);
+        return;
+      }
+      const data = await response.json();
+      setIsSuperAdmin(data?.role_global === "imment_admin");
+    } catch {
+      setIsSuperAdmin(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchProfileContext();
+  }, [fetchProfileContext]);
 
   useEffect(() => {
     if (companyId) {
@@ -264,7 +282,7 @@ export default function InvestorsPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(errorData.error || "Errore nella creazione dell'investitore");
+        setError(errorData.error || "Errore nella creazione del supporter");
         return;
       }
 
@@ -329,7 +347,7 @@ export default function InvestorsPage() {
       (hasPhoneFilter === "yes" && inv.phone && inv.phone.trim() !== "") ||
       (hasPhoneFilter === "no" && (!inv.phone || inv.phone.trim() === ""));
 
-    // Filtro per investitori senza LOI (se only_missing_loi=1)
+    // Filtro per supporter senza LOI (se only_missing_loi=1)
     const matchesMissingLoi =
       !onlyMissingLoi || !loiCountByInvestorId[inv.id] || loiCountByInvestorId[inv.id] === 0;
 
@@ -383,9 +401,9 @@ export default function InvestorsPage() {
   return (
     <>
       <header className={styles["page-header"]}>
-          <h1 className={styles["page-title"]}>Investitori</h1>
+          <h1 className={styles["page-title"]}>Supporters</h1>
           <p className={styles["page-subtitle"]}>
-            Gestisci i contatti e le relazioni della raccolta per la company attiva.
+            Gestisci i supporter e le relazioni della raccolta per la company attiva.
           </p>
           <div className={styles["page-meta-row"]}>
             {companyId && (
@@ -394,16 +412,16 @@ export default function InvestorsPage() {
               </span>
             )}
             <span className={styles["page-pill"]}>
-              Totale investitori: {filteredInvestors.length}
+              Totale supporter: {filteredInvestors.length}
             </span>
           {!companyId && (
             <span className={styles["page-pill-warning"]}>
-              ⚠️ Seleziona una company per filtrare gli investitori riconciliati
+              Seleziona una company per filtrare i supporter collegati
             </span>
           )}
           {onlyMissingLoi && companyId && (
             <span className={styles["page-pill-info"]}>
-              🔍 Solo investitori senza LOI
+              Solo supporter senza LOI
             </span>
           )}
         </div>
@@ -416,15 +434,15 @@ export default function InvestorsPage() {
             <div className={styles["kpi-loading"]}>Caricamento KPI...</div>
           ) : kpis ? (
             <div className={styles["kpi-grid"]}>
-              {/* Total Investors */}
+              {/* Total Supporters */}
               <div className={styles["kpi-card"]}>
                 <div className={`${styles["kpi-icon"]} ${styles["kpi-icon-investors"]}`}>
                   👥
                 </div>
                 <div className={styles["kpi-content"]}>
                   <div className={styles["kpi-value"]}>{kpis.totalInvestors}</div>
-                  <div className={styles["kpi-label"]}>Investitori Totali</div>
-                  <div className={styles["kpi-sub"]}>Riconciliati</div>
+                  <div className={styles["kpi-label"]}>Supporter totali</div>
+                  <div className={styles["kpi-sub"]}>Collegati alla company</div>
                 </div>
               </div>
 
@@ -488,7 +506,7 @@ export default function InvestorsPage() {
                 type="text"
                 className={styles["search-input"]}
                 placeholder="Cerca per nome, email, telefono, LinkedIn..."
-                aria-label="Cerca investitori per nome, email, telefono, LinkedIn"
+                aria-label="Cerca supporter per nome, email, telefono, LinkedIn"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -534,7 +552,7 @@ export default function InvestorsPage() {
                   }}
                 >
                   <UserPlus size={16} />
-                  Invita
+                  Invita supporter
                 </button>
               )}
               <Link
@@ -544,19 +562,21 @@ export default function InvestorsPage() {
                 <Upload size={16} />
                 Importa CSV
               </Link>
-              <Link
-                href="/investors/reconcile"
-                className={styles["import-button"]}
-              >
-                <Link2 size={16} />
-                Riconcilia
-              </Link>
+              {isSuperAdmin ? (
+                <Link
+                  href="/investors/reconcile"
+                  className={styles["import-button"]}
+                >
+                  <Link2 size={16} />
+                  Riconcilia
+                </Link>
+              ) : null}
               <button
                 type="button"
                 className={styles["form-primary-button"]}
                 onClick={() => setShowForm((prev) => !prev)}
               >
-                {showForm ? "Chiudi form" : "+ Nuovo investitore"}
+                {showForm ? "Chiudi form" : "+ Nuovo supporter"}
               </button>
             </div>
           </div>
@@ -564,7 +584,7 @@ export default function InvestorsPage() {
           {/* Invita form */}
           {showInviteForm && companyId && (
             <section className={styles["form-card"]}>
-              <h2 className={styles["form-title"]}>Invita investitore</h2>
+              <h2 className={styles["form-title"]}>Invita supporter</h2>
               <p className={styles["form-subtitle"]}>
                 Inserisci l&apos;email per inviare il link di registrazione al portal.
               </p>
@@ -629,13 +649,13 @@ export default function InvestorsPage() {
             <div className={styles["advanced-filters"]}>
               <div className={styles["filters-grid"]}>
                 <div className={styles["filter-group"]}>
-                  <label className={styles["filter-label"]} htmlFor="investor-type-filter">Tipo Investitore</label>
+                  <label className={styles["filter-label"]} htmlFor="investor-type-filter">Tipologia supporter</label>
                   <select
                     id="investor-type-filter"
                     className={styles["filter-select"]}
                     value={investorTypeFilter}
                     onChange={(e) => setInvestorTypeFilter(e.target.value)}
-                    aria-label="Tipo investitore"
+                    aria-label="Tipologia supporter"
                   >
                     <option value="">Tutti i tipi</option>
                     <option value="customer">Customer</option>
@@ -751,9 +771,9 @@ export default function InvestorsPage() {
           {/* New Investor Form */}
           {showForm && (
             <section className={styles["form-card"]}>
-              <h2 className={styles["form-title"]}>Nuovo investitore</h2>
+              <h2 className={styles["form-title"]}>Nuovo supporter</h2>
               <p className={styles["form-subtitle"]}>
-                Compila i dati principali per aggiungere un nuovo contatto investitore in FundOps.
+                Compila i dati principali per aggiungere un nuovo supporter in FundOps.
               </p>
 
               <form onSubmit={handleSubmit}>
@@ -851,7 +871,7 @@ export default function InvestorsPage() {
                     onChange={handleChange}
                     rows={3}
                     className={styles["form-textarea"]}
-                    placeholder="Note aggiuntive sull'investitore"
+                    placeholder="Note aggiuntive sul supporter"
                   />
                 </div>
 
@@ -861,20 +881,20 @@ export default function InvestorsPage() {
                     disabled={submitting}
                     className={styles["form-primary-button"]}
                   >
-                    {submitting ? "Salvataggio..." : "Salva investitore"}
+                    {submitting ? "Salvataggio..." : "Salva supporter"}
                   </button>
                 </div>
               </form>
             </section>
           )}
 
-        {/* Lista investitori */}
+        {/* Lista supporter */}
         <div className={styles["investors-list"]}>
           {loading ? (
-            <p className={styles["investor-meta"]}>Caricamento investitori...</p>
+            <p className={styles["investor-meta"]}>Caricamento supporter...</p>
           ) : sortedInvestors.length === 0 ? (
             <p className={styles["investor-meta"]}>
-              Nessun investitore trovato con questi filtri.
+              Nessun supporter trovato con questi filtri.
             </p>
           ) : (
             sortedInvestors.map((inv) => {
@@ -938,4 +958,5 @@ export default function InvestorsPage() {
     </>
   );
 }
+
 
