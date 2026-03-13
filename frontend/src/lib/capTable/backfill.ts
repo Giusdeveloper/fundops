@@ -7,9 +7,22 @@ interface ScenarioRow {
   latest_result: unknown;
 }
 
+interface BackfillQueryResult<T> extends PromiseLike<{ data: T[] | null; error: { message?: string } | null }> {
+  select(columns: string): BackfillQueryResult<T>;
+  order(column: string, options: { ascending: boolean }): BackfillQueryResult<T>;
+  eq(column: string, value: string): BackfillQueryResult<T>;
+}
+
+interface BackfillUpdateResult extends PromiseLike<{ error: { message?: string } | null }> {
+  eq(column: string, value: string): BackfillUpdateResult;
+}
+
 export async function backfillCapTableScenarios(
   supabase: {
-    from: (table: string) => any;
+    from: (table: string) => {
+      select(columns: string): BackfillQueryResult<ScenarioRow>;
+      update(values: Record<string, unknown>): BackfillUpdateResult;
+    };
   },
   companyId?: string
 ) {

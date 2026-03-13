@@ -24,6 +24,11 @@ export default function AppShell({ children, uiContext }: AppShellProps) {
     header: null,
     workspace: null,
   });
+  const tutorial = useTutorial<PlatformTutorialStep>({
+    storageKey: platformTutorialDefinition.storageKey,
+    steps: platformTutorialSteps.map((step) => step.id),
+    initialStepId: "sidebar",
+  });
   
   // Don't show sidebar on login/auth pages or landing
   const isAuthPage = pathname?.startsWith('/login') || pathname?.startsWith('/auth');
@@ -57,11 +62,6 @@ export default function AppShell({ children, uiContext }: AppShellProps) {
       ctaIntent: "focus",
     },
   };
-  const tutorial = useTutorial<PlatformTutorialStep>({
-    storageKey: platformTutorialDefinition.storageKey,
-    steps: platformTutorialSteps.map((step) => step.id),
-    initialStepId: "sidebar",
-  });
   const tutorialStep = tutorial.currentStepId;
   const currentTutorial = platformTutorialContent[tutorialStep];
   const currentTutorialState = tutorialStates[tutorialStep];

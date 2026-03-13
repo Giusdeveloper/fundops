@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TutorialModal from "@/components/onboarding/TutorialModal";
 import { useTutorial } from "@/components/onboarding/useTutorial";
 import RequireCompany from "@/components/RequireCompany";
@@ -369,12 +369,7 @@ export default function CapTableClient() {
   const currentTutorial = capTableTutorialContent[tutorialStep];
   const currentTutorialState = tutorialStates[tutorialStep];
 
-  useEffect(() => {
-    if (!companyId) return;
-    void loadScenarios(companyId);
-  }, [companyId]);
-
-  async function loadScenarios(nextCompanyId: string, preferredScenarioId?: string | null) {
+  const loadScenarios = useCallback(async (nextCompanyId: string, preferredScenarioId?: string | null) => {
     setLoading(true);
     setError(null);
     setSetupWarning(null);
@@ -397,7 +392,12 @@ export default function CapTableClient() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [selectedScenarioId, showToast]);
+
+  useEffect(() => {
+    if (!companyId) return;
+    void loadScenarios(companyId);
+  }, [companyId, loadScenarios]);
 
   function resetEditor() {
     setSelectedScenarioId(null);
@@ -769,7 +769,7 @@ export default function CapTableClient() {
                   </tbody>
                 </table>
               </div>
-              <p className={styles.helperText}>Tipo ti aiuta a leggere il ruolo del soggetto nello scenario. L'importo nominale e la base da cui parte la dilution.</p>
+              <p className={styles.helperText}>Tipo ti aiuta a leggere il ruolo del soggetto nello scenario. L&apos;importo nominale e la base da cui parte la dilution.</p>
               <div className={styles.stepFooter}>
                 <button type="button" className={styles.primaryButton} onClick={() => goToStep("convertibles")}>Vai al registro strumentisti</button>
               </div>
@@ -829,7 +829,7 @@ export default function CapTableClient() {
                   </tbody>
                 </table>
               </div>
-              <p className={styles.helperText}>Il ticket e l'importo investito nello strumento. Il discount e la condizione economica che puo spostare il caso A, B o C in conversione.</p>
+              <p className={styles.helperText}>Il ticket e l&apos;importo investito nello strumento. Il discount e la condizione economica che puo spostare il caso A, B o C in conversione.</p>
               <div className={styles.stepFooter}>
                 <button type="button" className={styles.secondaryButton} onClick={() => goToStep("capTable")}>Rivedi la cap table iniziale</button>
                 <button type="button" className={styles.primaryButton} onClick={() => goToStep("round")}>Vai ai parametri round</button>
@@ -911,7 +911,7 @@ export default function CapTableClient() {
               <h2 className={styles.sectionTitle}>Risultati</h2>
               {!result ? (
                 <div className={styles.emptyState}>
-                  <p className={styles.empty}>Per leggere l'esito finale devi prima simulare il round.</p>
+                  <p className={styles.empty}>Per leggere l&apos;esito finale devi prima simulare il round.</p>
                   <div className={styles.stepFooter}>
                     <button type="button" className={styles.secondaryButton} onClick={() => goToStep("round")}>Torna al round</button>
                     <button type="button" className={styles.primaryButton} onClick={handleSimulate} disabled={!selectedScenarioId || saving}>Genera i risultati</button>
@@ -1131,7 +1131,7 @@ export default function CapTableClient() {
                         </article>
                       </div>
                       <p className={styles.helperText}>
-                        Questa vista collega direttamente il registro strumentisti all'esito finale: per ogni sottoscrittore vedi ticket, regola applicata e quota che entra in cap table.
+                        Questa vista collega direttamente il registro strumentisti all&apos;esito finale: per ogni sottoscrittore vedi ticket, regola applicata e quota che entra in cap table.
                       </p>
                       <div className={styles.summaryGrid}>
                         {topConvertedStrumentisti.map((row, index) => (
@@ -1256,7 +1256,7 @@ export default function CapTableClient() {
 
                   {resultsTab === "capTable" ? (
                     <>
-                      <p className={styles.helperText}>Terzo passaggio: qui chiudi la lettura dello scenario e vedi l'effetto finale su ownership, dilution e nuovi ingressi.</p>
+                      <p className={styles.helperText}>Terzo passaggio: qui chiudi la lettura dello scenario e vedi l&apos;effetto finale su ownership, dilution e nuovi ingressi.</p>
                       <div className={styles.summaryGrid}>
                         {topOwners.map((owner, index) => (
                           <article key={owner.id} className={styles.summaryCard}>

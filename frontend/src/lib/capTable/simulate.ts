@@ -49,8 +49,7 @@ function computeScenarioPreview(
   totalConvertibleEur: number,
   preCapital: number,
   preRoundPreConversionNominal: number,
-  participants: CapTableParticipantInput[],
-  conversionValuation: number
+  participants: CapTableParticipantInput[]
 ): ScenarioPreview {
   const discountedValuation =
     caseId === "C" ? valuation * (1 - normalizeDiscount(effectiveDiscount)) : valuation;
@@ -237,8 +236,8 @@ export function simulateCapTable(input: CapTableScenarioInput): SimulationResult
   const firstTicketAmount = toNumber(convertibles[0]?.amountEur);
   const totalConvertibleEur = convertibles.reduce((sum, item) => sum + toNumber(item.amountEur), 0);
   const scenarioPreviews: ScenarioPreview[] = [
-    computeScenarioPreview("A", input.round.floor, input.round.defaultDiscount, input, firstTicketAmount, totalConvertibleEur, preCapital, postRoundPreConversionNominal, participants, conversionValuation),
-    computeScenarioPreview("B", input.round.cap, input.round.defaultDiscount, input, firstTicketAmount, totalConvertibleEur, preCapital, postRoundPreConversionNominal, participants, conversionValuation),
+    computeScenarioPreview("A", input.round.floor, input.round.defaultDiscount, input, firstTicketAmount, totalConvertibleEur, preCapital, postRoundPreConversionNominal, participants),
+    computeScenarioPreview("B", input.round.cap, input.round.defaultDiscount, input, firstTicketAmount, totalConvertibleEur, preCapital, postRoundPreConversionNominal, participants),
     computeScenarioPreview(
       "C",
       input.round.floor > 0 && input.round.cap > 0 ? (input.round.floor + input.round.cap) / 2 : input.round.preMoney,
@@ -248,8 +247,7 @@ export function simulateCapTable(input: CapTableScenarioInput): SimulationResult
       totalConvertibleEur,
       preCapital,
       postRoundPreConversionNominal,
-      participants,
-      conversionValuation
+      participants
     ),
   ];
   const scenarioPreviewMap = new Map(scenarioPreviews.map((preview) => [preview.caseId, preview]));

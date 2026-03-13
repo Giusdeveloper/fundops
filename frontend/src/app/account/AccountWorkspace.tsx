@@ -232,7 +232,7 @@ export default function AccountWorkspace({
               <div className={styles.healthHeader}>
                 <div>
                   <p className={styles.healthScore}>{profileHealthScore}%</p>
-                  <p className={styles.healthScoreLabel}>profilo completo e pronto all'uso</p>
+                  <p className={styles.healthScoreLabel}>profilo completo e pronto all&apos;uso</p>
                 </div>
                 <span
                   className={`${styles.statusBadge} ${
