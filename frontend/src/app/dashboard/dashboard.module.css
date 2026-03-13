@@ -31,11 +31,17 @@
   transition: box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
+.topStack {
+  display: flex;
+  flex-direction: column;
+}
+
 .overviewSection {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-bottom: 1.05rem;
+  order: 2;
 }
 
 .tutorialSectionActive {

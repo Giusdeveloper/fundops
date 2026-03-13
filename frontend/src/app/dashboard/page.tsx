@@ -544,6 +544,7 @@ export default function DashboardPage() {
             ariaLabel={dashboardTutorialDefinition.ariaLabel}
             eyebrow={dashboardTutorialDefinition.eyebrow}
             density="compact"
+            placement="center"
             steps={dashboardTutorialSteps}
             currentStepId={tutorialStep}
             currentIndex={tutorial.currentIndex}
@@ -569,6 +570,7 @@ export default function DashboardPage() {
               </button>
             </div>
 
+            <div className={styles.topStack}>
             <div
               ref={(node) => {
                 sectionRefs.current.overview = node;
@@ -826,6 +828,7 @@ export default function DashboardPage() {
                 </div>
               </section>
             </section>
+            </div>
 
             <div
               ref={(node) => {

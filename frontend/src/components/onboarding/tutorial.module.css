@@ -3,12 +3,20 @@
   inset: 0;
   z-index: 60;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
   padding: 1.25rem;
   background: rgba(2, 6, 23, 0.34);
   backdrop-filter: blur(2px);
   transition: opacity 0.18s ease;
+}
+
+.overlayCorner {
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.overlayCenter {
+  align-items: center;
+  justify-content: center;
 }
 
 .overlayClosed {
@@ -22,6 +30,8 @@
 
 .modal {
   width: min(560px, 100%);
+  max-height: calc(100vh - 2.5rem);
+  overflow: auto;
   border: 1px solid rgba(59, 130, 246, 0.24);
   border-radius: 16px;
   padding: 1rem;
@@ -31,7 +41,7 @@
 }
 
 .modalCompact {
-  width: min(520px, 100%);
+  width: min(468px, 100%);
 }
 
 .overlayClosed .modal {
@@ -277,6 +287,12 @@
 @media (max-width: 720px) {
   .overlay {
     padding: 0.75rem;
+  }
+
+  .modal,
+  .modalCompact {
+    width: min(100%, 100%);
+    max-height: calc(100vh - 1.5rem);
   }
 
   .body {

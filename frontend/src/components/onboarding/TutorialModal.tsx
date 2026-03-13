@@ -8,6 +8,7 @@ interface TutorialModalProps<StepId extends string> {
   ariaLabel: string;
   eyebrow: string;
   density?: "default" | "compact";
+  placement?: "corner" | "center";
   steps: TutorialStepDefinition<StepId>[];
   currentStepId: StepId;
   currentIndex: number;
@@ -27,6 +28,7 @@ export default function TutorialModal<StepId extends string>({
   ariaLabel,
   eyebrow,
   density = "default",
+  placement = "corner",
   steps,
   currentStepId,
   currentIndex,
@@ -48,7 +50,7 @@ export default function TutorialModal<StepId extends string>({
 
   return (
     <div
-      className={`${styles.overlay} ${isOpen ? styles.overlayOpen : styles.overlayClosed}`}
+      className={`${styles.overlay} ${placement === "center" ? styles.overlayCenter : styles.overlayCorner} ${isOpen ? styles.overlayOpen : styles.overlayClosed}`}
       role="dialog"
       aria-modal="true"
       aria-hidden={!isOpen}
