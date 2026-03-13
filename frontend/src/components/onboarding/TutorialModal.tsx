@@ -28,7 +28,7 @@ export default function TutorialModal<StepId extends string>({
   ariaLabel,
   eyebrow,
   density = "default",
-  placement = "corner",
+  placement = "center",
   steps,
   currentStepId,
   currentIndex,

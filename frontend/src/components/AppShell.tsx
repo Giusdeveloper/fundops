@@ -19,6 +19,13 @@ interface AppShellProps {
 
 export default function AppShell({ children, uiContext }: AppShellProps) {
   const pathname = usePathname();
+  const hasModuleTutorial =
+    pathname === "/dashboard" ||
+    pathname === "/companies" ||
+    pathname === "/lois" ||
+    pathname === "/issuance" ||
+    pathname === "/cap-table" ||
+    pathname === "/dossier";
   const sectionRefs = useRef<Record<PlatformTutorialStep, HTMLDivElement | null>>({
     sidebar: null,
     header: null,
@@ -83,11 +90,12 @@ export default function AppShell({ children, uiContext }: AppShellProps) {
   
   return (
     <div className={layoutClassName}>
-      {tutorial.clientReady ? (
+      {tutorial.clientReady && !hasModuleTutorial ? (
         <TutorialModal
           isOpen={tutorial.isOpen}
           ariaLabel={platformTutorialDefinition.ariaLabel}
           eyebrow={platformTutorialDefinition.eyebrow}
+          placement="center"
           steps={platformTutorialSteps}
           currentStepId={tutorialStep}
           currentIndex={tutorial.currentIndex}
