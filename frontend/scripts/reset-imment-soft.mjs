@@ -33,6 +33,12 @@ async function deleteByIds(admin, table, ids) {
 async function main() {
   const options = parseArgs(process.argv);
   const execute = Boolean(options.execute);
+  const preserveEmail = options["preserve-email"]
+    ? String(options["preserve-email"]).toLowerCase()
+    : null;
+  const preserveUserId = options["preserve-user-id"]
+    ? String(options["preserve-user-id"])
+    : null;
   const admin = createSupabaseAdminClient();
   const company = await resolveImmentCompany(admin, String(options.company ?? "imment"));
 
@@ -83,7 +89,16 @@ async function main() {
   const nonStaffSeats = seats.filter((seat) => {
     const profile = profileById.get(seat.user_id);
     const role = profile?.role_global ?? null;
-    return role !== "imment_admin" && role !== "imment_operator";
+    const email = profile?.email?.toLowerCase?.() ?? null;
+    const isPreserved =
+      (preserveUserId && seat.user_id === preserveUserId) ||
+      (preserveEmail && email === preserveEmail);
+    return (
+      seat.is_active === true &&
+      role !== "imment_admin" &&
+      role !== "imment_operator" &&
+      !isPreserved
+    );
   });
 
   const summary = {
