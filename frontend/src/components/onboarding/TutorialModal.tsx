@@ -7,6 +7,7 @@ interface TutorialModalProps<StepId extends string> {
   isOpen: boolean;
   ariaLabel: string;
   eyebrow: string;
+  density?: "default" | "compact";
   steps: TutorialStepDefinition<StepId>[];
   currentStepId: StepId;
   currentIndex: number;
@@ -25,6 +26,7 @@ export default function TutorialModal<StepId extends string>({
   isOpen,
   ariaLabel,
   eyebrow,
+  density = "default",
   steps,
   currentStepId,
   currentIndex,
@@ -39,7 +41,10 @@ export default function TutorialModal<StepId extends string>({
   onAction,
 }: TutorialModalProps<StepId>) {
   const totalChecksLength = content.checks.reduce((sum, item) => sum + item.length, 0);
-  const isCompact = content.intro.length + smartState.smartMessage.length + totalChecksLength > 430 || content.checks.length > 3;
+  const isCompact =
+    density === "compact" ||
+    content.intro.length + smartState.smartMessage.length + totalChecksLength > 430 ||
+    content.checks.length > 3;
 
   return (
     <div

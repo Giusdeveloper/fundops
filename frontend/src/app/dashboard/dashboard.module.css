@@ -11,8 +11,8 @@
 
 .tutorialToolbar {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 0.85rem;
+  justify-content: flex-start;
+  margin-bottom: 0.65rem;
 }
 
 .tutorialLauncher {
@@ -20,7 +20,8 @@
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.03);
   color: var(--text-primary);
-  padding: 0.6rem 0.9rem;
+  padding: 0.52rem 0.82rem;
+  font-size: 0.84rem;
   font: inherit;
   cursor: pointer;
 }
@@ -28,6 +29,13 @@
 .tutorialSection {
   border-radius: 14px;
   transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.overviewSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.05rem;
 }
 
 .tutorialSectionActive {
@@ -141,7 +149,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.9rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   width: 100%;
   order: 2;
 }
@@ -210,7 +218,7 @@
   border-left-width: 4px;
   border-radius: 12px;
   padding: 0.95rem 1rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -224,7 +232,7 @@
   border-left: 4px solid var(--primary);
   border-radius: 12px;
   padding: 0.95rem 1rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;

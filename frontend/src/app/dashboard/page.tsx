@@ -543,6 +543,7 @@ export default function DashboardPage() {
             isOpen={tutorial.isOpen}
             ariaLabel={dashboardTutorialDefinition.ariaLabel}
             eyebrow={dashboardTutorialDefinition.eyebrow}
+            density="compact"
             steps={dashboardTutorialSteps}
             currentStepId={tutorialStep}
             currentIndex={tutorial.currentIndex}
@@ -572,7 +573,7 @@ export default function DashboardPage() {
               ref={(node) => {
                 sectionRefs.current.overview = node;
               }}
-              className={`${styles.tutorialSection} ${tutorial.isOpen && tutorialStep === "overview" ? styles.tutorialSectionActive : ""}`}
+              className={`${styles.tutorialSection} ${styles.overviewSection} ${tutorial.isOpen && tutorialStep === "overview" ? styles.tutorialSectionActive : ""}`}
             >
             <div className={styles.kpiRow}>
               <div className={styles.kpiCard}><p className={styles.kpiCardLabel}>Investitori attivi</p><p className={styles.kpiCardValue}>{dashboardContext?.investorsCount ?? 0}</p><p className={styles.kpiCardHint}>Investitori in pipeline attiva. Mantieni engagement con follow-up puntuali.</p></div>

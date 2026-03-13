@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { canAccessCompany, getUserRoleContext } from '@/lib/companyAccess';
+import { canAccessCompany, getUserRoleContext, isGlobalFundopsRole } from '@/lib/companyAccess';
 
 export async function GET(request: Request) {
   try {
@@ -32,8 +32,13 @@ export async function GET(request: Request) {
 
     const query = supabase
       .from('fundops_investors')
-      .select('*')
-      .or(`client_company_id.eq.${companyId},company_id.eq.${companyId}`);
+      .select('*');
+
+    if (isGlobalFundopsRole(roleContext.role)) {
+      query.or(`client_company_id.eq.${companyId},company_id.eq.${companyId}`);
+    } else {
+      query.eq('client_company_id', companyId);
+    }
 
     const { data, error } = await query;
 
