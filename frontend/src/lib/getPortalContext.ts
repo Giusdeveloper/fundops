@@ -364,10 +364,6 @@ export async function getPortalContext(
   const { data: loi, error: loiError } = await getLoiActiveSentForCompany(supabaseData, company.id);
   if (loiError) errors.push(loiError);
 
-  const masterLoiForDebug: { id: string; status: string; is_master: boolean } | null = loi
-    ? { id: loi.id, status: loi.status ?? "sent", is_master: !!loi.is_master }
-    : null;
-
   if (!loi) {
     if (debug) {
       return {

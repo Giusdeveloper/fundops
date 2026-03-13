@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { decodeOauthState, upsertGoogleDriveTokens } from "@/lib/googleDrive";
+import { publishFundopsEvent } from "@/lib/events/publishFundopsEvent";
 
 type OauthState = {
   companyId: string;
@@ -142,6 +143,15 @@ export async function GET(request: NextRequest) {
     if (connectionError) {
       return redirectWithError(request, redirectPath, "connection_upsert_failed");
     }
+
+    void publishFundopsEvent({
+      event: "drive_connected",
+      companyId: decoded.companyId,
+      userId: user.id,
+      data: {
+        provider: "google_drive",
+      },
+    });
   } catch {
     return redirectWithError(request, redirectPath, "token_store_failed");
   }

@@ -1,44 +1,34 @@
-# Configurazione Supabase per il tuo progetto
+# Configurazione Supabase per il progetto
 
-## Credenziali del tuo progetto Supabase
+Questa guida descrive come configurare Supabase in locale senza inserire segreti nel repository.
 
-- **URL**: `https://bvqrovzrvmdhuehonfcq.supabase.co`
-- **Anon Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2cXJvdnpydm1kaHVlaG9uZmNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwMDA0MzksImV4cCI6MjA2MzU3NjQzOX0.g8XwaSE8-IYv2vyt1W3iL0IFAbUgEC_pMy_oxdaLbxs`
+## Variabili richieste
 
-## Passaggi per configurare l'applicazione
-
-### 1. Crea il file .env.local
-
-Crea un file chiamato `.env.local` nella cartella `frontend/` con questo contenuto:
+Crea un file `.env.local` nella cartella `frontend/` con queste chiavi:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://bvqrovzrvmdhuehonfcq.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2cXJvdnpydm1kaHVlaG9uZmNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwMDA0MzksImV4cCI6MjA2MzU3NjQzOX0.g8XwaSE8-IYv2vyt1W3iL0IFAbUgEC_pMy_oxdaLbxs
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhdWJocHB3eXBreW1zaXhzcmNvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTIxOTA4NywiZXhwIjoyMDc2Nzk1MDg3fQ._N3ILjcWaX7hte-8bSnuck475UeY4oUh1fhFNU3U0Ng
+NEXT_PUBLIC_SUPABASE_URL=your_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
-### 2. Configura il database
+## Passaggi
 
-1. Vai al tuo progetto Supabase: https://supabase.com/dashboard/project/bvqrovzrvmdhuehonfcq
-2. Vai su **SQL Editor**
-3. Copia e incolla il contenuto del file `supabase-schema.sql`
-4. Esegui lo script per creare le tabelle
-
-### 3. Testa la connessione
-
-1. Riavvia l'applicazione con `npm run dev`
-2. Vai alla pagina LOI
-3. Dovresti vedere "Connesso a Supabase" se tutto funziona
+1. Apri il progetto Supabase in dashboard.
+2. Copia `Project URL`, `anon key` e `service role key` dalla sezione API.
+3. Inserisci i valori nel tuo `frontend/.env.local`.
+4. Riavvia il dev server.
 
 ## Note di sicurezza
 
-- Non condividere mai le tue credenziali Supabase
-- Il file `.env.local` non deve essere committato nel repository
-- Le chiavi anon sono sicure da usare nel frontend
+- Non committare mai `SUPABASE_SERVICE_ROLE_KEY`.
+- Non inserire chiavi reali in documentazione, esempi o script versionati.
+- Usa la service role key solo lato server o in script amministrativi locali.
 
-## Risoluzione problemi
+## Troubleshooting
 
-Se vedi "Modalità offline (dati locali)", controlla che:
-1. Il file `.env.local` esista e contenga le credenziali corrette
-2. Le tabelle siano state create nel database
-3. Non ci siano errori nella console del browser
+Se vedi errori di connessione:
+
+1. Verifica che `frontend/.env.local` esista.
+2. Verifica che le chiavi siano aggiornate e non revocate.
+3. Riavvia completamente il processo Next.js dopo ogni modifica alle env.

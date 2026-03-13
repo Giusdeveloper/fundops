@@ -8,6 +8,9 @@ const ALLOWED_TYPES = new Set([
   "round_pitch_deck",
   "round_regulation",
   "round_terms",
+  "round_booking_doc",
+  "round_issuance_doc",
+  "round_onboarding_doc",
   "other",
 ]);
 
@@ -166,6 +169,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
     )
     .eq("round_id", roundId)
     .eq("company_id", companyId)
+    .in("status", ["active", "uploaded", "ready"])
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -198,7 +202,8 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
   }
   if (!ALLOWED_TYPES.has(type)) {
     return json(400, {
-      error: "Invalid type. Allowed values: round_pitch_deck, round_regulation, round_terms, other",
+      error:
+        "Invalid type. Allowed values: round_pitch_deck, round_regulation, round_terms, round_booking_doc, round_issuance_doc, round_onboarding_doc, other",
     });
   }
   if (!title) {

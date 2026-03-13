@@ -41,10 +41,7 @@ async function authorizeCompanyAccess(
 
 export async function GET(request: NextRequest) {
   const companyId = request.nextUrl.searchParams.get("companyId")?.trim() ?? "";
-  const folderId = request.nextUrl.searchParams.get("folderId")?.trim() ?? "";
-
   if (!UUID_RE.test(companyId)) return json(400, { error: "Invalid companyId" });
-  if (!folderId) return json(400, { error: "folderId is required" });
 
   const supabase = await createServerClient();
   const {
@@ -56,15 +53,54 @@ export async function GET(request: NextRequest) {
   const unauthorized = await authorizeCompanyAccess(supabase, user.id, companyId);
   if (unauthorized) return unauthorized;
 
+  const { data: connection, error: connectionError } = await supabase
+    .from("fundops_drive_connections")
+    .select("drive_kind, shared_drive_id, root_folder_id")
+    .eq("company_id", companyId)
+    .in("provider", ["google_drive", "google"])
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (connectionError) return json(500, { error: connectionError.message });
+  if (!connection) {
+    return json(200, {
+      connected: false,
+      rootReady: false,
+      items: [],
+      driveKind: null,
+      sharedDriveId: null,
+      rootFolderId: null,
+    });
+  }
+
+  const rootFolderId = connection.root_folder_id ?? null;
+  if (!rootFolderId) {
+    return json(200, {
+      connected: true,
+      rootReady: false,
+      items: [],
+      driveKind: connection.drive_kind ?? null,
+      sharedDriveId: connection.shared_drive_id ?? null,
+      rootFolderId: null,
+    });
+  }
+
   const url = new URL("https://www.googleapis.com/drive/v3/files");
-  url.searchParams.set("q", `'${folderId}' in parents and trashed=false`);
+  url.searchParams.set("q", `'${rootFolderId}' in parents and trashed=false`);
   url.searchParams.set(
     "fields",
-    "files(id,name,mimeType,modifiedTime,webViewLink,iconLink,size,parents)"
+    "files(id,name,mimeType,modifiedTime,size,webViewLink,webContentLink,owners(displayName,emailAddress))"
   );
   url.searchParams.set("orderBy", "folder,name");
   url.searchParams.set("supportsAllDrives", "true");
   url.searchParams.set("includeItemsFromAllDrives", "true");
+  if (connection.drive_kind === "shared_drive" && connection.shared_drive_id) {
+    url.searchParams.set("corpora", "drive");
+    url.searchParams.set("driveId", connection.shared_drive_id);
+  } else {
+    url.searchParams.set("corpora", "user");
+  }
 
   const res = await driveFetch(companyId, url.toString());
   const payload = (await res.json().catch(() => null)) as
@@ -75,17 +111,37 @@ export async function GET(request: NextRequest) {
           mimeType: string;
           modifiedTime?: string;
           webViewLink?: string;
-          iconLink?: string;
+          webContentLink?: string;
           size?: string;
-          parents?: string[];
+          owners?: Array<{ displayName?: string; emailAddress?: string }>;
         }>;
         error?: { message?: string };
       }
     | null;
   if (!res.ok) {
+    if (res.status === 401) {
+      return json(401, { error: "Drive connection expired. Reconnect." });
+    }
     return json(res.status, { error: payload?.error?.message || "Failed to list files" });
   }
 
-  return json(200, { files: payload?.files ?? [] });
+  const items = (payload?.files ?? []).map((file) => ({
+    id: file.id,
+    name: file.name,
+    kind: file.mimeType === "application/vnd.google-apps.folder" ? "folder" : "file",
+    mimeType: file.mimeType,
+    sizeBytes: file.size ? Number(file.size) : null,
+    modifiedTime: file.modifiedTime ?? null,
+    webViewLink: file.webViewLink ?? null,
+  }));
+
+  return json(200, {
+    connected: true,
+    rootReady: true,
+    items,
+    driveKind: connection.drive_kind ?? null,
+    sharedDriveId: connection.shared_drive_id ?? null,
+    rootFolderId,
+  });
 }
 

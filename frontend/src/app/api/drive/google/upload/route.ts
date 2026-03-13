@@ -67,11 +67,10 @@ function buildMultipartBody(
 export async function POST(request: Request) {
   const form = await request.formData();
   const companyId = (form.get("companyId") as string | null)?.trim() ?? "";
-  const folderId = (form.get("folderId") as string | null)?.trim() ?? "";
+  const fileName = (form.get("fileName") as string | null)?.trim() ?? "";
   const file = form.get("file");
 
   if (!UUID_RE.test(companyId)) return json(400, { error: "Invalid companyId" });
-  if (!folderId) return json(400, { error: "folderId is required" });
   if (!(file instanceof File)) return json(400, { error: "file is required" });
 
   const supabase = await createServerClient();
@@ -85,12 +84,27 @@ export async function POST(request: Request) {
   if (unauthorized) return unauthorized;
 
   try {
+    const { data: connection, error: connectionError } = await supabase
+      .from("fundops_drive_connections")
+      .select("root_folder_id")
+      .eq("company_id", companyId)
+      .in("provider", ["google_drive", "google"])
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (connectionError) return json(500, { error: connectionError.message });
+
+    const rootFolderId = connection?.root_folder_id ?? null;
+    if (!rootFolderId) {
+      return json(400, { error: "root folder not initialized" });
+    }
+
     const token = await getDriveAccessToken(companyId);
     const fileBytes = new Uint8Array(await file.arrayBuffer());
     const mimeType = file.type || "application/octet-stream";
     const boundary = `fundops_${Date.now().toString(36)}`;
     const body = buildMultipartBody(
-      { name: file.name, parents: [folderId] },
+      { name: fileName || file.name, parents: [rootFolderId] },
       fileBytes,
       mimeType,
       boundary
@@ -136,12 +150,25 @@ export async function POST(request: Request) {
       | null;
 
     if (!res.ok || !payload?.id) {
+      if (res.status === 401) {
+        return json(401, { error: "Drive connection expired. Reconnect." });
+      }
       return json(res.status, { error: payload?.error?.message || "Google Drive upload failed" });
     }
 
-    return json(200, { file: payload });
+    return json(200, {
+      id: payload.id,
+      name: payload.name ?? (fileName || file.name),
+      webViewLink: payload.webViewLink ?? null,
+      mimeType: payload.mimeType ?? mimeType,
+      sizeBytes: payload.size ? Number(payload.size) : file.size,
+    });
   } catch (error) {
-    return json(500, { error: error instanceof Error ? error.message : "Upload failed" });
+    const message = error instanceof Error ? error.message : "Upload failed";
+    if (/token|refresh|expired|drive token/i.test(message)) {
+      return json(401, { error: "Drive connection expired. Reconnect." });
+    }
+    return json(500, { error: message });
   }
 }
 

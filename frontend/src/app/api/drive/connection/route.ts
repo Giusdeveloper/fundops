@@ -54,15 +54,80 @@ export async function GET(request: NextRequest) {
   const unauthorized = await authorizeCompanyAccess(supabase, user.id, companyId);
   if (unauthorized) return unauthorized;
 
-  const { data, error } = await supabase
+  let data: Record<string, unknown> | null = null;
+  const withBothSubfolderColumns = await supabase
     .from("fundops_drive_connections")
     .select(
-      "id, company_id, provider, drive_kind, shared_drive_id, root_folder_id, root_folder_name, status, created_at, updated_at"
+      "id, company_id, provider, drive_kind, shared_drive_id, root_folder_id, root_folder_name, status, created_by, created_at, updated_at, drive_subfolders, root_subfolders"
     )
     .eq("company_id", companyId)
-    .eq("provider", "google_drive")
+    .in("provider", ["google_drive", "google"])
+    .order("updated_at", { ascending: false })
+    .limit(1)
     .maybeSingle();
-  if (error) return json(500, { error: error.message });
+
+  if (!withBothSubfolderColumns.error) {
+    data = (withBothSubfolderColumns.data as Record<string, unknown> | null) ?? null;
+  } else {
+    const errorCode = (withBothSubfolderColumns.error as { code?: string }).code ?? "";
+    if (errorCode !== "42703") {
+      return json(500, { error: withBothSubfolderColumns.error.message });
+    }
+
+    const withDriveSubfolders = await supabase
+      .from("fundops_drive_connections")
+      .select(
+        "id, company_id, provider, drive_kind, shared_drive_id, root_folder_id, root_folder_name, status, created_by, created_at, updated_at, drive_subfolders"
+      )
+      .eq("company_id", companyId)
+      .in("provider", ["google_drive", "google"])
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (!withDriveSubfolders.error) {
+      data = (withDriveSubfolders.data as Record<string, unknown> | null) ?? null;
+    } else {
+      const driveSubfoldersCode = (withDriveSubfolders.error as { code?: string }).code ?? "";
+      if (driveSubfoldersCode !== "42703") {
+        return json(500, { error: withDriveSubfolders.error.message });
+      }
+
+      const withRootSubfolders = await supabase
+        .from("fundops_drive_connections")
+        .select(
+          "id, company_id, provider, drive_kind, shared_drive_id, root_folder_id, root_folder_name, status, created_by, created_at, updated_at, root_subfolders"
+        )
+        .eq("company_id", companyId)
+        .in("provider", ["google_drive", "google"])
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (!withRootSubfolders.error) {
+        data = (withRootSubfolders.data as Record<string, unknown> | null) ?? null;
+      } else {
+        const rootSubfoldersCode = (withRootSubfolders.error as { code?: string }).code ?? "";
+        if (rootSubfoldersCode !== "42703") {
+          return json(500, { error: withRootSubfolders.error.message });
+        }
+
+        const fallback = await supabase
+          .from("fundops_drive_connections")
+          .select(
+            "id, company_id, provider, drive_kind, shared_drive_id, root_folder_id, root_folder_name, status, created_by, created_at, updated_at"
+          )
+          .eq("company_id", companyId)
+          .in("provider", ["google_drive", "google"])
+          .order("updated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (fallback.error) return json(500, { error: fallback.error.message });
+        data = (fallback.data as Record<string, unknown> | null) ?? null;
+      }
+    }
+  }
 
   return json(200, {
     connected: Boolean(data),

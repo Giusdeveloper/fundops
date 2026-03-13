@@ -22,3 +22,12 @@ pnpm-debug.log*
 
 .vscode/
 .idea/
+
+.cursor/
+.playwright-cli/
+artifacts/
+output/
+.cursor/
+.playwright-cli/
+output/
+artifacts/
