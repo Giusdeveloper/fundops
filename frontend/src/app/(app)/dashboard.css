@@ -41,16 +41,79 @@
   flex-shrink: 0;
 }
 
+.header-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
 .header-title {
+  margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+.header-subtitle {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
 }
 
 .header-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.header-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  min-width: 0;
+  max-width: 220px;
+}
+
+.header-chip-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.header-chip-value {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.appshell-tutorial-focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  border-radius: 14px;
+}
+
+.global-tutorial-launcher {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 45;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.92);
+  color: var(--text-primary);
+  padding: 0.7rem 0.95rem;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.28);
 }
 
 @media (max-width: 768px) {
@@ -65,5 +128,17 @@
 
   .header-title {
     font-size: 1.125rem;
+  }
+
+  .header-subtitle,
+  .header-chip {
+    display: none;
+  }
+
+  .global-tutorial-launcher {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.82rem;
   }
 }

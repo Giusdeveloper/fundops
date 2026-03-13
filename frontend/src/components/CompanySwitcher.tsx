@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { useCompany } from "@/context/CompanyContext";
+import React, { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
+import { useCompany } from "@/context/CompanyContext";
 import "./CompanySwitcher.css";
 
 interface Company {
@@ -13,23 +13,33 @@ interface Company {
 }
 
 export default function CompanySwitcher() {
-  const { activeCompanyId, setActiveCompanyId, clearActiveCompanyId, isLoading: isLoadingContext } = useCompany();
+  const {
+    activeCompanyId,
+    setActiveCompanyId,
+    clearActiveCompanyId,
+    isLoading: isLoadingContext,
+    bootstrapState,
+  } = useCompany();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [fetchState, setFetchState] = useState<"loading" | "ready" | "unauthorized" | "forbidden" | "error">("loading");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
-  const [accessDisabled, setAccessDisabled] = useState(false);
-
-  // Carica companies via endpoint my_companies (RLS-safe)
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        setAccessDisabled(false);
+        setFetchState("loading");
         const response = await fetch("/api/my_companies");
+        if (response.status === 401) {
+          setFetchState("unauthorized");
+          setCompanies([]);
+          return;
+        }
         if (response.status === 403) {
-          setAccessDisabled(true);
+          setFetchState("forbidden");
           setCompanies([]);
           return;
         }
@@ -38,18 +48,19 @@ export default function CompanySwitcher() {
         }
         const result = await response.json();
         setCompanies(result.data ?? []);
+        setFetchState("ready");
       } catch (error) {
         console.error("Errore nel caricamento delle aziende:", error);
         setCompanies([]);
+        setFetchState("error");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchCompanies();
+    void fetchCompanies();
   }, []);
 
-  // Chiudi dropdown quando si clicca fuori
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -66,11 +77,17 @@ export default function CompanySwitcher() {
     };
   }, [isOpen]);
 
-  // Trova la company attiva
-  const activeCompany = companies.find((c) => c.id === activeCompanyId);
-  const displayName = accessDisabled
-    ? "Accesso disabilitato"
-    : activeCompany?.name || (companies.length === 0 ? "Nessuna azienda disponibile" : "Seleziona azienda");
+  const activeCompany = companies.find((company) => company.id === activeCompanyId);
+  const displayName =
+    bootstrapState === "unauthorized" || fetchState === "unauthorized"
+      ? "Sessione scaduta"
+      : bootstrapState === "forbidden" || fetchState === "forbidden"
+        ? "Accesso disabilitato"
+        : bootstrapState === "error" || fetchState === "error"
+          ? "Errore companies"
+          : bootstrapState === "no_companies"
+            ? "Nessuna company"
+            : activeCompany?.name || "Seleziona company";
 
   const handleSelectCompany = (companyId: string) => {
     setActiveCompanyId(companyId);
@@ -89,35 +106,55 @@ export default function CompanySwitcher() {
     router.push("/companies");
   };
 
-  // Non mostrare nulla durante il caricamento iniziale del context
+  const handleLogin = () => {
+    setIsOpen(false);
+    const redirect = pathname && pathname !== "/" ? `?redirect=${encodeURIComponent(pathname)}` : "";
+    router.push(`/login${redirect}`);
+  };
+
   if (isLoadingContext) {
     return null;
   }
-
-  const buttonAriaProps = {
-    "aria-label": "Seleziona azienda",
-    "aria-expanded": (isOpen ? "true" : "false") as "true" | "false",
-  };
 
   return (
     <div className="company-switcher" ref={dropdownRef}>
       <button
         className="company-switcher-button"
         onClick={() => setIsOpen(!isOpen)}
-        {...buttonAriaProps}
+        aria-label="Seleziona azienda"
+        aria-expanded={isOpen ? "true" : "false"}
       >
         <span className="company-switcher-label">{displayName}</span>
         <ChevronDown className={`company-switcher-icon ${isOpen ? "open" : ""}`} size={16} />
       </button>
 
-      {isOpen && (
+      {isOpen ? (
         <div className="company-switcher-dropdown">
           {isLoading ? (
             <div className="company-switcher-item">Caricamento...</div>
-          ) : accessDisabled ? (
+          ) : bootstrapState === "unauthorized" || fetchState === "unauthorized" ? (
+            <>
+              <div className="company-switcher-item company-switcher-disabled">Sessione scaduta</div>
+              <button className="company-switcher-item" onClick={handleLogin}>
+                Vai al login
+              </button>
+            </>
+          ) : bootstrapState === "forbidden" || fetchState === "forbidden" ? (
             <div className="company-switcher-item company-switcher-disabled">Accesso disabilitato</div>
+          ) : bootstrapState === "error" || fetchState === "error" ? (
+            <>
+              <div className="company-switcher-item company-switcher-disabled">Impossibile caricare le companies</div>
+              <button className="company-switcher-item" onClick={handleManageCompanies}>
+                Vai alle companies
+              </button>
+            </>
           ) : companies.length === 0 ? (
-            <div className="company-switcher-item">Nessuna azienda disponibile</div>
+            <>
+              <div className="company-switcher-item company-switcher-disabled">Nessuna company disponibile</div>
+              <button className="company-switcher-item" onClick={handleManageCompanies}>
+                Vai alle companies
+              </button>
+            </>
           ) : (
             <>
               {companies.map((company) => (
@@ -139,7 +176,7 @@ export default function CompanySwitcher() {
             </>
           )}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

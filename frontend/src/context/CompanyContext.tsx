@@ -1,12 +1,21 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+
+export type CompanyBootstrapState =
+  | "loading"
+  | "ready"
+  | "unauthorized"
+  | "forbidden"
+  | "no_companies"
+  | "error";
 
 interface CompanyContextType {
   activeCompanyId: string | null;
   setActiveCompanyId: (id: string) => void;
   clearActiveCompanyId: () => void;
   isLoading: boolean;
+  bootstrapState: CompanyBootstrapState;
 }
 
 const CompanyContext = createContext<CompanyContextType | undefined>(undefined);
@@ -16,8 +25,8 @@ const STORAGE_KEY = "fundops_active_company_id";
 export function CompanyProvider({ children }: { children: ReactNode }) {
   const [activeCompanyId, setActiveCompanyIdState] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [bootstrapState, setBootstrapState] = useState<CompanyBootstrapState>("loading");
 
-  // Carica da localStorage al mount e valida che la company sia ancora accessibile.
   useEffect(() => {
     let cancelled = false;
 
@@ -25,11 +34,18 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
         const response = await fetch("/api/my_companies");
+
         if (!response.ok) {
-          // Sessione non valida o permessi mancanti: evita stato stale.
           localStorage.removeItem(STORAGE_KEY);
           if (!cancelled) {
             setActiveCompanyIdState(null);
+            if (response.status === 401) {
+              setBootstrapState("unauthorized");
+            } else if (response.status === 403) {
+              setBootstrapState("forbidden");
+            } else {
+              setBootstrapState("error");
+            }
           }
           return;
         }
@@ -43,11 +59,13 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
             localStorage.setItem(STORAGE_KEY, firstCompanyId);
             if (!cancelled) {
               setActiveCompanyIdState(firstCompanyId);
+              setBootstrapState("ready");
             }
           } else {
             localStorage.removeItem(STORAGE_KEY);
             if (!cancelled) {
               setActiveCompanyIdState(null);
+              setBootstrapState("no_companies");
             }
           }
           return;
@@ -59,15 +77,20 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
           localStorage.removeItem(STORAGE_KEY);
           if (!cancelled) {
             setActiveCompanyIdState(null);
+            setBootstrapState(companies.length > 0 ? "ready" : "no_companies");
           }
           return;
         }
 
         if (!cancelled) {
           setActiveCompanyIdState(stored);
+          setBootstrapState("ready");
         }
       } catch (error) {
         console.error("Errore nel bootstrap della company attiva:", error);
+        if (!cancelled) {
+          setBootstrapState("error");
+        }
       } finally {
         if (!cancelled) {
           setIsLoading(false);
@@ -82,11 +105,11 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Salva in localStorage quando cambia
   const setActiveCompanyId = (id: string) => {
     try {
       localStorage.setItem(STORAGE_KEY, id);
       setActiveCompanyIdState(id);
+      setBootstrapState("ready");
     } catch (error) {
       console.error("Errore nel salvataggio della company attiva in localStorage:", error);
     }
@@ -96,6 +119,7 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.removeItem(STORAGE_KEY);
       setActiveCompanyIdState(null);
+      setBootstrapState("ready");
     } catch (error) {
       console.error("Errore nella rimozione della company attiva da localStorage:", error);
     }
@@ -108,6 +132,7 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
         setActiveCompanyId,
         clearActiveCompanyId,
         isLoading,
+        bootstrapState,
       }}
     >
       {children}

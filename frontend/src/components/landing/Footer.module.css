@@ -1,0 +1,33 @@
+.footer {
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--background-card);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem 2rem;
+}
+
+.link {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--primary-light);
+}
+
+.brand {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}

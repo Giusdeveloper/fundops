@@ -13,8 +13,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Smart Equity Dashboard",
-  description: "Gestisci investor, LOI e data room",
+  title: "FundOps – Il fundraising sotto controllo",
+  description:
+    "Piattaforma FundOps per gestire supporter, LOI, documenti e dashboard di fundraising in un unico flusso.",
 };
 
 export default async function RootLayout({
@@ -25,7 +26,7 @@ export default async function RootLayout({
   const uiContext = await getUserUiContext();
 
   return (
-    <html lang="it">
+    <html lang="it" suppressHydrationWarning>
       <body className={poppins.variable}>
         <CompanyProvider>
           <ToastProvider>

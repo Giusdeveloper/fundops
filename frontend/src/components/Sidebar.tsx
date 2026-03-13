@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCompany } from "../context/CompanyContext";
-import { createClient } from "@/lib/supabase/client";
-import { LayoutDashboard, FolderKanban, Users, LogOut, FileText, Building2, Menu, AlignJustify, Shield } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, Users, FileText, Building2, Menu, AlignJustify, Shield } from 'lucide-react';
 import './Sidebar.css';
 import type { UserUiContext } from "@/lib/auth/getUserUiContext";
 
@@ -50,24 +49,12 @@ const Sidebar = ({ uiContext }: SidebarProps) => {
     setIsMobileOpen(!isMobileOpen);
   };
 
-  const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    setIsMobileOpen(false);
-    try {
-      const supabase = createClient();
-      await supabase.auth.signOut();
-    } catch {
-      // Se signOut fallisce lato client, procediamo comunque verso login.
-    } finally {
-      window.location.href = "/login";
-    }
-  };
-
   const startupMenuItems: MenuItem[] = [
     { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', requiresCompany: true },
     { href: '/investors', icon: Users, label: 'Supporters', requiresCompany: true },
     { href: '/lois', icon: FileText, label: 'LOI', requiresCompany: true },
     { href: '/issuance', icon: FolderKanban, label: 'Issuance', requiresCompany: true },
+    { href: '/cap-table', icon: FolderKanban, label: 'Cap Table', requiresCompany: true },
     { href: '/companies', icon: Building2, label: 'Companies', requiresCompany: false },
   ];
 
@@ -199,16 +186,6 @@ const Sidebar = ({ uiContext }: SidebarProps) => {
             })}
           </ul>
         </nav>
-        <div className="sidebar-divider"></div>
-        <a 
-          href="/login" 
-          className="sidebar-logout-link"
-          onClick={handleLogout}
-          title={isCollapsed ? "Logout" : undefined}
-        >
-          <LogOut size={18} />
-          {!isCollapsed && <span>Logout</span>}
-        </a>
       </aside>
     </>
   );

@@ -1,0 +1,41 @@
+.section {
+  padding: 4.5rem 1.5rem 5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  font-weight: 800;
+  text-align: center;
+  margin: 0 0 2.5rem;
+  color: var(--text-primary);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.item {
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 1.25rem 1.4rem;
+  background: var(--background-card);
+}
+
+.q {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.a {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+

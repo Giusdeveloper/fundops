@@ -25,7 +25,7 @@ interface FundOpsObject {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  iconLabel: string;
   route?: string;
   status: "not_started" | "partial" | "complete";
   disabled: boolean;
@@ -67,45 +67,43 @@ export default function FundOpsObjectsGrid() {
     fetchProcessStatus();
   }, [companyId]);
 
-  // Determina lo status degli oggetti basandosi sui dati
-  const getObjectStatus = (objectId: string): "not_started" | "partial" | "complete" => {
+  const getObjectStatus = (
+    objectId: string
+  ): "not_started" | "partial" | "complete" => {
     if (!processStatus) return "not_started";
 
     const { booking } = processStatus;
 
     switch (objectId) {
       case "investors":
-        // complete se esistono investitori
         return booking.investors_count > 0 ? "complete" : "not_started";
-
       case "loi":
-        // complete se esistono LOI
         if (booking.lois_count > 0) return "complete";
-        // partial se esistono investitori ma nessuna LOI
         if (booking.investors_count > 0) return "partial";
         return "not_started";
-
       default:
-        // Tutti gli altri oggetti sono not_started
         return "not_started";
     }
   };
 
-  // Lista base degli oggetti FundOps
-  const baseObjects: Array<Omit<FundOpsObject, "status"> & { status?: "not_started" | "partial" | "complete" }> = [
+  const baseObjects: Array<
+    Omit<FundOpsObject, "status"> & {
+      status?: "not_started" | "partial" | "complete";
+    }
+  > = [
     {
       id: "investors",
       name: "Supporters",
       description: "Gestione supporter e relazioni",
-      icon: "👥",
+      iconLabel: "SU",
       route: "/investors",
       disabled: false,
     },
     {
       id: "loi",
       name: "LOI",
-      description: "Lettere di Intenti e soft commitment",
-      icon: "📄",
+      description: "Lettere di intenti e soft commitment",
+      iconLabel: "LOI",
       route: "/lois",
       disabled: false,
     },
@@ -113,56 +111,66 @@ export default function FundOpsObjectsGrid() {
       id: "investor-deck",
       name: "Pitch Deck",
       description: "Materiali per supporter",
-      icon: "📈",
+      iconLabel: "PD",
       status: "not_started",
       disabled: true,
-      tooltip: "Funzionalità in arrivo",
+      tooltip: "Funzionalita in arrivo",
     },
     {
       id: "cap-table",
       name: "Cap Table",
       description: "Struttura equity e conversioni",
-      icon: "📊",
+      iconLabel: "CT",
+      route: "/cap-table",
       status: "not_started",
-      disabled: true,
-      tooltip: "Funzionalità in arrivo",
+      disabled: false,
+     },
+    {
+      id: "issuance",
+      name: "Issuance",
+      description: "Verifica investimenti e avanzamento della fase di issuance",
+      iconLabel: "IS",
+      route: "/issuance",
+      status: "not_started",
+      disabled: false,
     },
     {
       id: "safe-sfp",
       name: "SAFE/SFP",
       description: "Emissione strumenti finanziari (SAFE / SFP)",
-      icon: "💼",
+      iconLabel: "SF",
       status: "not_started",
       disabled: true,
-      tooltip: "Funzionalità in arrivo",
+      tooltip: "Funzionalita in arrivo",
     },
     {
       id: "data-room",
       name: "Data Room",
       description: "Documentazione e due diligence",
-      icon: "📁",
+      iconLabel: "DR",
       status: "not_started",
       disabled: true,
-      tooltip: "Funzionalità in arrivo",
+      tooltip: "Funzionalita in arrivo",
     },
     {
       id: "dossier-investitore",
-      name: "Dossier Supporters",
-      description: "Profilo e storico supporter",
-      icon: "📋",
+      name: "Dossier",
+      description: "Documentazione round e due diligence",
+      iconLabel: "DO",
+      route: "/dossier",
       status: "not_started",
-      disabled: true,
-      tooltip: "Funzionalità in arrivo",
+      disabled: false,
     },
   ];
 
-  // Aggiungi lo status calcolato dinamicamente
   const objects: FundOpsObject[] = baseObjects.map((obj) => ({
     ...obj,
     status: obj.status || getObjectStatus(obj.id),
   })) as FundOpsObject[];
 
-  const getStatusLabel = (status: "not_started" | "partial" | "complete"): string => {
+  const getStatusLabel = (
+    status: "not_started" | "partial" | "complete"
+  ): string => {
     switch (status) {
       case "not_started":
         return "Non iniziato";
@@ -190,11 +198,11 @@ export default function FundOpsObjectsGrid() {
 
       <div className={styles.grid}>
         {objects.map((object) => {
-          const CardContent = (
+          const cardContent = (
             <>
               <div className={styles.cardHeader}>
                 <div className={styles.iconContainer}>
-                  <span className={styles.icon}>{object.icon}</span>
+                  <span className={styles.icon}>{object.iconLabel}</span>
                 </div>
                 <div
                   className={`${styles.statusBadge} ${styles[`status-${object.status}`]}`}
@@ -206,7 +214,7 @@ export default function FundOpsObjectsGrid() {
               <p className={styles.objectDescription}>{object.description}</p>
               {!object.disabled && object.route && (
                 <div className={styles.cta}>
-                  <span className={styles.ctaText}>Apri →</span>
+                  <span className={styles.ctaText}>Apri -&gt;</span>
                 </div>
               )}
               {object.disabled && (
@@ -222,9 +230,10 @@ export default function FundOpsObjectsGrid() {
               <div
                 key={object.id}
                 className={`${styles.card} ${styles.disabled}`}
+                data-object-id={object.id}
                 title={object.tooltip}
               >
-                {CardContent}
+                {cardContent}
               </div>
             );
           }
@@ -234,8 +243,10 @@ export default function FundOpsObjectsGrid() {
               key={object.id}
               href={object.route!}
               className={`${styles.card} ${styles[`status-${object.status}`]}`}
+              data-object-id={object.id}
+              aria-label={`Apri ${object.name}`}
             >
-              {CardContent}
+              {cardContent}
             </Link>
           );
         })}

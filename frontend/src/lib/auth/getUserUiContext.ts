@@ -4,6 +4,9 @@ type EffectiveArea = "startup" | "investor";
 
 export interface UserUiContext {
   isLoggedIn: boolean;
+  email: string | null;
+  fullName: string | null;
+  avatarUrl: string | null;
   roleGlobal: string | null;
   viewMode: string | null;
   effectiveArea: EffectiveArea;
@@ -27,6 +30,9 @@ function getEffectiveArea(roleGlobal: string | null, viewMode: string | null): E
 export async function getUserUiContext(): Promise<UserUiContext> {
   const fallback: UserUiContext = {
     isLoggedIn: false,
+    email: null,
+    fullName: null,
+    avatarUrl: null,
     roleGlobal: null,
     viewMode: null,
     effectiveArea: "startup",
@@ -50,7 +56,7 @@ export async function getUserUiContext(): Promise<UserUiContext> {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role_global, is_active, view_mode")
+      .select("role_global, is_active, view_mode, full_name, avatar_url")
       .eq("id", user.id)
       .maybeSingle();
 
@@ -66,6 +72,9 @@ export async function getUserUiContext(): Promise<UserUiContext> {
 
     return {
       isLoggedIn: true,
+      email: user.email ?? null,
+      fullName: profile?.full_name?.trim() || null,
+      avatarUrl: profile?.avatar_url?.trim() || null,
       roleGlobal,
       viewMode,
       effectiveArea,
@@ -80,4 +89,3 @@ export async function getUserUiContext(): Promise<UserUiContext> {
     return fallback;
   }
 }
-

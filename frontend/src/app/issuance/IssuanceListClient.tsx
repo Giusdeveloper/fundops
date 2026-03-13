@@ -1,9 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import TutorialModal from "@/components/onboarding/TutorialModal";
+import { useTutorial } from "@/components/onboarding/useTutorial";
 import RequireCompany from "@/components/RequireCompany";
 import { useCompany } from "@/context/CompanyContext";
+import { issuanceTutorialContent, issuanceTutorialDefinition, issuanceTutorialSteps, type IssuanceTutorialStep } from "@/lib/tutorials/issuance";
+import type { TutorialStepState } from "@/lib/tutorials/types";
 import styles from "./issuance.module.css";
 
 interface IssuanceListItem {
@@ -35,6 +39,11 @@ interface IssuanceResponse {
 
 export default function IssuanceListClient() {
   const { activeCompanyId: companyId } = useCompany();
+  const sectionRefs = useRef<Record<IssuanceTutorialStep, HTMLElement | null>>({
+    overview: null,
+    kpis: null,
+    table: null,
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<IssuanceResponse | null>(null);
@@ -93,13 +102,127 @@ export default function IssuanceListClient() {
   }, [fetchData]);
 
   const rows = useMemo(() => data?.investments ?? [], [data]);
+  const tutorialStates = useMemo<Record<IssuanceTutorialStep, TutorialStepState>>(() => {
+    const hasOverview = Boolean(companyId);
+    const hasKpis = Boolean(data);
+    const hasRows = rows.length > 0;
+
+    return {
+      overview: hasOverview
+        ? {
+            status: "complete",
+            statusLabel: "Pronto",
+            smartMessage: "Sei nella fase in cui controlli pratiche, non interesse investitore. Qui il focus è sulla verifica operativa.",
+            ctaLabel: "Rivedi il contesto Issuance",
+            ctaIntent: "focus",
+          }
+        : {
+            status: "pending",
+            statusLabel: "In attesa",
+            smartMessage: "Seleziona una company attiva prima di leggere o lavorare sulle pratiche di Issuance.",
+            ctaLabel: "Vai al contesto Issuance",
+            ctaIntent: "focus",
+          },
+      kpis: hasKpis
+        ? {
+            status: "complete",
+            statusLabel: "Pronti",
+            smartMessage: `Hai ${data?.kpis.pending_review_count ?? 0} pratiche da verificare e ${data?.kpis.approved_count ?? 0} già approvate.`,
+            ctaLabel: "Leggi i KPI",
+            ctaIntent: "focus",
+          }
+        : {
+            status: "pending",
+            statusLabel: "In attesa",
+            smartMessage: "Attendi il caricamento di Issuance per capire il volume di pratiche da processare.",
+            ctaLabel: "Vai ai KPI",
+            ctaIntent: "focus",
+          },
+      table: hasRows
+        ? {
+            status: "complete",
+            statusLabel: "Pronta",
+            smartMessage: `La tabella contiene ${rows.length} pratiche. Leggi stato e documenti insieme per capire le priorità.`,
+            ctaLabel: "Apri la tabella",
+            ctaIntent: "focus",
+          }
+        : {
+            status: hasKpis ? "attention" : "pending",
+            statusLabel: hasKpis ? "Vuota" : "In attesa",
+            smartMessage: hasKpis
+              ? "Al momento non ci sono pratiche in lista. Potrebbe essere una company senza investimenti ancora inviati."
+              : "La tabella si popolerà dopo il caricamento della fase Issuance.",
+            ctaLabel: "Vai alla tabella",
+            ctaIntent: "focus",
+          },
+    };
+  }, [companyId, data, rows.length]);
+  const tutorial = useTutorial<IssuanceTutorialStep>({
+    storageKey: issuanceTutorialDefinition.storageKey,
+    steps: issuanceTutorialSteps.map((step) => step.id),
+    initialStepId: "overview",
+  });
+  const tutorialStep = tutorial.currentStepId;
+  const currentTutorial = issuanceTutorialContent[tutorialStep];
+  const currentTutorialState = tutorialStates[tutorialStep];
+
+  function focusSection(step: IssuanceTutorialStep) {
+    const node = sectionRefs.current[step];
+    if (!node) return;
+    node.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleTutorialAction() {
+    tutorial.close(false);
+    setTimeout(() => focusSection(tutorialStep), 120);
+  }
 
   return (
     <RequireCompany>
       <section className={styles.container}>
-        <header className={styles.header}>
+        {tutorial.clientReady ? (
+          <TutorialModal
+            isOpen={tutorial.isOpen}
+            ariaLabel={issuanceTutorialDefinition.ariaLabel}
+            eyebrow={issuanceTutorialDefinition.eyebrow}
+            steps={issuanceTutorialSteps}
+            currentStepId={tutorialStep}
+            currentIndex={tutorial.currentIndex}
+            content={currentTutorial}
+            states={tutorialStates}
+            smartState={currentTutorialState}
+            onClose={() => tutorial.close(false)}
+            onSkip={() => tutorial.close(true)}
+            onStepSelect={(step) => {
+              tutorial.goToStep(step);
+              setTimeout(() => focusSection(step), 60);
+            }}
+            onPrevious={() => {
+              const previous = issuanceTutorialSteps[tutorial.currentIndex - 1]?.id;
+              tutorial.goToPreviousStep();
+              if (previous) setTimeout(() => focusSection(previous), 60);
+            }}
+            onNext={() => {
+              const next = issuanceTutorialSteps[tutorial.currentIndex + 1]?.id;
+              tutorial.goToNextStep();
+              if (next) setTimeout(() => focusSection(next), 60);
+            }}
+            onAction={handleTutorialAction}
+          />
+        ) : null}
+        <header
+          ref={(node) => {
+            sectionRefs.current.overview = node;
+          }}
+          className={`${styles.header} ${tutorial.isOpen && tutorialStep === "overview" ? styles.tutorialSectionActive : ""}`}
+        >
           <h1 className={styles.title}>Issuance</h1>
           <p className={styles.subtitle}>Investimenti inviati e in bozza per la company attiva.</p>
+          <div className={styles.toolbar}>
+            <button type="button" className={styles.tutorialLauncher} onClick={() => tutorial.reopen()}>
+              Apri tutorial Issuance
+            </button>
+          </div>
         </header>
 
         {!companyId && <p className={styles.empty}>Seleziona una company per continuare.</p>}
@@ -107,7 +230,12 @@ export default function IssuanceListClient() {
 
         {companyId && (
           <>
-            <div className={styles.kpiRow}>
+            <div
+              ref={(node) => {
+                sectionRefs.current.kpis = node;
+              }}
+              className={`${styles.kpiRow} ${tutorial.isOpen && tutorialStep === "kpis" ? styles.tutorialSectionActive : ""}`}
+            >
               <article className={styles.kpiCard}>
                 <p className={styles.kpiLabel}>Da verificare</p>
                 <p className={styles.kpiValue}>{data?.kpis.pending_review_count ?? 0}</p>
@@ -131,7 +259,12 @@ export default function IssuanceListClient() {
             ) : rows.length === 0 ? (
               <p className={styles.empty}>Nessun investimento disponibile.</p>
             ) : (
-              <div className={styles.tableWrap}>
+              <div
+                ref={(node) => {
+                  sectionRefs.current.table = node;
+                }}
+                className={`${styles.tableWrap} ${tutorial.isOpen && tutorialStep === "table" ? styles.tutorialSectionActive : ""}`}
+              >
                 <table className={styles.table}>
                   <thead>
                     <tr>

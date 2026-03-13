@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import TutorialModal from "@/components/onboarding/TutorialModal";
+import { useTutorial } from "@/components/onboarding/useTutorial";
 import { useCompany } from "@/context/CompanyContext";
 import RequireCompany from "@/components/RequireCompany";
 import LoiStatusBadge from "@/components/loi/LoiStatusBadge";
 import { normalizeStatus } from "@/lib/loiStatus";
 import { formatRelativeTime } from "@/lib/loiEvents";
+import { dashboardTutorialContent, dashboardTutorialDefinition, dashboardTutorialSteps, type DashboardTutorialStep } from "@/lib/tutorials/dashboard";
+import type { TutorialStepState } from "@/lib/tutorials/types";
 import { useToast } from "@/components/ToastProvider";
 import FundOpsObjectsGrid from "@/components/FundOpsObjectsGrid";
 import ViewModeToggle from "@/components/ViewModeToggle";
@@ -231,6 +235,11 @@ export default function DashboardPage() {
   const { activeCompanyId: companyId } = useCompany();
   const { showToast } = useToast();
   const router = useRouter();
+  const sectionRefs = useRef<Record<DashboardTutorialStep, HTMLElement | null>>({
+    overview: null,
+    process: null,
+    objects: null,
+  });
 
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -436,15 +445,135 @@ export default function DashboardPage() {
       ? "Onboarding"
       : "Booking";
   const committedValue = submittedCommittedTotal;
+  const tutorialStates = useMemo<Record<DashboardTutorialStep, TutorialStepState>>(() => {
+    const overviewReady = Boolean(dashboardData);
+    const processReady = Boolean(dashboardContext?.round || companyPhase);
+    const objectsReady = Boolean(dashboardData && companyId);
+
+    return {
+      overview: overviewReady
+        ? {
+            status: "complete",
+            statusLabel: "Pronto",
+            smartMessage: `La dashboard ha caricato KPI e next action per ${companyName || "la company attiva"}. Parti da qui per capire la priorità del round.`,
+            ctaLabel: "Rileggi overview",
+            ctaIntent: "focus",
+          }
+        : {
+            status: "pending",
+            statusLabel: "In attesa",
+            smartMessage: "Aspetta il caricamento di KPI e contesto round prima di leggere il resto della dashboard.",
+            ctaLabel: "Torna alla sintesi",
+            ctaIntent: "focus",
+          },
+      process: processReady
+        ? {
+            status: "complete",
+            statusLabel: "Pronto",
+            smartMessage: `La process map ti mostra una company in fase ${phaseLabel}. Qui capisci cosa fare adesso nel workflow.`,
+            ctaLabel: "Apri la process map",
+            ctaIntent: "focus",
+          }
+        : {
+            status: "attention",
+            statusLabel: "Da chiarire",
+            smartMessage: "La fase non è ancora leggibile: verifica round e company attiva prima di interpretare il workflow.",
+            ctaLabel: "Verifica la fase",
+            ctaIntent: "focus",
+          },
+      objects: objectsReady
+        ? {
+            status: "complete",
+            statusLabel: "Pronto",
+            smartMessage: "Gli oggetti FundOps sono il punto in cui trasformi la lettura della dashboard in lavoro operativo.",
+            ctaLabel: "Apri gli oggetti",
+            ctaIntent: "focus",
+          }
+        : {
+            status: "pending",
+            statusLabel: "In attesa",
+            smartMessage: "Seleziona una company e attendi il caricamento della dashboard per usare oggetti e attività recenti.",
+            ctaLabel: "Vai agli oggetti",
+            ctaIntent: "focus",
+          },
+    };
+  }, [companyId, companyName, companyPhase, dashboardContext?.round, dashboardData, phaseLabel]);
+  const tutorial = useTutorial<DashboardTutorialStep>({
+    storageKey: dashboardTutorialDefinition.storageKey,
+    steps: dashboardTutorialSteps.map((step) => step.id),
+    initialStepId: "overview",
+  });
+  const tutorialStep = tutorial.currentStepId;
+  const currentTutorial = dashboardTutorialContent[tutorialStep];
+  const currentTutorialState = tutorialStates[tutorialStep];
+
+  function focusSection(step: DashboardTutorialStep) {
+    const node = sectionRefs.current[step];
+    if (!node) return;
+    node.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleTutorialStepSelect(step: DashboardTutorialStep) {
+    tutorial.goToStep(step);
+    setTimeout(() => focusSection(step), 60);
+  }
+
+  function handleTutorialPrevious() {
+    const previous = dashboardTutorialSteps[tutorial.currentIndex - 1]?.id;
+    tutorial.goToPreviousStep();
+    if (previous) setTimeout(() => focusSection(previous), 60);
+  }
+
+  function handleTutorialNext() {
+    const next = dashboardTutorialSteps[tutorial.currentIndex + 1]?.id;
+    tutorial.goToNextStep();
+    if (next) setTimeout(() => focusSection(next), 60);
+  }
+
+  function handleTutorialAction() {
+    tutorial.close(false);
+    setTimeout(() => focusSection(tutorialStep), 120);
+  }
 
   return (
     <RequireCompany>
       <section className={styles["dashboard-content"]}>
+        {tutorial.clientReady ? (
+          <TutorialModal
+            isOpen={tutorial.isOpen}
+            ariaLabel={dashboardTutorialDefinition.ariaLabel}
+            eyebrow={dashboardTutorialDefinition.eyebrow}
+            steps={dashboardTutorialSteps}
+            currentStepId={tutorialStep}
+            currentIndex={tutorial.currentIndex}
+            content={currentTutorial}
+            states={tutorialStates}
+            smartState={currentTutorialState}
+            onClose={() => tutorial.close(false)}
+            onSkip={() => tutorial.close(true)}
+            onStepSelect={handleTutorialStepSelect}
+            onPrevious={handleTutorialPrevious}
+            onNext={handleTutorialNext}
+            onAction={handleTutorialAction}
+          />
+        ) : null}
         {error && <div className={`${styles["status-message"]} ${styles["status-error"]}`}>Errore: {error}</div>}
         {loading || loadingCompany ? (
           <div className={`${styles["status-message"]} ${styles["status-loading"]}`}>Caricamento dashboard...</div>
         ) : (
           <>
+            <div className={styles.tutorialToolbar}>
+              <button type="button" className={styles.tutorialLauncher} onClick={() => tutorial.reopen()}>
+                Apri tutorial dashboard
+              </button>
+            </div>
+
+            <div
+              ref={(node) => {
+                sectionRefs.current.overview = node;
+              }}
+              className={`${styles.tutorialSection} ${tutorial.isOpen && tutorialStep === "overview" ? styles.tutorialSectionActive : ""}`}
+            >
             <div className={styles.kpiRow}>
               <div className={styles.kpiCard}><p className={styles.kpiCardLabel}>Investitori attivi</p><p className={styles.kpiCardValue}>{dashboardContext?.investorsCount ?? 0}</p><p className={styles.kpiCardHint}>Investitori in pipeline attiva. Mantieni engagement con follow-up puntuali.</p></div>
               <div className={styles.kpiCard}><p className={styles.kpiCardLabel}>LOI firmate</p><p className={styles.kpiCardValue}>{dashboardContext?.signedLoiCount ?? 0}</p><p className={styles.kpiCardHint}>LOI completate nel round. Riduci pending con reminder mirati.</p></div>
@@ -489,8 +618,14 @@ export default function DashboardPage() {
                 Apri Issuance
               </Link>
             </section>
+            </div>
 
-            <section className={styles.heroPanel}>
+            <section
+              ref={(node) => {
+                sectionRefs.current.process = node;
+              }}
+              className={`${styles.heroPanel} ${styles.tutorialSection} ${tutorial.isOpen && tutorialStep === "process" ? styles.tutorialSectionActive : ""}`}
+            >
               <div className={styles["hero-section"]}>
                 <h2 className={styles["hero-title"]}>Benvenuto in FundOps</h2>
                 <p className={styles["hero-welcome-line"]}>
@@ -691,7 +826,12 @@ export default function DashboardPage() {
               </section>
             </section>
 
-            <div className={styles["system-view-section"]}>
+            <div
+              ref={(node) => {
+                sectionRefs.current.objects = node;
+              }}
+              className={`${styles["system-view-section"]} ${styles.tutorialSection} ${tutorial.isOpen && tutorialStep === "objects" ? styles.tutorialSectionActive : ""}`}
+            >
               <FundOpsObjectsGrid />
               <section className={styles["feed-container-support"]}>
                 <h2 className={styles["section-title-support"]}>Attività recenti</h2>

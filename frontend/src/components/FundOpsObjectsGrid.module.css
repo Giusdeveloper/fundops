@@ -80,6 +80,15 @@
   transform: translateY(-2px);
 }
 
+.card:focus-visible {
+  outline: none;
+  border-color: var(--primary, #2563eb);
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.2),
+    0 4px 16px rgba(37, 99, 235, 0.15);
+  transform: translateY(-2px);
+}
+
 /* Card disabled */
 .card.disabled {
   opacity: 0.45;
@@ -117,6 +126,36 @@
   box-shadow: 0 4px 16px rgba(52, 199, 89, 0.15);
 }
 
+.card[data-object-id="investors"] .iconContainer {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(99, 102, 241, 0.9));
+}
+
+.card[data-object-id="loi"] .iconContainer {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    linear-gradient(135deg, rgba(14, 165, 233, 0.95), rgba(6, 182, 212, 0.9));
+}
+
+.card[data-object-id="cap-table"] .iconContainer {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    linear-gradient(135deg, rgba(249, 115, 22, 0.95), rgba(245, 158, 11, 0.9));
+}
+
+.card[data-object-id="issuance"] .iconContainer {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(20, 184, 166, 0.9));
+}
+
+.card[data-object-id="dossier-investitore"] .iconContainer {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    linear-gradient(135deg, rgba(168, 85, 247, 0.92), rgba(236, 72, 153, 0.85));
+}
+
 /* Card header */
 .cardHeader {
   display: flex;
@@ -128,23 +167,35 @@
 .iconContainer {
   width: 48px;
   height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--primary, #2563eb), var(--secondary, #a21caf));
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    linear-gradient(135deg, rgba(37, 99, 235, 0.95), rgba(16, 185, 129, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 24px rgba(15, 23, 42, 0.24);
 }
 
 .card.disabled .iconContainer {
   opacity: 0.5;
-  background: var(--background-card, #23272f);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--background-card, #23272f);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .icon {
-  font-size: 1.5rem;
+  font-size: 0.72rem;
   line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f8fafc;
 }
 
 /* Status badge */
@@ -212,6 +263,10 @@
 }
 
 .card:hover .ctaText {
+  color: var(--primary-light, #3b82f6);
+}
+
+.card:focus-visible .ctaText {
   color: var(--primary-light, #3b82f6);
 }
 

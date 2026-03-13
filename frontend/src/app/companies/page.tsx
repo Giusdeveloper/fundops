@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import TutorialModal from "@/components/onboarding/TutorialModal";
+import { useTutorial } from "@/components/onboarding/useTutorial";
 import { useCompany } from "@/context/CompanyContext";
+import { companiesTutorialContent, companiesTutorialDefinition, companiesTutorialSteps, type CompaniesTutorialStep } from "@/lib/tutorials/companies";
+import type { TutorialStepState } from "@/lib/tutorials/types";
 import { Upload, Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
 import styles from "./companies.module.css";
 
@@ -32,6 +36,11 @@ interface ApiResponse {
 export default function CompaniesPage() {
   const router = useRouter();
   const { activeCompanyId, setActiveCompanyId } = useCompany();
+  const sectionRefs = useRef<Record<CompaniesTutorialStep, HTMLElement | null>>({
+    context: null,
+    create: null,
+    select: null,
+  });
   
   const [companies, setCompanies] = useState<Company[]>([]);
   const [form, setForm] = useState({
@@ -64,11 +73,6 @@ export default function CompaniesPage() {
 
       const result: ApiResponse = await response.json();
       const companiesData = result.data || [];
-      // Debug: mostra i campi disponibili per la prima company
-      if (companiesData.length > 0) {
-        console.log("First company fields:", Object.keys(companiesData[0]));
-        console.log("First company data:", companiesData[0]);
-      }
       setCompanies(companiesData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto");
@@ -180,14 +184,136 @@ export default function CompaniesPage() {
 
     return filtered;
   }, [companies, searchTerm, hasEmailFilter, hasVatFilter, hasWebsiteFilter, sortBy]);
+  const tutorialStates = useMemo<Record<CompaniesTutorialStep, TutorialStepState>>(() => {
+    const hasCompanies = companies.length > 0;
+    const hasActiveCompany = Boolean(activeCompanyId);
+    const createReady = Boolean(form.name.trim());
+
+    return {
+      context: hasActiveCompany
+        ? {
+            status: "complete",
+            statusLabel: "Pronto",
+            smartMessage: `La company attiva è ${companies.find((company) => company.id === activeCompanyId)?.name || "impostata"}. Tutti i moduli useranno questo contesto.`,
+            ctaLabel: "Rivedi il contesto attivo",
+            ctaIntent: "focus",
+          }
+        : {
+            status: hasCompanies ? "attention" : "pending",
+            statusLabel: hasCompanies ? "Da impostare" : "Da iniziare",
+            smartMessage: hasCompanies
+              ? "Hai già company disponibili, ma devi ancora impostarne una come attiva prima di entrare nel workflow."
+              : "Non hai ancora una company attiva. Se la startup non esiste, creala qui e poi selezionala.",
+            ctaLabel: hasCompanies ? "Scegli la company attiva" : "Parti da qui",
+            ctaIntent: "focus",
+          },
+      create: createReady
+        ? {
+            status: "attention",
+            statusLabel: "In bozza",
+            smartMessage: "Hai già iniziato a compilare il form. Completa i dati minimi e crea la startup.",
+            ctaLabel: "Completa la nuova company",
+            ctaIntent: "focus",
+          }
+        : {
+            status: hasCompanies ? "complete" : "pending",
+            statusLabel: hasCompanies ? "Opzionale" : "Utile",
+            smartMessage: hasCompanies
+              ? "Puoi usare questo blocco quando devi aggiungere una startup nuova senza uscire dal workflow."
+              : "Se la startup non è ancora presente, questo è il punto corretto da cui creare il contesto operativo.",
+            ctaLabel: "Apri il form company",
+            ctaIntent: "focus",
+          },
+      select: hasCompanies
+        ? {
+            status: "complete",
+            statusLabel: "Pronto",
+            smartMessage: "La lista company è pronta. Qui scegli il contesto attivo e salti nel modulo giusto.",
+            ctaLabel: hasActiveCompany ? "Apri la lista company" : "Seleziona una company",
+            ctaIntent: "focus",
+          }
+        : {
+            status: "pending",
+            statusLabel: "In attesa",
+            smartMessage: "La lista si popolerà dopo la prima creazione o importazione di una company.",
+            ctaLabel: "Vai alla lista",
+            ctaIntent: "focus",
+          },
+    };
+  }, [activeCompanyId, companies, form.name]);
+  const tutorial = useTutorial<CompaniesTutorialStep>({
+    storageKey: companiesTutorialDefinition.storageKey,
+    steps: companiesTutorialSteps.map((step) => step.id),
+    initialStepId: "context",
+  });
+  const tutorialStep = tutorial.currentStepId;
+  const currentTutorial = companiesTutorialContent[tutorialStep];
+  const currentTutorialState = tutorialStates[tutorialStep];
+
+  function focusSection(step: CompaniesTutorialStep) {
+    const node = sectionRefs.current[step];
+    if (!node) return;
+    node.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleTutorialStepSelect(step: CompaniesTutorialStep) {
+    tutorial.goToStep(step);
+    setTimeout(() => focusSection(step), 60);
+  }
+
+  function handleTutorialPrevious() {
+    const previous = companiesTutorialSteps[tutorial.currentIndex - 1]?.id;
+    tutorial.goToPreviousStep();
+    if (previous) setTimeout(() => focusSection(previous), 60);
+  }
+
+  function handleTutorialNext() {
+    const next = companiesTutorialSteps[tutorial.currentIndex + 1]?.id;
+    tutorial.goToNextStep();
+    if (next) setTimeout(() => focusSection(next), 60);
+  }
+
+  function handleTutorialAction() {
+    tutorial.close(false);
+    setTimeout(() => focusSection(tutorialStep), 120);
+  }
 
   return (
     <>
-      <header className={styles["page-header"]}>
+      {tutorial.clientReady ? (
+        <TutorialModal
+          isOpen={tutorial.isOpen}
+          ariaLabel={companiesTutorialDefinition.ariaLabel}
+          eyebrow={companiesTutorialDefinition.eyebrow}
+          steps={companiesTutorialSteps}
+          currentStepId={tutorialStep}
+          currentIndex={tutorial.currentIndex}
+          content={currentTutorial}
+          states={tutorialStates}
+          smartState={currentTutorialState}
+          onClose={() => tutorial.close(false)}
+          onSkip={() => tutorial.close(true)}
+          onStepSelect={handleTutorialStepSelect}
+          onPrevious={handleTutorialPrevious}
+          onNext={handleTutorialNext}
+          onAction={handleTutorialAction}
+        />
+      ) : null}
+      <header
+        ref={(node) => {
+          sectionRefs.current.context = node;
+        }}
+        className={`${styles["page-header"]} ${tutorial.isOpen && tutorialStep === "context" ? styles["tutorial-section-active"] : ""}`}
+      >
           <h1 className={styles["page-title"]}>Companies</h1>
           <p className={styles["page-subtitle"]}>
             Seleziona la company attiva e gestisci investor e LOI.
           </p>
+          <div className={styles["page-meta-row"]}>
+            <button type="button" className={styles["tutorial-launcher"]} onClick={() => tutorial.reopen()}>
+              Apri tutorial companies
+            </button>
+          </div>
           {activeCompanyId && (
             <div className={styles["page-meta-row"]}>
               <span className={styles["page-pill"]}>
@@ -216,7 +342,12 @@ export default function CompaniesPage() {
         </div>
 
         {/* New Company Form */}
-        <section className={styles["form-card"]}>
+        <section
+          ref={(node) => {
+            sectionRefs.current.create = node;
+          }}
+          className={`${styles["form-card"]} ${tutorial.isOpen && tutorialStep === "create" ? styles["tutorial-section-active"] : ""}`}
+        >
           <h2 className={styles["form-title"]}>Crea nuova company</h2>
           <p className={styles["form-subtitle"]}>
             Aggiungi una nuova azienda al sistema per iniziare a gestire investitori e LOI.
@@ -294,7 +425,12 @@ export default function CompaniesPage() {
         </section>
 
         {/* Companies List */}
-        <section>
+        <section
+          ref={(node) => {
+            sectionRefs.current.select = node;
+          }}
+          className={tutorial.isOpen && tutorialStep === "select" ? styles["tutorial-section-active"] : undefined}
+        >
           <div className={styles["list-header"]}>
             <h2 className={styles["form-title"]} style={{ marginBottom: 0 }}>Lista companies</h2>
             <div className={styles["list-controls"]}>
@@ -389,10 +525,6 @@ export default function CompaniesPage() {
             <div className={styles["companies-list"]}>
               {filteredAndSortedCompanies.map((company) => {
                 const isActive = activeCompanyId === company.id;
-                // Debug: log company data
-                if (company.name === "Imment Srl") {
-                  console.log("Imment Srl data:", company);
-                }
                 return (
                   <div
                     key={company.id}

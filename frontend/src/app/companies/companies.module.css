@@ -4,6 +4,8 @@
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color);
+  border-radius: 14px;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .page-title {
@@ -36,6 +38,20 @@
   font-size: 12px;
   color: var(--accent);
   font-weight: 600;
+}
+
+.tutorial-launcher {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  padding: 0.55rem 0.85rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tutorial-section-active {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .form-card {
