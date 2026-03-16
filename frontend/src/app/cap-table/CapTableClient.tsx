@@ -392,7 +392,7 @@ export default function CapTableClient() {
     } finally {
       setLoading(false);
     }
-  }, [selectedScenarioId, showToast]);
+  }, [selectedScenarioId]);
 
   useEffect(() => {
     if (!companyId) return;

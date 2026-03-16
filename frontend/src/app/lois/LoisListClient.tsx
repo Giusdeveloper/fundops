@@ -120,18 +120,18 @@ export default function LoisListClient() {
   const inviteNoticeText = inviteNeedsSlug
     ? "Per inviare l’invito serve lo slug pubblico della company. Impostalo nella pagina Companies → Profilo."
     : null;
-  const generateTitle = (roundValue?: string, roundNumber?: string) => {
+  const generateTitle = useCallback((roundValue?: string, roundNumber?: string) => {
     const roundLabel = roundValue?.trim() || "Round";
     const numberLabel = roundNumber?.trim() ? `#${roundNumber.trim()}` : "";
     const companyLabel = company?.name?.trim() || "Nuovo round";
     return `${companyLabel}${numberLabel ? ` ${numberLabel}` : ""} - ${roundLabel}`;
-  };
+  }, [company?.name]);
 
   useEffect(() => {
     if (!titleTouched) {
       setNewLoiTitle(generateTitle(newLoiRound, newLoiRoundNumber));
     }
-  }, [newLoiRound, newLoiRoundNumber, company?.name, titleTouched]);
+  }, [newLoiRound, newLoiRoundNumber, titleTouched, generateTitle]);
   const tutorialStates = useMemo<Record<LoiTutorialStep, TutorialStepState>>(() => {
     const hasContext = Boolean(companyId);
     const hasOperationalList = sortedLois.length > 0;

@@ -125,11 +125,6 @@ function LoginPageContent() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") ?? "";
 
-  function setRedirectCookie(path: string) {
-    const safe = path?.startsWith("/") ? path : `/${path ?? ""}`;
-    document.cookie = `fundops_redirect=${encodeURIComponent(safe)}; path=/; samesite=lax`;
-  }
-
   useEffect(() => {
     if (searchParams.get("mode") === "register") setMode("register");
   }, [searchParams]);
