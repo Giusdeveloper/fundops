@@ -123,7 +123,7 @@ export default function LoisListClient() {
   const generateTitle = (roundValue?: string, roundNumber?: string) => {
     const roundLabel = roundValue?.trim() || "Round";
     const numberLabel = roundNumber?.trim() ? `#${roundNumber.trim()}` : "";
-    const companyLabel = company?.name?.trim() || company?.legal_name?.trim() || "Nuovo round";
+    const companyLabel = company?.name?.trim() || "Nuovo round";
     return `${companyLabel}${numberLabel ? ` ${numberLabel}` : ""} - ${roundLabel}`;
   };
 
@@ -131,7 +131,7 @@ export default function LoisListClient() {
     if (!titleTouched) {
       setNewLoiTitle(generateTitle(newLoiRound, newLoiRoundNumber));
     }
-  }, [newLoiRound, newLoiRoundNumber, company?.name, company?.legal_name, titleTouched]);
+  }, [newLoiRound, newLoiRoundNumber, company?.name, titleTouched]);
   const tutorialStates = useMemo<Record<LoiTutorialStep, TutorialStepState>>(() => {
     const hasContext = Boolean(companyId);
     const hasOperationalList = sortedLois.length > 0;
