@@ -564,7 +564,7 @@ export default function LoisListClient() {
               </p>
               <div className={styles["empty-actions"]}>
                 <Link href="/dossier" className={styles["empty-action-link"]}>
-                  Vai all'area Dossier
+                  Vai all&apos;area Dossier
                 </Link>
               </div>
             </div>
