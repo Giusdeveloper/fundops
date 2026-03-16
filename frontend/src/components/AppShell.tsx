@@ -80,7 +80,7 @@ export default function AppShell({ children, uiContext }: AppShellProps) {
   };
 
   const handleTutorialAction = () => {
-    tutorial.close(false);
+    tutorial.close(true);
     setTimeout(() => focusSection(tutorialStep), 120);
   };
 
@@ -89,7 +89,8 @@ export default function AppShell({ children, uiContext }: AppShellProps) {
   const contentClassName = 'dashboard-main-content';
   
   return (
-    <div className={layoutClassName}>
+    <>
+      <div className={layoutClassName}>
       {tutorial.clientReady && !hasModuleTutorial ? (
         <TutorialModal
           isOpen={tutorial.isOpen}
@@ -102,7 +103,7 @@ export default function AppShell({ children, uiContext }: AppShellProps) {
           content={currentTutorial}
           states={tutorialStates}
           smartState={currentTutorialState}
-          onClose={() => tutorial.close(false)}
+          onClose={() => tutorial.close(true)}
           onSkip={() => tutorial.close(true)}
           onStepSelect={(step) => {
             tutorial.goToStep(step);
@@ -147,9 +148,14 @@ export default function AppShell({ children, uiContext }: AppShellProps) {
           <AppContainer>{children}</AppContainer>
         </div>
       </div>
-      <button type="button" className="global-tutorial-launcher" onClick={() => tutorial.reopen()}>
-        Apri guida piattaforma
-      </button>
-    </div>
+      </div>
+      {!hasModuleTutorial && (
+        <footer className="appshell-footer">
+          <button type="button" className="global-tutorial-launcher" onClick={() => tutorial.reopen()}>
+            Apri guida piattaforma
+          </button>
+        </footer>
+      )}
+    </>
   );
 }

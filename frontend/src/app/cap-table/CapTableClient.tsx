@@ -584,7 +584,7 @@ export default function CapTableClient() {
   }
 
   function handleTutorialCta() {
-    tutorial.close(false);
+    tutorial.close(true);
     if (currentTutorialState.ctaIntent === "simulate") {
       setTimeout(() => {
         void handleSimulate();
@@ -609,7 +609,7 @@ export default function CapTableClient() {
             content={currentTutorial}
             states={tutorialStates}
             smartState={currentTutorialState}
-            onClose={() => tutorial.close(false)}
+            onClose={() => tutorial.close(true)}
             onSkip={() => tutorial.close(true)}
             onStepSelect={goToTutorialStep}
             onPrevious={goToPreviousTutorialStep}

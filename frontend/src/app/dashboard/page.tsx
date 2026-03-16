@@ -101,9 +101,9 @@ interface NextActionMetrics {
   bookingProgressPct: number | null;
 }
 
-interface SubmissionAmountRow {
-  amount_eur: number | string | null;
-}
+  interface SubmissionAmountRow {
+    amount_eur: number | string | null;
+  }
 
 function computePhaseCards(
   round: DashboardRoundContext | null,
@@ -180,13 +180,32 @@ function computePhaseCards(
 
 function getNextActionState(
   round: DashboardRoundContext | null,
-  metrics: NextActionMetrics
+  metrics: NextActionMetrics,
+  options: { hasCompany: boolean; isLoading?: boolean }
 ) {
   if (!round) {
+    if (!options.hasCompany) {
+      return {
+        tone: "danger" as const,
+        title: "Next Action",
+        message: "Seleziona e configura una company prima di avviare il round.",
+        ctaLabel: "Vai a companies",
+        ctaHref: "/companies",
+      };
+    }
+    if (options.isLoading) {
+      return {
+        tone: "warning" as const,
+        title: "Next Action",
+        message: "Caricamento in corso, attendi qualche istante per vedere lo stato del round.",
+        ctaLabel: "Rinfresca la dashboard",
+        ctaHref: "/dashboard",
+      };
+    }
     return {
-      tone: "danger" as const,
+      tone: "warning" as const,
       title: "Next Action",
-      message: "Seleziona e configura una company prima di avviare il round.",
+      message: "Non ci sono round attivi per questa company. Crea un nuovo round o aggiorna la LOI.",
       ctaLabel: "Vai a companies",
       ctaHref: "/companies",
     };
@@ -432,12 +451,19 @@ export default function DashboardPage() {
       : dashboardContext?.round?.issuance_open
       ? "issuance"
       : "booking";
-  const nextAction = getNextActionState(dashboardContext?.round ?? null, {
-    loiSignedCount: dashboardContext?.signedLoiCount ?? 0,
-    investorsActiveCount: dashboardContext?.investorsCount ?? 0,
-    committedAmount: dashboardContext?.softCommitmentSum ?? 0,
-    bookingProgressPct: dashboardContext?.bookingProgressPct ?? null,
-  });
+    const nextAction = getNextActionState(
+      dashboardContext?.round ?? null,
+      {
+        loiSignedCount: dashboardContext?.signedLoiCount ?? 0,
+        investorsActiveCount: dashboardContext?.investorsCount ?? 0,
+        committedAmount: dashboardContext?.softCommitmentSum ?? 0,
+        bookingProgressPct: dashboardContext?.bookingProgressPct ?? null,
+      },
+      {
+        hasCompany: Boolean(companyId),
+        isLoading: loading,
+      }
+    );
   const phaseLabel =
     companyPhase === "issuance"
       ? "Issuance"
@@ -531,7 +557,7 @@ export default function DashboardPage() {
   }
 
   function handleTutorialAction() {
-    tutorial.close(false);
+    tutorial.close(true);
     setTimeout(() => focusSection(tutorialStep), 120);
   }
 
@@ -551,7 +577,7 @@ export default function DashboardPage() {
             content={currentTutorial}
             states={tutorialStates}
             smartState={currentTutorialState}
-            onClose={() => tutorial.close(false)}
+            onClose={() => tutorial.close(true)}
             onSkip={() => tutorial.close(true)}
             onStepSelect={handleTutorialStepSelect}
             onPrevious={handleTutorialPrevious}

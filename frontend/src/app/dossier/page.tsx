@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import TutorialModal from "@/components/onboarding/TutorialModal";
 import { useCompany } from "@/context/CompanyContext";
@@ -179,6 +180,16 @@ function DossierPageClient() {
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [profileAttachments, setProfileAttachments] = useState<Array<{
+    id: string;
+    type: "deck" | "registry";
+    url: string;
+    uploaded_at: string;
+    uploaded_by?: string | null;
+    metadata?: Record<string, unknown>;
+  }>>([]);
+  const [loadingProfileAttachments, setLoadingProfileAttachments] = useState(false);
+  const [attachmentsError, setAttachmentsError] = useState<string | null>(null);
   const [rounds, setRounds] = useState<RoundItem[]>([]);
   const [loadingRounds, setLoadingRounds] = useState(false);
   const [selectedRoundId, setSelectedRoundId] = useState("");
@@ -456,6 +467,32 @@ function DossierPageClient() {
     }
   }, [companyId, selectedRoundId, showToast]);
 
+  const loadProfileAttachments = useCallback(async () => {
+    if (!companyId) {
+      setProfileAttachments([]);
+      setAttachmentsError(null);
+      return;
+    }
+    setLoadingProfileAttachments(true);
+    try {
+      const res = await fetch(`/api/company-profiles/attachments?companyId=${encodeURIComponent(companyId)}`, {
+        cache: "no-store",
+      });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(payload?.error || "Errore caricamento allegati");
+      }
+      const rows = Array.isArray(payload?.data) ? payload.data : [];
+      setProfileAttachments(rows);
+      setAttachmentsError(null);
+    } catch (error) {
+      setProfileAttachments([]);
+      setAttachmentsError(error instanceof Error ? error.message : "Errore caricamento allegati");
+    } finally {
+      setLoadingProfileAttachments(false);
+    }
+  }, [companyId]);
+
   useEffect(() => {
     void loadCompanyName();
     void loadConnection();
@@ -468,6 +505,10 @@ function DossierPageClient() {
   useEffect(() => {
     void loadRounds();
   }, [loadRounds]);
+
+  useEffect(() => {
+    void loadProfileAttachments();
+  }, [loadProfileAttachments]);
 
   useEffect(() => {
     void loadRoundDocuments();
@@ -661,7 +702,7 @@ function DossierPageClient() {
   }
 
   function handleTutorialAction() {
-    tutorial.close(false);
+    tutorial.close(true);
     setTimeout(() => focusSection(tutorialStep), 120);
   }
 
@@ -678,7 +719,7 @@ function DossierPageClient() {
           content={currentTutorial}
           states={tutorialStates}
           smartState={currentTutorialState}
-          onClose={() => tutorial.close(false)}
+          onClose={() => tutorial.close(true)}
           onSkip={() => tutorial.close(true)}
           onStepSelect={(step) => {
             tutorial.goToStep(step);
@@ -907,6 +948,80 @@ function DossierPageClient() {
               <p className={styles.warnText}>
                 Condivisione admin@imment.it non riuscita. {shareStatus.message ?? ""}
               </p>
+            )}
+          </article>
+
+          <article className={styles.profileAttachmentsCard}>
+            <div className={styles.profileAttachmentsHead}>
+              <h2 className={styles.cardTitle}>Documenti startup</h2>
+              <button
+                type="button"
+                className={styles.secondaryBtn}
+                onClick={loadProfileAttachments}
+                disabled={!companyId || loadingProfileAttachments}
+              >
+                {loadingProfileAttachments ? "Aggiornamento..." : "Aggiorna"}
+              </button>
+            </div>
+            {loadingProfileAttachments ? (
+              <p className={styles.muted}>Caricamento allegati...</p>
+            ) : attachmentsError ? (
+              <p className={styles.warnText}>{attachmentsError}</p>
+            ) : (
+              <div className={styles.profileAttachmentsList}>
+                {["deck", "registry"].map((type) => {
+                  const attachment = profileAttachments.find((row) => row.type === type);
+                  return (
+                    <div key={type} className={styles.profileAttachmentItem}>
+                      <p className={styles.profileAttachmentLabel}>
+                        {type === "deck" ? "Investor Deck" : "Visura"}
+                      </p>
+                      {attachment ? (
+                        <>
+                          <a
+                            href={attachment.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={styles.linkBtn}
+                          >
+                            Apri file
+                          </a>
+                          <p className={styles.profileAttachmentMeta}>
+                            Caricato {new Date(attachment.uploaded_at).toLocaleDateString("it-IT")}
+                            {attachment.uploaded_by ? ` da ${attachment.uploaded_by}` : ""}
+                          </p>
+                        </>
+                      ) : (
+                        <p className={styles.profileAttachmentPlaceholder}>
+                          Ancora non disponibile. Carica il file nella profilazione.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+                <div className={styles.profileAttachmentsFooter}>
+                  <p className={styles.profileAttachmentNote}>
+                    Ultimo aggiornamento:{" "}
+                    {profileAttachments.length > 0
+                      ? new Date(profileAttachments[0].uploaded_at).toLocaleString("it-IT", {
+                          dateStyle: "short",
+                          timeStyle: "short",
+                        })
+                      : "ancora nessun file"}
+                  </p>
+                  <Link
+                    href="/companies"
+                    className={styles.linkBtn}
+                    onClick={() => {
+                      if (companyId) {
+                        window.localStorage.setItem("lastCompanyFocus", companyId);
+                      }
+                    }}
+                  >
+                    Vai alla profilazione
+                  </Link>
+                </div>
+              </div>
             )}
           </article>
 

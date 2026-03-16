@@ -30,6 +30,12 @@ interface Company {
   public_slug?: string | null;
 }
 
+interface ApiResponse {
+  data?: LOI[];
+  company?: Company | null;
+  error?: string;
+}
+
 export default function LoisListClient() {
   const { activeCompanyId: companyId } = useCompany();
   const { showToast } = useToast();
@@ -48,24 +54,33 @@ export default function LoisListClient() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteName, setInviteName] = useState("");
   const [inviteSending, setInviteSending] = useState(false);
+  const [newLoiTitle, setNewLoiTitle] = useState("");
+  const [newLoiRound, setNewLoiRound] = useState("");
+  const [newLoiRoundNumber, setNewLoiRoundNumber] = useState("");
+  const [newLoiAmount, setNewLoiAmount] = useState("");
+  const [newLoiExpiry, setNewLoiExpiry] = useState("");
+  const [newLoiTicket, setNewLoiTicket] = useState("");
+  const [newLoiInfo, setNewLoiInfo] = useState("");
+  const [titleTouched, setTitleTouched] = useState(false);
+  const [creatingLoi, setCreatingLoi] = useState(false);
+  const createSectionRef = useRef<HTMLElement | null>(null);
 
   const fetchData = useCallback(async () => {
     if (!companyId?.trim()) return;
     setLoading(true);
     setError(null);
     try {
-      const [loisRes, companiesRes] = await Promise.all([
-        fetch(`/api/fundops_lois?companyId=${companyId}&includeDraft=${includeDraft}`),
-        fetch("/api/fundops_companies"),
-      ]);
-      if (!loisRes.ok) throw new Error((await loisRes.json()).error || "Errore LOI");
-      if (!companiesRes.ok) throw new Error("Errore companies");
-      const loisData = await loisRes.json();
-      const companiesData = await companiesRes.json();
-      const companies = Array.isArray(companiesData) ? companiesData : companiesData.data ?? [];
-      const found = companies.find((c: Company) => c.id === companyId);
-      setCompany(found ?? null);
-      const list = loisData.data ?? [];
+      const response = await fetch(
+        `/api/fundops_lois?companyId=${encodeURIComponent(companyId)}&includeDraft=${includeDraft}`
+      );
+      const payload: ApiResponse = await response
+        .json()
+        .catch(() => ({ data: [], company: null } as ApiResponse));
+      if (!response.ok) {
+        throw new Error(payload?.error || "Errore LOI");
+      }
+      setCompany(payload?.company ?? null);
+      const list = payload?.data ?? [];
       setLois(list);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore");
@@ -73,6 +88,13 @@ export default function LoisListClient() {
       setLoading(false);
     }
   }, [companyId, includeDraft]);
+
+  useEffect(() => {
+    if (!companyId) {
+      setLois([]);
+      setCompany(null);
+    }
+  }, [companyId]);
 
   useEffect(() => {
     fetchData();
@@ -90,9 +112,26 @@ export default function LoisListClient() {
     return tb - ta;
   });
 
-  const portalUrl = company?.public_slug
-    ? `${typeof window !== "undefined" ? window.location.origin : ""}/portal/${company.public_slug}`
+  const companySlug = company?.public_slug?.trim() || null;
+  const portalUrl = companySlug
+    ? `${typeof window !== "undefined" ? window.location.origin : ""}/portal/${companySlug}`
     : null;
+  const inviteNeedsSlug = !companySlug;
+  const inviteNoticeText = inviteNeedsSlug
+    ? "Per inviare l’invito serve lo slug pubblico della company. Impostalo nella pagina Companies → Profilo."
+    : null;
+  const generateTitle = (roundValue?: string, roundNumber?: string) => {
+    const roundLabel = roundValue?.trim() || "Round";
+    const numberLabel = roundNumber?.trim() ? `#${roundNumber.trim()}` : "";
+    const companyLabel = company?.name?.trim() || company?.legal_name?.trim() || "Nuovo round";
+    return `${companyLabel}${numberLabel ? ` ${numberLabel}` : ""} - ${roundLabel}`;
+  };
+
+  useEffect(() => {
+    if (!titleTouched) {
+      setNewLoiTitle(generateTitle(newLoiRound, newLoiRoundNumber));
+    }
+  }, [newLoiRound, newLoiRoundNumber, company?.name, company?.legal_name, titleTouched]);
   const tutorialStates = useMemo<Record<LoiTutorialStep, TutorialStepState>>(() => {
     const hasContext = Boolean(companyId);
     const hasOperationalList = sortedLois.length > 0;
@@ -180,12 +219,17 @@ export default function LoisListClient() {
   };
 
   const handleSendInvite = async () => {
-    if (!companyId || !company?.public_slug || !inviteTargetLoi?.id) {
+    if (!companyId || !inviteTargetLoi?.id) {
       showToast("Dati LOI/company mancanti", "error");
       return;
     }
 
     const email = inviteEmail.trim();
+
+    if (!companySlug) {
+      showToast("Per inviare l'invito serve lo slug pubblico della company", "warning");
+      return;
+    }
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
       showToast("Inserisci un'email valida", "warning");
       return;
@@ -198,23 +242,94 @@ export default function LoisListClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           companyId,
-          companySlug: company.public_slug,
+          companySlug,
           toEmail: email,
           investorName: inviteName.trim() || undefined,
           loiId: inviteTargetLoi.id,
         }),
       });
-      const payload = await response.json().catch(() => ({}));
+      const payload = await response
+        .json()
+        .catch(() => ({} as { error?: string }));
       if (!response.ok) {
         throw new Error(payload?.error || "Errore invio email");
       }
 
       showToast("Email inviata", "success");
       closeInviteModal();
+      await fetchData();
     } catch (err) {
       showToast(err instanceof Error ? err.message : "Errore invio email", "error");
     } finally {
       setInviteSending(false);
+    }
+  };
+
+  const handleCreateLoi = async () => {
+    if (!companyId) {
+      showToast("Seleziona una company prima di creare una LOI", "warning");
+      return;
+    }
+    if (!newLoiTitle.trim()) {
+      showToast("Inserisci un titolo per la LOI", "warning");
+      return;
+    }
+    setCreatingLoi(true);
+      try {
+        const amountValue = newLoiAmount.trim();
+        const parsedAmount =
+          amountValue.length > 0
+            ? Number(amountValue.replace(/[^\d.,]/g, "").replace(",", "."))
+            : null;
+        const notesChunks = [];
+        if (newLoiRoundNumber.trim()) {
+          notesChunks.push(`Numero round: ${newLoiRoundNumber.trim()}`);
+        }
+        if (newLoiAmount.trim()) {
+          notesChunks.push(`Importo round: ${newLoiAmount.trim()}`);
+        }
+        if (newLoiExpiry.trim()) {
+          notesChunks.push(`Scadenza round: ${newLoiExpiry}`);
+        }
+        if (newLoiTicket.trim()) {
+          notesChunks.push(`Ticket minimo medio: ${newLoiTicket.trim()}`);
+        }
+        const combinedNotes = [newLoiInfo.trim(), notesChunks.join(" | ")]
+          .filter(Boolean)
+          .join(" | ");
+
+        const response = await fetch("/api/fundops_lois", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            company_id: companyId,
+            title: newLoiTitle.trim(),
+            round_name: newLoiRound.trim() || undefined,
+            master_expires_at: newLoiExpiry || undefined,
+            ticket_amount: parsedAmount ?? undefined,
+            notes: combinedNotes || undefined,
+          }),
+        });
+
+      const payload = await response.json().catch(() => ({} as { error?: string }));
+      if (!response.ok) {
+        throw new Error(payload?.error || "Errore nella creazione della LOI");
+      }
+
+      showToast("LOI creata. Puoi aprirla dalla lista.", "success");
+        setNewLoiTitle("");
+        setNewLoiRound("");
+        setNewLoiRoundNumber("");
+        setNewLoiAmount("");
+        setNewLoiExpiry("");
+        setNewLoiTicket("");
+        setNewLoiInfo("");
+        setTitleTouched(false);
+      await fetchData();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Errore creazione LOI", "error");
+    } finally {
+      setCreatingLoi(false);
     }
   };
 
@@ -230,7 +345,7 @@ export default function LoisListClient() {
   }
 
   function handleTutorialAction() {
-    tutorial.close(false);
+    tutorial.close(true);
     setTimeout(() => focusSection(tutorialStep), 120);
   }
 
@@ -247,7 +362,7 @@ export default function LoisListClient() {
           content={currentTutorial}
           states={tutorialStates}
           smartState={currentTutorialState}
-          onClose={() => tutorial.close(false)}
+          onClose={() => tutorial.close(true)}
           onSkip={() => tutorial.close(true)}
           onStepSelect={handleTutorialStepSelect}
           onPrevious={() => {
@@ -287,6 +402,129 @@ export default function LoisListClient() {
         )}
       </header>
 
+      {companyId && (
+        <section
+          ref={(node) => {
+            createSectionRef.current = node;
+          }}
+          className={styles["create-loi-card"]}
+        >
+          <div className={styles["create-loi-card-header"]}>
+            <p className={styles["create-loi-card-eyebrow"]}>Nuova LOI</p>
+            <h2 className={styles["create-loi-card-title"]}>Avvia una lettera d’intenti</h2>
+          </div>
+          <div className={styles["create-loi-fields"]}>
+            <label className={styles["create-loi-label"]} htmlFor="loi-title">
+              Titolo LOI
+            </label>
+            <input
+              id="loi-title"
+              type="text"
+              className={styles["create-loi-input"]}
+              placeholder="Es: Serie A – Round 2026"
+              value={newLoiTitle}
+              onChange={(e) => {
+                setNewLoiTitle(e.target.value);
+                setTitleTouched(true);
+              }}
+              disabled={creatingLoi}
+            />
+            <label className={styles["create-loi-label"]} htmlFor="loi-round">
+              Round (opzionale)
+            </label>
+            <input
+              id="loi-round"
+              type="text"
+              className={styles["create-loi-input"]}
+              placeholder="Es: Round Seed"
+              value={newLoiRound}
+              onChange={(e) => setNewLoiRound(e.target.value)}
+              disabled={creatingLoi}
+            />
+            <label className={styles["create-loi-label"]} htmlFor="loi-number">
+              Numero di round
+            </label>
+            <input
+              id="loi-number"
+              type="number"
+              min="1"
+              className={styles["create-loi-input"]}
+              placeholder="Es: 1"
+              value={newLoiRoundNumber}
+              onChange={(e) => setNewLoiRoundNumber(e.target.value)}
+              disabled={creatingLoi}
+            />
+          </div>
+          <div className={styles["create-loi-info"]}>
+            <p className={styles["create-loi-info-title"]}>Titolo generato automaticamente</p>
+            <p className={styles["create-loi-info-text"]}>
+              Puoi personalizzare il titolo, altrimenti useremo “{generateTitle(newLoiRound, newLoiRoundNumber)}”.
+            </p>
+          </div>
+          <div className={styles["create-loi-fields"]}>
+            <label className={styles["create-loi-label"]} htmlFor="loi-amount">
+              Importo del round (opzionale)
+            </label>
+            <input
+              id="loi-amount"
+              type="text"
+              className={styles["create-loi-input"]}
+              placeholder="Es: €500.000"
+              value={newLoiAmount}
+              onChange={(e) => setNewLoiAmount(e.target.value)}
+              disabled={creatingLoi}
+            />
+            <label className={styles["create-loi-label"]} htmlFor="loi-expiry">
+              Data di scadenza
+            </label>
+            <input
+              id="loi-expiry"
+              type="date"
+              className={styles["create-loi-input"]}
+              value={newLoiExpiry}
+              onChange={(e) => setNewLoiExpiry(e.target.value)}
+              disabled={creatingLoi}
+            />
+            <label className={styles["create-loi-label"]} htmlFor="loi-ticket">
+              Ticket minimo medio (opzionale)
+            </label>
+            <input
+              id="loi-ticket"
+              type="text"
+              className={styles["create-loi-input"]}
+              placeholder="Es: 5.000 € o multipli"
+              value={newLoiTicket}
+              onChange={(e) => setNewLoiTicket(e.target.value)}
+              disabled={creatingLoi}
+            />
+          </div>
+          <label className={styles["create-loi-label"]} htmlFor="loi-notes">
+            Note / informazioni aggiuntive
+          </label>
+          <textarea
+            id="loi-notes"
+            className={styles["create-loi-textarea"]}
+            placeholder="Inserisci eventuali informazioni contestuali che vuoi tenere a portata di mano."
+            value={newLoiInfo}
+            onChange={(e) => setNewLoiInfo(e.target.value)}
+            disabled={creatingLoi}
+          />
+          <div className={styles["create-loi-actions"]}>
+            <button
+              type="button"
+              className={styles["create-loi-button"]}
+              onClick={handleCreateLoi}
+              disabled={creatingLoi || !newLoiTitle.trim()}
+            >
+              {creatingLoi ? "Creazione in corso..." : "Crea LOI"}
+            </button>
+            <p className={styles["create-loi-helper"]}>
+              Dopo la creazione potrai invitare investitori e monitorare firme.
+            </p>
+          </div>
+        </section>
+      )}
+
       {!companyId && (
         <div className={`${styles["empty-text"]} ${styles["empty-text-padded"]}`}>
           Seleziona una company per visualizzare le LOI.
@@ -320,9 +558,16 @@ export default function LoisListClient() {
           {loading ? (
             <p className={styles["empty-text"]}>Caricamento...</p>
           ) : sortedLois.length === 0 ? (
-            <p className={styles["empty-text"]}>
-              Nessuna LOI trovata. {!includeDraft && "Attiva 'Mostra anche draft' per vedere le bozze."}
-            </p>
+            <div className={styles["empty-state"]}>
+              <p className={styles["empty-text"]}>
+                Nessuna LOI trovata. {!includeDraft && "Attiva 'Mostra anche draft' per vedere le bozze."}
+              </p>
+              <div className={styles["empty-actions"]}>
+                <Link href="/dossier" className={styles["empty-action-link"]}>
+                  Vai all'area Dossier
+                </Link>
+              </div>
+            </div>
           ) : (
             <div
               ref={(node) => {
@@ -361,7 +606,6 @@ export default function LoisListClient() {
                         type="button"
                         className={`${styles["loi-cta-primary"]} ${styles["loi-cta-disabled"]}`}
                         onClick={() => {
-                          console.warn("[LOI] id mancante");
                           showToast("LOI senza ID - impossibile aprire", "warning");
                         }}
                       >
@@ -402,7 +646,8 @@ export default function LoisListClient() {
             <p className={styles.inviteModalText}>
               L&apos;investitore riceverà un link per accedere al portale e firmare.
             </p>
-            <div className={styles.inviteModalField}>
+            {inviteNoticeText && <p className={styles.inviteModalNotice}>{inviteNoticeText}</p>}
+              <div className={styles.inviteModalField}>
               <label htmlFor="invite-email">Email</label>
               <input
                 id="invite-email"
@@ -433,12 +678,12 @@ export default function LoisListClient() {
               >
                 Annulla
               </button>
-              <button
-                type="button"
-                className={styles["loi-cta-primary"]}
-                onClick={handleSendInvite}
-                disabled={inviteSending || !inviteEmail.trim()}
-              >
+                <button
+                  type="button"
+                  className={styles["loi-cta-primary"]}
+                  onClick={handleSendInvite}
+                  disabled={inviteSending || !inviteEmail.trim() || inviteNeedsSlug}
+                >
                 {inviteSending ? "Invio..." : "Invia"}
               </button>
             </div>

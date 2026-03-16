@@ -165,6 +165,157 @@
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
 }
 
+.attachments-section {
+  margin-bottom: 2rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 16px;
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.attachments-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.attachment-card {
+  background: rgba(2, 6, 23, 0.4);
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 190px;
+  position: relative;
+}
+
+.attachment-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.attachment-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-primary);
+}
+
+.attachment-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.attachment-card-status {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.attachment-meta {
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+.attachment-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.attachment-action-btn {
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.attachment-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  color: #34d399;
+}
+
+.attachment-delete {
+  border-radius: 10px;
+  border: 1px solid rgba(248, 113, 113, 0.6);
+  background: rgba(248, 113, 113, 0.08);
+  color: #f87171;
+  padding: 0.35rem 0.8rem;
+  font-weight: 600;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.attachment-link {
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.attachment-placeholder {
+  color: rgba(148, 163, 184, 0.9);
+  font-size: 0.85rem;
+}
+
+.attachment-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.attachment-input {
+  flex: 1;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  padding: 0.45rem 0.6rem;
+  color: var(--text-primary);
+}
+
+.attachment-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.attachment-button {
+  border-radius: 10px;
+  border: 1px solid rgba(37, 99, 235, 0.5);
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--primary);
+  padding: 0.45rem 0.8rem;
+  font-weight: 600;
+}
+
+.attachment-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inline-note {
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.8);
+  margin-top: 0.75rem;
+}
+
 .company-header {
   display: flex;
   justify-content: space-between;

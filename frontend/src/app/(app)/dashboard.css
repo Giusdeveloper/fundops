@@ -101,44 +101,46 @@
   border-radius: 14px;
 }
 
+.appshell-footer {
+    border-top: 1px solid rgba(71, 85, 105, 0.25);
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: center;
+    background: rgba(2, 6, 23, 0.6);
+  }
+
 .global-tutorial-launcher {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 45;
-  border: 1px solid rgba(148, 163, 184, 0.24);
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.92);
-  color: var(--text-primary);
-  padding: 0.7rem 0.95rem;
-  font: inherit;
-  cursor: pointer;
-  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.28);
-}
-
-@media (max-width: 768px) {
-  .dashboard-main-content {
-    margin-left: 0;
-    width: 100%;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.92);
+    color: var(--text-primary);
+    padding: 0.6rem 1rem;
+    font: inherit;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
   }
 
-  .main-header {
-    padding: 0.875rem 0.75rem 0.875rem 3.25rem;
-  }
+  @media (max-width: 768px) {
+    .dashboard-main-content {
+      margin-left: 0;
+      width: 100%;
+    }
 
-  .header-title {
-    font-size: 1.125rem;
-  }
+    .main-header {
+      padding: 0.875rem 0.75rem 0.875rem 3.25rem;
+    }
 
-  .header-subtitle,
-  .header-chip {
-    display: none;
-  }
+    .header-title {
+      font-size: 1.125rem;
+    }
 
-  .global-tutorial-launcher {
-    right: 0.75rem;
-    bottom: 0.75rem;
-    padding: 0.65rem 0.85rem;
-    font-size: 0.82rem;
+    .header-subtitle,
+    .header-chip {
+      display: none;
+    }
+
+    .global-tutorial-launcher {
+      padding: 0.65rem 0.85rem;
+      font-size: 0.82rem;
+    }
   }
-}

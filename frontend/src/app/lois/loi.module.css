@@ -1817,3 +1817,162 @@
   gap: 0.5rem;
   margin-top: 0.35rem;
 }
+
+.inviteModalNotice {
+  margin: 0 0 0.9rem 0;
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(248, 113, 113, 0.12);
+  color: #fbbf24;
+  font-size: 0.78rem;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+}
+
+.empty-state {
+  border: 1px dashed var(--border-color);
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  background: rgba(20, 38, 69, 0.4);
+}
+
+.empty-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.empty-action-link,
+.empty-action-button {
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.empty-action-link {
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.empty-action-button {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.create-loi-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  padding: 1.2rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 25px rgba(2, 6, 23, 0.6);
+  margin-bottom: 1.5rem;
+}
+
+.create-loi-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.create-loi-card-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.create-loi-card-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.create-loi-fields {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.create-loi-info {
+  margin-top: 0.45rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.create-loi-info-title {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.create-loi-info-text {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.create-loi-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.create-loi-input {
+  background: #020617;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  color: var(--text-primary);
+}
+
+.create-loi-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.create-loi-button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.create-loi-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.create-loi-helper {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.create-loi-textarea {
+  width: 100%;
+  min-height: 70px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: #020617;
+  color: var(--text-primary);
+  padding: 0.65rem 0.9rem;
+  resize: vertical;
+  font-size: 0.85rem;
+}

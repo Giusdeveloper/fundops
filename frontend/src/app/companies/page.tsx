@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import TutorialModal from "@/components/onboarding/TutorialModal";
@@ -8,7 +8,8 @@ import { useTutorial } from "@/components/onboarding/useTutorial";
 import { useCompany } from "@/context/CompanyContext";
 import { companiesTutorialContent, companiesTutorialDefinition, companiesTutorialSteps, type CompaniesTutorialStep } from "@/lib/tutorials/companies";
 import type { TutorialStepState } from "@/lib/tutorials/types";
-import { Upload, Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
+import { Upload, Search, Filter, ChevronDown, ChevronUp, FileText } from "lucide-react";
+import { useToast } from "@/components/ToastProvider";
 import styles from "./companies.module.css";
 
 interface Company {
@@ -58,6 +59,14 @@ export default function CompaniesPage() {
   const [hasEmailFilter, setHasEmailFilter] = useState<"all" | "yes" | "no">("all");
   const [hasVatFilter, setHasVatFilter] = useState<"all" | "yes" | "no">("all");
   const [hasWebsiteFilter, setHasWebsiteFilter] = useState<"all" | "yes" | "no">("all");
+  const [attachments, setAttachments] = useState<Array<{ id: string; type: "deck" | "registry"; url: string; uploaded_at: string; uploaded_by?: string; metadata?: Record<string, unknown> }>>([]);
+  const [attachmentLoading, setAttachmentLoading] = useState(false);
+  const [attachmentUploadingType, setAttachmentUploadingType] = useState<"deck" | "registry" | null>(null);
+  const [attachmentDeletingType, setAttachmentDeletingType] = useState<"deck" | "registry" | null>(null);
+  const attachmentFileRefs = useRef<Record<"deck" | "registry", HTMLInputElement | null>>({
+    deck: null,
+    registry: null,
+  });
 
   const fetchCompanies = async () => {
     try {
@@ -81,9 +90,97 @@ export default function CompaniesPage() {
     }
   };
 
+  const fetchAttachments = useCallback(async () => {
+    if (!activeCompanyId) {
+      setAttachments([]);
+      return;
+    }
+    try {
+      setAttachmentLoading(true);
+      const response = await fetch(`/api/company-profiles/attachments?companyId=${encodeURIComponent(activeCompanyId)}`, {
+        cache: "no-store",
+      });
+      if (!response.ok) {
+        setAttachments([]);
+        return;
+      }
+      const payload = await response.json();
+      setAttachments(Array.isArray(payload?.data) ? payload.data : []);
+    } catch {
+      setAttachments([]);
+    } finally {
+      setAttachmentLoading(false);
+    }
+  }, [activeCompanyId]);
+
+  const handleAttachmentClick = (type: "deck" | "registry") => {
+    attachmentFileRefs.current[type]?.click();
+  };
+
+  const handleAttachmentUpload = async (type: "deck" | "registry", file: File) => {
+    if (!activeCompanyId) return;
+    try {
+      setAttachmentUploadingType(type);
+      const formData = new FormData();
+      formData.append("company_id", activeCompanyId);
+      formData.append("type", type);
+      formData.append("file", file);
+
+      const response = await fetch("/api/company-profiles/attachments/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        return;
+      }
+      const payload = await response.json();
+      setAttachments(Array.isArray(payload?.data) ? payload.data : attachments);
+    } finally {
+      setAttachmentUploadingType(null);
+    }
+  };
+
   useEffect(() => {
     fetchCompanies();
   }, []);
+
+  useEffect(() => {
+    void fetchAttachments();
+  }, [activeCompanyId, fetchAttachments]);
+
+  const { showToast } = useToast();
+
+  const handleAttachmentDelete = useCallback(
+    async (type: "deck" | "registry") => {
+      if (!activeCompanyId) return;
+      const attachment = attachments.find((item) => item.type === type);
+      if (!attachment) {
+        showToast("Nessun allegato disponibile per la rimozione", "warning");
+        return;
+      }
+      setAttachmentDeletingType(type);
+      try {
+        const res = await fetch(
+          `/api/company-profiles/attachments?companyId=${encodeURIComponent(activeCompanyId)}&id=${encodeURIComponent(attachment.id)}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (!res.ok) {
+          const payload = await res.json().catch(() => null);
+          showToast(payload?.error ?? "Impossibile rimuovere l'allegato", "error");
+          return;
+        }
+        showToast("Allegato rimosso correttamente", "success");
+        await fetchAttachments();
+      } catch {
+        showToast("Errore durante la rimozione dell'allegato", "error");
+      } finally {
+        setAttachmentDeletingType(null);
+      }
+    },
+    [activeCompanyId, attachments, fetchAttachments, showToast]
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -274,7 +371,7 @@ export default function CompaniesPage() {
   }
 
   function handleTutorialAction() {
-    tutorial.close(false);
+    tutorial.close(true);
     setTimeout(() => focusSection(tutorialStep), 120);
   }
 
@@ -291,7 +388,7 @@ export default function CompaniesPage() {
           content={currentTutorial}
           states={tutorialStates}
           smartState={currentTutorialState}
-          onClose={() => tutorial.close(false)}
+          onClose={() => tutorial.close(true)}
           onSkip={() => tutorial.close(true)}
           onStepSelect={handleTutorialStepSelect}
           onPrevious={handleTutorialPrevious}
@@ -328,6 +425,93 @@ export default function CompaniesPage() {
           <div className={styles["error-message"]}>
             <p className={styles["error-text"]}>{error}</p>
           </div>
+        )}
+
+        {activeCompanyId && (
+          <section className={styles["attachments-section"]}>
+            <div className={styles["attachments-row"]}>
+              {(["deck", "registry"] as const).map((type) => {
+                const existing = attachments.find((item) => item.type === type);
+                const label = type === "deck" ? "Investor Deck" : "Visura";
+                const filenameDisplay =
+                  typeof existing?.metadata?.filename === "string"
+                    ? existing.metadata.filename
+                    : typeof existing?.metadata?.filename === "number"
+                      ? existing.metadata.filename.toString()
+                      : "Documento salvato";
+                return (
+                  <div key={type} className={styles["attachment-card"]}>
+                  <div className={styles["attachment-card-head"]}>
+                    <div className={styles["attachment-card-title-row"]}>
+                      <FileText size={16} />
+                      <p className={styles["attachment-card-title"]}>{label}</p>
+                    </div>
+                    <p className={styles["attachment-card-status"]}>
+                      {existing ? (
+                        <>
+                            Caricato il {new Date(existing.uploaded_at).toLocaleDateString("it-IT")}{" "}
+                            {existing.uploaded_by ? `da ${existing.uploaded_by}` : ""}
+                          </>
+                        ) : (
+                          "Ancora da caricare"
+                        )}
+                      </p>
+                    </div>
+                    {existing ? (
+                      <>
+                        <a href={existing.url} target="_blank" rel="noreferrer" className={styles["attachment-link"]}>
+                          Visualizza file
+                        </a>
+                        <div className={styles["attachment-meta"]}>
+                          <FileText size={14} />
+                          <span>{filenameDisplay}</span>
+                        </div>
+                          <button
+                            type="button"
+                            className={styles["attachment-delete"]}
+                            onClick={() => handleAttachmentDelete(type)}
+                            disabled={attachmentDeletingType === type}
+                          >
+                            {attachmentDeletingType === type ? "Rimuovendo..." : "Rimuovi file"}
+                          </button>
+                      </>
+                    ) : (
+                      <p className={styles["attachment-placeholder"]}>Carica il file direttamente</p>
+                    )}
+                    <input
+                      type="file"
+                      ref={(node) => {
+                        attachmentFileRefs.current[type] = node;
+                      }}
+                      className="sr-only"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          handleAttachmentUpload(type, file);
+                        }
+                        event.target.value = "";
+                      }}
+                    />
+                    <div className={styles["attachment-input-row"]}>
+                      <button
+                        type="button"
+                        className={styles["attachment-button"]}
+                        onClick={() => handleAttachmentClick(type)}
+                        disabled={attachmentUploadingType === type}
+                      >
+                        {attachmentUploadingType === type ? "Caricamento..." : "Carica file"}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {!attachments.some((item) => item.url) && !attachmentLoading && (
+              <p className={styles["inline-note"]}>
+                I file caricati qui verranno condivisi anche nella sezione Dossier.
+              </p>
+            )}
+          </section>
         )}
 
         {/* Actions Bar */}

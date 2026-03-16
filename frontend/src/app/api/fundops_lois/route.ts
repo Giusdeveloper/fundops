@@ -72,17 +72,19 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: loisError.message }, { status: 500 });
     }
 
-    if (!lois || lois.length === 0) {
-      return NextResponse.json({ data: [] }, { status: 200 });
-    }
-
-    const loiIds = lois.map((loi: LoiRow) => loi.id);
+    const loisList = lois ?? [];
+    const loiIdsList = loisList.map((loi: LoiRow) => loi.id);
 
     // Recupera aggregati signers per ogni LOI
-    const { data: signers, error: signersError } = await supabase
-      .from("fundops_loi_signers")
-      .select("loi_id, status, expires_at_override, hard_signed_at")
-      .in("loi_id", loiIds);
+    const signersResponse =
+      loiIdsList.length > 0
+        ? await supabase
+            .from("fundops_loi_signers")
+            .select("loi_id, status, expires_at_override, hard_signed_at")
+            .in("loi_id", loiIdsList)
+        : { data: [], error: null };
+
+    const { data: signers, error: signersError } = signersResponse;
 
     if (signersError) {
       console.error("Error fetching signers:", signersError);
@@ -90,7 +92,7 @@ export async function GET(request: Request) {
     }
 
     // Calcola aggregati per ogni LOI
-    const loisWithAggregates = lois.map((loi: LoiRow) => {
+    const loisWithAggregates = loisList.map((loi: LoiRow) => {
       const loiSigners = (signers || []).filter((s: SignerRow) => s.loi_id === loi.id);
       
       // Count signers by status
@@ -122,7 +124,28 @@ export async function GET(request: Request) {
       };
     });
 
-    return NextResponse.json({ data: loisWithAggregates }, { status: 200 });
+    const { data: companyData, error: companyError } = await supabase
+      .from("fundops_companies")
+      .select("id, name, public_slug")
+      .eq("id", normalizedCompanyId)
+      .maybeSingle();
+
+    if (companyError) {
+      console.error("Error fetching company metadata:", companyError);
+      return NextResponse.json({ error: companyError.message }, { status: 500 });
+    }
+
+    if (!companyData) {
+      return NextResponse.json({ error: "Company not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      {
+        data: loisWithAggregates,
+        company: companyData,
+      },
+      { status: 200 }
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : "Errore sconosciuto";
     return NextResponse.json({ error: message }, { status: 500 });

@@ -62,7 +62,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
     }
 
-    const { company_id, full_name, email, phone, category, type, notes } = await request.json();
+    const {
+      company_id,
+      full_name,
+      email,
+      phone,
+      category,
+      investor_type,
+      linkedin,
+      motivation,
+      activity,
+      notes,
+    } = await request.json();
 
     if (!company_id || company_id.trim() === '') {
       return NextResponse.json(
@@ -89,6 +100,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const noteParts = [
+      typeof motivation === "string" && motivation.trim() ? `Motivazione: ${motivation.trim()}` : null,
+      typeof activity === "string" && activity.trim() ? `Attività / professione: ${activity.trim()}` : null,
+      typeof notes === "string" && notes.trim() ? notes.trim() : null,
+    ].filter(Boolean);
+
     const { data, error } = await supabase
       .from('fundops_investors')
       .insert({
@@ -98,8 +115,9 @@ export async function POST(request: Request) {
         email: String(email).trim().toLowerCase(),
         phone,
         category,
-        type,
-        notes,
+        investor_type: investor_type ?? category ?? null,
+        linkedin: typeof linkedin === "string" && linkedin.trim() ? linkedin.trim() : null,
+        notes: noteParts.length > 0 ? noteParts.join("\n\n") : null,
       })
       .select()
       .single();

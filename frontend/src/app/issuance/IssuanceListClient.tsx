@@ -173,7 +173,7 @@ export default function IssuanceListClient() {
   }
 
   function handleTutorialAction() {
-    tutorial.close(false);
+    tutorial.close(true);
     setTimeout(() => focusSection(tutorialStep), 120);
   }
 
@@ -191,7 +191,7 @@ export default function IssuanceListClient() {
             content={currentTutorial}
             states={tutorialStates}
             smartState={currentTutorialState}
-            onClose={() => tutorial.close(false)}
+            onClose={() => tutorial.close(true)}
             onSkip={() => tutorial.close(true)}
             onStepSelect={(step) => {
               tutorial.goToStep(step);

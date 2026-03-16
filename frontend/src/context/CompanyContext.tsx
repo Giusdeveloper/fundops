@@ -33,7 +33,7 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
     const bootstrapCompany = async () => {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        const response = await fetch("/api/my_companies");
+        const response = await fetch("/api/my_companies", { cache: "no-store" });
 
         if (!response.ok) {
           localStorage.removeItem(STORAGE_KEY);
@@ -74,10 +74,15 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
         const isValidCompany = companies.some((company: { id: string }) => company.id === stored);
 
         if (!isValidCompany) {
-          localStorage.removeItem(STORAGE_KEY);
+          const firstCompanyId = companies[0]?.id ?? null;
+          if (firstCompanyId) {
+            localStorage.setItem(STORAGE_KEY, firstCompanyId);
+          } else {
+            localStorage.removeItem(STORAGE_KEY);
+          }
           if (!cancelled) {
-            setActiveCompanyIdState(null);
-            setBootstrapState(companies.length > 0 ? "ready" : "no_companies");
+            setActiveCompanyIdState(firstCompanyId);
+            setBootstrapState(firstCompanyId ? "ready" : "no_companies");
           }
           return;
         }

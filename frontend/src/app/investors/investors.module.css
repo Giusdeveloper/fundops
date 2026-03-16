@@ -116,6 +116,32 @@
   border-color: var(--primary);
   color: var(--primary);
 }
+
+.import-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.import-button:disabled:hover {
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.inline-warning {
+  margin-top: 0.85rem;
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  background: rgba(120, 53, 15, 0.14);
+  color: #fcd34d;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
   
   .search-input {
     background: #020617;
@@ -422,6 +448,21 @@
     color: var(--text-secondary);
   }
 
+  .input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-secondary);
+    pointer-events: none;
+  }
+
   .form-input,
   .form-select,
   .form-textarea {
@@ -431,6 +472,10 @@
     padding: 0.45rem 0.75rem;
     font-size: 0.85rem;
     color: var(--text-primary);
+  }
+
+  .input-with-icon .form-input {
+    padding-left: 2.4rem;
   }
 
   .form-input:focus,

@@ -4,7 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useCompany } from "@/context/CompanyContext";
-import { Upload, Link2, UserPlus } from "lucide-react";
+import RequireCompany from "@/components/RequireCompany";
+import { Upload, Link2, UserPlus, Linkedin } from "lucide-react";
 import styles from "./investors.module.css";
 
 interface Investor {
@@ -36,6 +37,7 @@ interface LOI {
   ticket_amount: number;
   currency?: string;
   status?: string;
+  is_master?: boolean;
   created_at?: string;
 }
 
@@ -77,6 +79,7 @@ export default function InvestorsPage() {
   const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "loi-desc">("name-asc");
   const [loiCountByInvestorId, setLoiCountByInvestorId] = useState<Record<string, number>>({});
   const [companyName, setCompanyName] = useState<string | null>(null);
+  const [hasInvitableMasterLoi, setHasInvitableMasterLoi] = useState(false);
   const [kpis, setKpis] = useState<{
     totalInvestors: number;
     activeLois: number;
@@ -91,7 +94,9 @@ export default function InvestorsPage() {
     email: "",
     phone: "",
     category: "",
-    type: "",
+    linkedin: "",
+    motivation: "",
+    activity: "",
     notes: "",
   });
 
@@ -108,7 +113,7 @@ export default function InvestorsPage() {
 
       const url = `/api/fundops_investors?companyId=${companyId}`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, { cache: "no-store" });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -129,10 +134,11 @@ export default function InvestorsPage() {
     if (!companyId || companyId.trim() === '') return;
 
     try {
-      const response = await fetch(`/api/fundops_lois?companyId=${companyId}`);
+      const response = await fetch(`/api/fundops_lois?companyId=${companyId}&includeDraft=true`, { cache: "no-store" });
 
       if (!response.ok) {
         // Silent fail per le LOI, non è critico
+        setHasInvitableMasterLoi(false);
         return;
       }
 
@@ -146,8 +152,12 @@ export default function InvestorsPage() {
       });
 
       setLoiCountByInvestorId(counts);
+      setHasInvitableMasterLoi(
+        loisData.some((loi) => loi.is_master === true && loi.status === "sent")
+      );
     } catch (err) {
       // Silent fail per le LOI
+      setHasInvitableMasterLoi(false);
       console.error("Errore nel caricamento delle LOI:", err);
     }
   }, [companyId]);
@@ -160,7 +170,7 @@ export default function InvestorsPage() {
 
     try {
       setKpisLoading(true);
-      const response = await fetch(`/api/fundops_investors_kpi?companyId=${companyId}`);
+      const response = await fetch(`/api/fundops_investors_kpi?companyId=${companyId}`, { cache: "no-store" });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -203,7 +213,7 @@ export default function InvestorsPage() {
       fetchLois();
       fetchKpis();
       // Fetch company name
-      fetch(`/api/fundops_companies`)
+      fetch(`/api/fundops_companies`, { cache: "no-store" })
         .then((res) => res.json())
         .then((data: ApiResponse<Company> | Company[]) => {
           const companies = Array.isArray(data) ? data : data.data ?? [];
@@ -218,8 +228,16 @@ export default function InvestorsPage() {
       setCompanyName(null);
       setKpis(null);
       setLoiCountByInvestorId({});
+      setHasInvitableMasterLoi(false);
     }
   }, [companyId, fetchInvestors, fetchLois, fetchKpis]);
+
+  useEffect(() => {
+    if (!hasInvitableMasterLoi && showInviteForm) {
+      setShowInviteForm(false);
+      setInviteLink(null);
+    }
+  }, [hasInvitableMasterLoi, showInviteForm]);
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -275,7 +293,10 @@ export default function InvestorsPage() {
           email: form.email,
           phone: form.phone || null,
           category: form.category || null,
-          type: form.type || null,
+          investor_type: form.category || null,
+          linkedin: form.linkedin || null,
+          motivation: form.motivation || null,
+          activity: form.activity || null,
           notes: form.notes || null,
         }),
       });
@@ -291,7 +312,9 @@ export default function InvestorsPage() {
         email: "",
         phone: "",
         category: "",
-        type: "",
+        linkedin: "",
+        motivation: "",
+        activity: "",
         notes: "",
       });
 
@@ -399,11 +422,17 @@ export default function InvestorsPage() {
 
 
   return (
+    <RequireCompany
+      missingSelectionTitle="Nessuna company selezionata"
+      missingSelectionDescription="Seleziona una company per visualizzare i supporter collegati al tenant attivo."
+      missingSelectionCtaLabel="Vai alle companies"
+      missingSelectionCtaHref="/companies"
+    >
     <>
       <header className={styles["page-header"]}>
           <h1 className={styles["page-title"]}>Supporters</h1>
           <p className={styles["page-subtitle"]}>
-            Gestisci i supporter e le relazioni della raccolta per la company attiva.
+            Gestisci i supporter e le relazioni della raccolta per {companyName || "questa company"}.
           </p>
           <div className={styles["page-meta-row"]}>
             {companyId && (
@@ -546,7 +575,9 @@ export default function InvestorsPage() {
                 <button
                   type="button"
                   className={styles["import-button"]}
+                  disabled={!hasInvitableMasterLoi}
                   onClick={() => {
+                    if (!hasInvitableMasterLoi) return;
                     setShowInviteForm((prev) => !prev);
                     setInviteLink(null);
                   }}
@@ -580,6 +611,12 @@ export default function InvestorsPage() {
               </button>
             </div>
           </div>
+
+          {companyId && !hasInvitableMasterLoi && (
+            <div className={styles["inline-warning"]}>
+              Per invitare un supporter devi prima pubblicare una LOI master con stato <strong>sent</strong> per {companyName || "questa company"}.
+            </div>
+          )}
 
           {/* Invita form */}
           {showInviteForm && companyId && (
@@ -837,27 +874,73 @@ export default function InvestorsPage() {
                       className={styles["form-select"]}
                     >
                       <option value="">Seleziona</option>
-                      <option value="angel">Angel</option>
-                      <option value="vc">VC</option>
-                      <option value="institutional">Istituzionale</option>
-                      <option value="individual">Individual</option>
+                      <option value="Investor Customer">Investor Customer</option>
+                      <option value="Investor Supplier">Investor Supplier</option>
+                      <option value="Investor business development">Investor business development</option>
+                      <option value="Investor professional">Investor professional</option>
+                      <option value={'Investor "member get member"'}>
+                        Investor &quot;member get member&quot;
+                      </option>
+                      <option value={'Investor "exit"'}>
+                        Investor &quot;exit&quot;
+                      </option>
+                      <option value="Investor influencer">Investor influencer</option>
+                      <option value="Investor Advisor/Brand Awereness">Investor Advisor/Brand Awereness</option>
+                      <option value="Investor recruiter">Investor recruiter</option>
                     </select>
                   </div>
 
                   <div className={styles["form-field"]}>
-                    <label className={styles["form-label"]} htmlFor="type">
-                      Tipo
+                    <label className={styles["form-label"]} htmlFor="activity">
+                      Attività / professione
                     </label>
                     <input
                       type="text"
-                      id="type"
-                      name="type"
-                      value={form.type}
+                      id="activity"
+                      name="activity"
+                      value={form.activity}
                       onChange={handleChange}
                       className={styles["form-input"]}
-                      placeholder="es. smart, strategic, etc."
+                      placeholder="Ruolo, professione o area di attività"
                     />
                   </div>
+                </div>
+
+                <div className={styles["form-grid"]}>
+                  <div className={styles["form-field"]}>
+                    <label className={styles["form-label"]} htmlFor="linkedin">
+                      LinkedIn
+                    </label>
+                    <div className={styles["input-with-icon"]}>
+                      <span className={styles["input-icon"]} aria-hidden="true">
+                        <Linkedin size={16} />
+                      </span>
+                      <input
+                        type="url"
+                        id="linkedin"
+                        name="linkedin"
+                        value={form.linkedin}
+                        onChange={handleChange}
+                        className={styles["form-input"]}
+                        placeholder="https://linkedin.com/in/username"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles["form-field-full"]}>
+                  <label className={styles["form-label"]} htmlFor="motivation">
+                    Motivazione
+                  </label>
+                  <textarea
+                    id="motivation"
+                    name="motivation"
+                    value={form.motivation}
+                    onChange={handleChange}
+                    rows={3}
+                    className={styles["form-textarea"]}
+                    placeholder="Perché questo supporter è stato scelto"
+                  />
                 </div>
 
                 <div className={styles["form-field-full"]}>
@@ -956,6 +1039,7 @@ export default function InvestorsPage() {
           )}
         </div>
     </>
+    </RequireCompany>
   );
 }
 

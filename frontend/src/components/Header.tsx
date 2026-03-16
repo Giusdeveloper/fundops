@@ -74,7 +74,7 @@ const Header = ({ uiContext }: HeaderProps) => {
     if (path.startsWith("/investors")) {
       return {
         title: "Supporters",
-        subtitle: "Anagrafica, stato e relazione con investitori e supporter.",
+        subtitle: "Anagrafica, stato e relazione con supporter.",
       };
     }
     if (path.startsWith("/companies")) {
