@@ -222,6 +222,14 @@ export default function IssuanceListClient() {
             <button type="button" className={styles.tutorialLauncher} onClick={() => tutorial.reopen()}>
               Apri tutorial Issuance
             </button>
+            <div className={styles.toolbarActions}>
+              <Link href="/lois" className={styles.toolbarLink}>
+                Gestisci LOI
+              </Link>
+              <Link href="/investors" className={styles.toolbarLink}>
+                Vai ai supporter
+              </Link>
+            </div>
           </div>
         </header>
 
@@ -257,7 +265,17 @@ export default function IssuanceListClient() {
             {loading ? (
               <p className={styles.empty}>Caricamento...</p>
             ) : rows.length === 0 ? (
-              <p className={styles.empty}>Nessun investimento disponibile.</p>
+              <div className={styles.emptyState}>
+                <p className={styles.empty}>Nessun investimento disponibile.</p>
+                <div className={styles.emptyActions}>
+                  <Link href="/lois" className={styles.toolbarLink}>
+                    Apri LOI
+                  </Link>
+                  <Link href="/investors" className={styles.toolbarLink}>
+                    Vai ai supporter
+                  </Link>
+                </div>
+              </div>
             ) : (
               <div
                 ref={(node) => {

@@ -24,6 +24,10 @@
 
 .toolbar {
   margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
 }
 
 .tutorialLauncher {
@@ -34,6 +38,27 @@
   padding: 0.55rem 0.85rem;
   font: inherit;
   cursor: pointer;
+}
+
+.toolbarActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.toolbarLink {
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--text-primary);
+  padding: 0.55rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.toolbarLink:hover {
+  background: rgba(37, 99, 235, 0.2);
 }
 
 .tutorialSectionActive {
@@ -271,6 +296,18 @@
 .empty {
   color: var(--text-secondary);
   font-size: 0.9rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.emptyActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .error {

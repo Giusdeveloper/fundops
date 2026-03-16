@@ -611,6 +611,9 @@
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.34rem 0.58rem;
+  cursor: pointer;
+  font-family: inherit;
+  appearance: none;
 }
 
 .processCardCta:hover {

@@ -154,8 +154,8 @@ function computePhaseCards(
       message: issuingIsActive
         ? "Issuance attiva."
         : "Issuance non attiva.",
-      ctaLabel: issuingIsActive ? "Gestisci documenti" : "Configura Issuance",
-      ctaHref: issuingIsActive ? "/lois" : "/admin",
+      ctaLabel: issuingIsActive ? "Apri Issuance" : "Completa LOI",
+      ctaHref: issuingIsActive ? "/issuance" : "/lois",
       statusLabel: issuingIsActive ? "Attiva" : "Non attiva",
     },
     onboarding: {
@@ -470,6 +470,11 @@ export default function DashboardPage() {
       : companyPhase === "onboarding"
       ? "Onboarding"
       : "Booking";
+  const canActivateIssuance =
+    companyPhase === "booking" &&
+    Boolean(dashboardContext?.round?.booking_open) &&
+    (dashboardContext?.signedLoiCount ?? 0) > 0 &&
+    !dashboardContext?.round?.issuance_open;
   const committedValue = submittedCommittedTotal;
   const tutorialStates = useMemo<Record<DashboardTutorialStep, TutorialStepState>>(() => {
     const overviewReady = Boolean(dashboardData);
@@ -621,9 +626,7 @@ export default function DashboardPage() {
                 <p className={styles.nextActionTitle}>{nextAction.title}</p>
                 <p className={styles.nextActionMessage}>{nextAction.message}</p>
               </div>
-              {companyPhase === "booking" &&
-              Boolean(dashboardContext?.round?.booking_open) &&
-              (dashboardContext?.signedLoiCount ?? 0) > 0 ? (
+              {canActivateIssuance ? (
                 <button
                   type="button"
                   className={styles.ctaButton}
@@ -794,10 +797,21 @@ export default function DashboardPage() {
                         <span className={styles.kpiMiniLabel}>—</span>
                       </div>
                     </div>
-                    {phaseCards.issuance.ctaLabel && phaseCards.issuance.ctaHref && (
-                      <Link href={phaseCards.issuance.ctaHref} className={styles.processCardCta}>
-                        {phaseCards.issuance.ctaLabel}
-                      </Link>
+                    {canActivateIssuance ? (
+                      <button
+                        type="button"
+                        className={styles.processCardCta}
+                        onClick={() => setShowIssuanceModal(true)}
+                      >
+                        Configura Issuance
+                      </button>
+                    ) : (
+                      phaseCards.issuance.ctaLabel &&
+                      phaseCards.issuance.ctaHref && (
+                        <Link href={phaseCards.issuance.ctaHref} className={styles.processCardCta}>
+                          {phaseCards.issuance.ctaLabel}
+                        </Link>
+                      )
                     )}
                   </article>
 
