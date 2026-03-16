@@ -206,8 +206,8 @@ function getNextActionState(
       tone: "warning" as const,
       title: "Next Action",
       message: "Non ci sono round attivi per questa company. Crea un nuovo round o aggiorna la LOI.",
-      ctaLabel: "Vai a companies",
-      ctaHref: "/companies",
+      ctaLabel: "Vai a LOI",
+      ctaHref: "/lois",
     };
   }
   if (round.booking_open && metrics.loiSignedCount === 0) {
@@ -246,7 +246,7 @@ function getNextActionState(
     message:
       "Booking chiuso senza LOI firmate. Rivedi target/inviti o apri un nuovo round.",
     ctaLabel: "Crea nuovo round",
-    ctaHref: "/companies",
+    ctaHref: "/lois",
   };
 }
 
