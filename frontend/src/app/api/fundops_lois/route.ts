@@ -234,7 +234,24 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error("[fundops_lois] insert error", {
+        message: error.message,
+        code: error.code ?? null,
+        details: error.details ?? null,
+        hint: error.hint ?? null,
+      });
+      const isRls =
+        typeof error.message === "string" &&
+        error.message.toLowerCase().includes("row-level security");
+      return NextResponse.json(
+        {
+          error: error.message,
+          code: error.code ?? null,
+          details: error.details ?? null,
+          hint: error.hint ?? null,
+        },
+        { status: isRls ? 403 : 500 }
+      );
     }
 
     // Crea automaticamente l'evento "created" per la nuova LOI
