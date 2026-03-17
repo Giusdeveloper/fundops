@@ -185,7 +185,10 @@ export default function LoiDetailClient({
         <header className={styles["loi-header"]}>
         <div className={styles["loi-header-top"]}>
           <h1 className={styles["page-title"]}>
-            LOI {loi.loi_number || loi.id}
+            {(() => {
+              const label = loi.loi_number || loi.id;
+              return label.toUpperCase().startsWith("LOI") ? label : `LOI ${label}`;
+            })()}
           </h1>
           <LoiActions
             status={normalizedStatus}
