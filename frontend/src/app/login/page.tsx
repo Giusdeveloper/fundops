@@ -7,6 +7,10 @@ import { useSearchParams } from 'next/navigation';
 import { createClient } from "@/lib/supabase/client";
 import { Suspense } from "react";
 
+function isValidEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
 function LoginPageContent() {
   // Typewriter effect lento, testo su una riga
   const fullText = "FundOps – Gestisci Booking, Issuance e Onboarding in un unico flusso.";
@@ -123,6 +127,7 @@ function LoginPageContent() {
   const [mode, setMode] = useState<'login' | 'register'>("login");
   const [registerRole, setRegisterRole] = useState<"founder" | "investor">("founder");
   const [loading, setLoading] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") ?? "";
 
@@ -135,11 +140,18 @@ function LoginPageContent() {
     setMessage(null);
     setLoading(true);
 
+    const trimmedEmail = email.trim();
+    if (!isValidEmail(trimmedEmail)) {
+      setMessage("Email non valida");
+      setLoading(false);
+      return;
+    }
+
     const supabase = createClient();
 
     try {
       if (mode === "register") {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({ email: trimmedEmail, password });
         if (error) {
           setMessage(error.message);
           return;
@@ -159,7 +171,10 @@ function LoginPageContent() {
       }
 
       // login
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({
+        email: trimmedEmail,
+        password,
+      });
       if (error) {
         setMessage(error.message);
         return;
@@ -223,6 +238,36 @@ function LoginPageContent() {
     }
   }
 
+  async function handlePasswordReset(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault();
+    setMessage(null);
+
+    const trimmedEmail = email.trim();
+    if (!isValidEmail(trimmedEmail)) {
+      setMessage("Inserisci un'email valida per il reset password.");
+      return;
+    }
+
+    setResetting(true);
+    try {
+      const supabase = createClient();
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const redirectUrl = origin
+        ? `${origin}/auth/callback?redirect=/account`
+        : undefined;
+      const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+        redirectTo: redirectUrl,
+      });
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+      setMessage("Email di reset inviata. Controlla la casella di posta.");
+    } finally {
+      setResetting(false);
+    }
+  }
+
   return (
     <div className="login-page">
       <canvas ref={canvasRef} className="login-network-bg" />
@@ -269,7 +314,9 @@ function LoginPageContent() {
               </div>
             </div>
           )}
-          <a href="#" className="login-forgot">Password dimenticata?</a>
+          <a href="#" className="login-forgot" onClick={handlePasswordReset}>
+            {resetting ? "Invio reset..." : "Password dimenticata?"}
+          </a>
           <button type="submit" disabled={loading}>
             {loading ? "Attendi…" : mode === "register" ? "Registrati" : "Accedi"}
           </button>

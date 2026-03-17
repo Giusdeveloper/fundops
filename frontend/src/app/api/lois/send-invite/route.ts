@@ -21,6 +21,7 @@ type RoundState = {
   issuance_open: boolean | null;
 };
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -219,7 +220,7 @@ export async function POST(request: NextRequest) {
     if (!UUID_RE.test(companyId)) {
       return json(400, { error: "Invalid companyId" });
     }
-    if (!toEmail || !toEmail.includes("@")) {
+    if (!toEmail || !EMAIL_RE.test(toEmail)) {
       return json(400, { error: "Invalid toEmail" });
     }
 

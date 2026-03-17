@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { canAccessCompany, getUserRoleContext, isGlobalFundopsRole } from '@/lib/companyAccess';
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function GET(request: Request) {
   try {
     const supabase = await createClient();
@@ -87,6 +89,9 @@ export async function POST(request: Request) {
         { error: 'full_name and email are required' },
         { status: 400 }
       );
+    }
+    if (!EMAIL_RE.test(String(email).trim())) {
+      return NextResponse.json({ error: "Email non valida" }, { status: 400 });
     }
 
     const normalizedCompanyId = company_id.trim();

@@ -107,6 +107,7 @@ export default function LOIFormComplete({ isOpen, onClose, onGenerate }: LOIForm
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isClient, setIsClient] = useState(false);
+  const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
   // Controlla se siamo nel browser
   useEffect(() => {
@@ -168,6 +169,14 @@ export default function LOIFormComplete({ isOpen, onClose, onGenerate }: LOIForm
     if (!formData.companyFullName.trim()) newErrors.companyFullName = 'La denominazione completa è obbligatoria';
     if (!formData.companyAddress.trim()) newErrors.companyAddress = 'L\'indirizzo è obbligatorio';
     if (!formData.companyVAT.trim()) newErrors.companyVAT = 'La P.IVA è obbligatoria';
+    if (!formData.companyEmail.trim()) {
+      newErrors.companyEmail = "L'email aziendale è obbligatoria";
+    } else if (!isValidEmail(formData.companyEmail)) {
+      newErrors.companyEmail = "Email aziendale non valida";
+    }
+    if (formData.companyPEC.trim() && !isValidEmail(formData.companyPEC)) {
+      newErrors.companyPEC = "PEC non valida";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -572,9 +581,10 @@ export default function LOIFormComplete({ isOpen, onClose, onGenerate }: LOIForm
                   id="companyEmail"
                   value={formData.companyEmail}
                   onChange={(e) => handleInputChange('companyEmail', e.target.value)}
-                  className="form-input"
+                  className={`form-input ${errors.companyEmail ? 'error' : ''}`}
                   placeholder="info@smartequity.it"
                 />
+                {errors.companyEmail && <span className="error-message">{errors.companyEmail}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="companyPEC" className="form-label">PEC</label>
@@ -583,9 +593,10 @@ export default function LOIFormComplete({ isOpen, onClose, onGenerate }: LOIForm
                   id="companyPEC"
                   value={formData.companyPEC}
                   onChange={(e) => handleInputChange('companyPEC', e.target.value)}
-                  className="form-input"
+                  className={`form-input ${errors.companyPEC ? 'error' : ''}`}
                   placeholder="smartequity@pec.it"
                 />
+                {errors.companyPEC && <span className="error-message">{errors.companyPEC}</span>}
               </div>
             </div>
 
@@ -650,3 +661,4 @@ export default function LOIFormComplete({ isOpen, onClose, onGenerate }: LOIForm
     </div>
   );
 }
+

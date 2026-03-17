@@ -10,6 +10,8 @@ function err(msg: string, status: number) {
   });
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function POST(request: NextRequest) {
   const supabase = supabaseServer;
   const supabaseAuth = await createClient();
@@ -37,6 +39,9 @@ export async function POST(request: NextRequest) {
 
   if (!emailRaw || emailRaw.length < 3) {
     return err("Email richiesta e valida", 400);
+  }
+  if (!EMAIL_RE.test(emailRaw)) {
+    return err("Email non valida", 400);
   }
 
   if (!companyId) {

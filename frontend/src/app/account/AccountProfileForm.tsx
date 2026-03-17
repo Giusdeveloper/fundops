@@ -44,6 +44,8 @@ export default function AccountProfileForm({
   const [savingPassword, setSavingPassword] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
+  const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
   useEffect(() => {
     if (!avatarFile) {
       setAvatarPreviewUrl(null);
@@ -123,10 +125,16 @@ export default function AccountProfileForm({
     event.preventDefault();
     if (savingEmail) return;
 
+    const trimmedEmail = emailValue.trim();
+    if (!isValidEmail(trimmedEmail)) {
+      showToast("Email non valida", "error");
+      return;
+    }
+
     try {
       setSavingEmail(true);
       const supabase = createClient();
-      const { error } = await supabase.auth.updateUser({ email: emailValue.trim() });
+      const { error } = await supabase.auth.updateUser({ email: trimmedEmail });
       if (error) throw error;
       showToast("Richiesta cambio email inviata. Controlla la casella di posta.", "success");
       router.refresh();

@@ -89,6 +89,8 @@ export default function InvestorsPage() {
   } | null>(null);
   const [kpisLoading, setKpisLoading] = useState<boolean>(false);
 
+  const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
   const [form, setForm] = useState({
     full_name: "",
     email: "",
@@ -242,6 +244,10 @@ export default function InvestorsPage() {
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyId || !inviteEmail.trim()) return;
+    if (!isValidEmail(inviteEmail)) {
+      setError("Email non valida");
+      return;
+    }
     setInviteLoading(true);
     setInviteLink(null);
     setError(null);
@@ -277,6 +283,10 @@ export default function InvestorsPage() {
     e.preventDefault();
 
     if (!form.full_name || !form.email || !companyId) {
+      return;
+    }
+    if (!isValidEmail(form.email)) {
+      setError("Email non valida");
       return;
     }
 

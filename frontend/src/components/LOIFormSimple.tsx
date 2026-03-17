@@ -72,6 +72,7 @@ export default function LOIFormSimple({ isOpen, onClose, onGenerate, editData }:
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
   useEffect(() => {
     if (editData) {
@@ -122,7 +123,11 @@ export default function LOIFormSimple({ isOpen, onClose, onGenerate, editData }:
 
     if (!formData.investorId) newErrors.investorId = 'Seleziona un investitore';
     if (!formData.investorName.trim()) newErrors.investorName = 'Il nome è obbligatorio';
-    if (!formData.investorEmail.trim()) newErrors.investorEmail = 'L\'email è obbligatoria';
+    if (!formData.investorEmail.trim()) {
+      newErrors.investorEmail = 'L\'email è obbligatoria';
+    } else if (!isValidEmail(formData.investorEmail)) {
+      newErrors.investorEmail = 'Email non valida';
+    }
     if (!formData.loiNumber.trim()) newErrors.loiNumber = 'Il numero LOI è obbligatorio';
     if (!formData.sfpValue || formData.sfpValue <= 0) newErrors.sfpValue = 'Il valore SFP deve essere maggiore di 0';
 
@@ -466,4 +471,5 @@ export default function LOIFormSimple({ isOpen, onClose, onGenerate, editData }:
     </div>
   );
 }
+
 
