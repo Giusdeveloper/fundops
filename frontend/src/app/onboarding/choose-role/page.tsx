@@ -46,7 +46,7 @@ export default function ChooseRolePage() {
             onClick={() => handleChooseRole("investor")}
             disabled={loadingRole !== null}
           >
-            {loadingRole === "investor" ? "Salvataggio..." : "Sono un investitore"}
+            {loadingRole === "investor" ? "Salvataggio..." : "Sono un supporter"}
           </button>
           <button
             type="button"
@@ -54,7 +54,7 @@ export default function ChooseRolePage() {
             onClick={() => handleChooseRole("founder")}
             disabled={loadingRole !== null}
           >
-            {loadingRole === "founder" ? "Salvataggio..." : "Sono founder"}
+            {loadingRole === "founder" ? "Salvataggio..." : "Sono una startup"}
           </button>
         </div>
 

@@ -121,6 +121,7 @@ function LoginPageContent() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [mode, setMode] = useState<'login' | 'register'>("login");
+  const [registerRole, setRegisterRole] = useState<"founder" | "investor">("founder");
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") ?? "";
@@ -143,6 +144,13 @@ function LoginPageContent() {
           setMessage(error.message);
           return;
         }
+        try {
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem("fundops_pending_role", registerRole);
+          }
+        } catch {
+          // no-op: localStorage not available
+        }
         setMessage("Registrazione avvenuta! Controlla la tua email per confermare.");
         setMode("login");
         setEmail("");
@@ -157,6 +165,31 @@ function LoginPageContent() {
         return;
       }
       setMessage("Login effettuato! Benvenuto.");
+
+      // Se l'utente ha scelto un ruolo in fase di registrazione, lo applichiamo al primo login
+      try {
+        if (typeof window !== "undefined") {
+          const pendingRole = window.localStorage.getItem("fundops_pending_role");
+          if (pendingRole === "founder" || pendingRole === "investor") {
+            const roleRes = await fetch("/api/profile/view-mode", { cache: "no-store" });
+            const roleJson = await roleRes.json().catch(() => null);
+            if (roleRes.ok && roleJson?.role_global == null) {
+              const setRoleRes = await fetch("/api/auth/set-role", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ role: pendingRole }),
+              });
+              if (setRoleRes.ok) {
+                window.localStorage.removeItem("fundops_pending_role");
+              }
+            } else if (roleRes.ok && roleJson?.role_global) {
+              window.localStorage.removeItem("fundops_pending_role");
+            }
+          }
+        }
+      } catch {
+        // non bloccare il login per il set ruolo
+      }
 
       // 1) se l'URL contiene ?redirect=..., lo rispettiamo (deep link)
       const redirectNow =
@@ -215,6 +248,27 @@ function LoginPageContent() {
               </span>
             </div>
           </div>
+          {mode === "register" && (
+            <div className="login-role-select">
+              <div className="login-role-label">Sei una startup o un supporter?</div>
+              <div className="login-role-buttons" role="group" aria-label="Seleziona il profilo">
+                <button
+                  type="button"
+                  className={`login-role-btn ${registerRole === "founder" ? "active" : ""}`}
+                  onClick={() => setRegisterRole("founder")}
+                >
+                  Startup
+                </button>
+                <button
+                  type="button"
+                  className={`login-role-btn ${registerRole === "investor" ? "active" : ""}`}
+                  onClick={() => setRegisterRole("investor")}
+                >
+                  Supporter
+                </button>
+              </div>
+            </div>
+          )}
           <a href="#" className="login-forgot">Password dimenticata?</a>
           <button type="submit" disabled={loading}>
             {loading ? "Attendi…" : mode === "register" ? "Registrati" : "Accedi"}
