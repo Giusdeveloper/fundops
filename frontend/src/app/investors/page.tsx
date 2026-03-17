@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useCompany } from "@/context/CompanyContext";
 import RequireCompany from "@/components/RequireCompany";
-import { Upload, Link2, UserPlus, Linkedin } from "lucide-react";
+import { Upload, Link2, UserPlus, Linkedin, FileText } from "lucide-react";
 import styles from "./investors.module.css";
 
 interface Investor {
@@ -593,6 +593,14 @@ export default function InvestorsPage() {
                 <Upload size={16} />
                 Importa CSV
               </Link>
+              <a
+                href="/templates/supporters-import-template.csv"
+                className={styles["import-button"]}
+                download
+              >
+                <FileText size={16} />
+                Template CSV
+              </a>
               {isSuperAdmin ? (
                 <Link
                   href="/investors/reconcile"
@@ -610,6 +618,11 @@ export default function InvestorsPage() {
                 {showForm ? "Chiudi form" : "+ Nuovo supporter"}
               </button>
             </div>
+          </div>
+
+          <div className={styles["import-help"]}>
+            Template CSV per supporter. Campo obbligatorio: <strong>full_name</strong>. Email consigliata per dedupe.
+            Campi supportati: full_name, email, phone, linkedin, investor_type_raw, source_type_raw, motivazione, attivita, note, company, ragione_sociale.
           </div>
 
           {companyId && !hasInvitableMasterLoi && (
