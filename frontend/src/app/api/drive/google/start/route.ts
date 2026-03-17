@@ -73,12 +73,17 @@ export async function GET(request: NextRequest) {
   const unauthorized = await authorizeCompanyAccess(supabase, user.id, companyId);
   if (unauthorized) return unauthorized;
 
-  const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
+  const clientId =
+    process.env.GOOGLE_CLIENT_ID?.trim() ||
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim();
   const redirectUri =
     process.env.GOOGLE_REDIRECT_URI?.trim() ||
     `${request.nextUrl.origin}/api/drive/google/callback`;
   if (!clientId || !redirectUri) {
-    return json(500, { error: "Google OAuth env missing" });
+    const missing = [];
+    if (!clientId) missing.push("GOOGLE_CLIENT_ID");
+    if (!redirectUri) missing.push("GOOGLE_REDIRECT_URI");
+    return json(500, { error: "Google OAuth env missing", missing });
   }
 
   const redirect = safeRelativePath(
