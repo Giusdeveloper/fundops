@@ -1935,6 +1935,17 @@
   color: var(--text-primary);
 }
 
+.create-loi-input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.create-loi-input[type="number"]::-webkit-outer-spin-button,
+.create-loi-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .create-loi-actions {
   margin-top: 0.9rem;
   display: flex;
