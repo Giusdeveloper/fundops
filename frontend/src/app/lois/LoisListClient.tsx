@@ -46,7 +46,6 @@ export default function LoisListClient() {
   });
   const [lois, setLois] = useState<LOI[]>([]);
   const [company, setCompany] = useState<Company | null>(null);
-  const [includeDraft, setIncludeDraft] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -71,7 +70,7 @@ export default function LoisListClient() {
     setError(null);
     try {
       const response = await fetch(
-        `/api/fundops_lois?companyId=${encodeURIComponent(companyId)}&includeDraft=${includeDraft}`
+        `/api/fundops_lois?companyId=${encodeURIComponent(companyId)}&includeDraft=true`
       );
       const payload: ApiResponse = await response
         .json()
@@ -87,7 +86,7 @@ export default function LoisListClient() {
     } finally {
       setLoading(false);
     }
-  }, [companyId, includeDraft]);
+  }, [companyId]);
 
   useEffect(() => {
     if (!companyId) {
@@ -135,7 +134,7 @@ export default function LoisListClient() {
   const tutorialStates = useMemo<Record<LoiTutorialStep, TutorialStepState>>(() => {
     const hasContext = Boolean(companyId);
     const hasOperationalList = sortedLois.length > 0;
-    const filterTouched = includeDraft;
+    const filterTouched = false;
 
     return {
       overview: hasContext
@@ -155,11 +154,10 @@ export default function LoisListClient() {
           },
       filters: hasContext
         ? {
-            status: filterTouched ? "attention" : "complete",
-            statusLabel: filterTouched ? "Personalizzato" : "Pronto",
-            smartMessage: filterTouched
-              ? "Hai scelto di mostrare anche i draft. Assicurati di distinguere bene bozze e documenti operativi."
-              : "Stai vedendo solo le LOI operative. È la vista migliore per lavorare senza rumore.",
+            status: "complete",
+            statusLabel: "Pronto",
+            smartMessage:
+              "Stai vedendo anche le bozze: ogni LOI creata appare subito in lista.",
             ctaLabel: "Controlla i filtri",
             ctaIntent: "focus",
           }
@@ -182,13 +180,13 @@ export default function LoisListClient() {
             status: hasContext ? "attention" : "pending",
             statusLabel: hasContext ? "Vuota" : "In attesa",
             smartMessage: hasContext
-              ? "La lista è vuota. Potresti essere in una company senza LOI o aver bisogno di mostrare anche i draft."
+              ? "La lista è vuota. Potresti essere in una company senza LOI o non ne hai ancora create."
               : "La lista si popolerà dopo aver selezionato una company e caricato le LOI.",
             ctaLabel: "Vai alla lista LOI",
             ctaIntent: "focus",
           },
     };
-  }, [company?.name, companyId, includeDraft, sortedLois.length]);
+  }, [company?.name, companyId, sortedLois.length]);
   const tutorial = useTutorial<LoiTutorialStep>({
     storageKey: loiTutorialDefinition.storageKey,
     steps: loiTutorialSteps.map((step) => step.id),
@@ -539,14 +537,9 @@ export default function LoisListClient() {
             }}
             className={`${styles["filters-bar"]} ${tutorial.isOpen && tutorialStep === "filters" ? styles["tutorial-section-active"] : ""}`}
           >
-            <label className={styles["filter-toggle"]}>
-              <input
-                type="checkbox"
-                checked={includeDraft}
-                onChange={(e) => setIncludeDraft(e.target.checked)}
-              />
-              <span>Mostra anche draft</span>
-            </label>
+            <div className={styles["filter-toggle"]}>
+              <span>Bozze incluse per default</span>
+            </div>
           </div>
 
           {error && (
@@ -560,7 +553,7 @@ export default function LoisListClient() {
           ) : sortedLois.length === 0 ? (
             <div className={styles["empty-state"]}>
               <p className={styles["empty-text"]}>
-                Nessuna LOI trovata. {!includeDraft && "Attiva 'Mostra anche draft' per vedere le bozze."}
+                Nessuna LOI trovata.
               </p>
               <div className={styles["empty-actions"]}>
                 <Link href="/dossier" className={styles["empty-action-link"]}>

@@ -171,6 +171,7 @@ export async function POST(request: Request) {
       company_id,
       round_name,
       title,
+      loi_number,
       master_expires_at,
       recommended_min_signers,
       recommended_target_signers,
@@ -196,6 +197,12 @@ export async function POST(request: Request) {
     }
 
     const normalizedCompanyId = company_id.trim();
+    const normalizedTitle = title.trim();
+    const fallbackNumber = `LOI-${Date.now()}`;
+    const normalizedNumber =
+      typeof loi_number === "string" && loi_number.trim()
+        ? loi_number.trim()
+        : fallbackNumber;
     const roleContext = await getUserRoleContext(supabase, user.id);
     if (!roleContext.isActive) {
       return NextResponse.json({ error: "Accesso disabilitato" }, { status: 403 });
@@ -217,7 +224,8 @@ export async function POST(request: Request) {
         company_id: normalizedCompanyId,
         investor_id: null, // Non più obbligatorio
         round_name: round_name ?? null,
-        title,
+        title: normalizedTitle,
+        loi_number: normalizedNumber,
         master_expires_at: master_expires_at ?? null,
         recommended_min_signers: recommended_min_signers ?? 5,
         recommended_target_signers: recommended_target_signers ?? 10,
