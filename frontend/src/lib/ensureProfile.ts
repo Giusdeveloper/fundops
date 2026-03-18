@@ -73,6 +73,28 @@ export async function ensureProfile(): Promise<Profile | null> {
     ? (user.user_metadata.pending_role as PendingRole)
     : null;
 
+  const pendingFullName =
+    typeof user.user_metadata?.full_name === "string"
+      ? user.user_metadata.full_name.trim()
+      : "";
+
+  if (pendingFullName && !profile.full_name) {
+    const { error: nameUpdateError } = await supabase
+      .from("profiles")
+      .update({ full_name: pendingFullName })
+      .eq("id", user.id);
+    if (nameUpdateError) {
+      console.error("[ensureProfile] full_name update:", {
+        message: nameUpdateError?.message,
+        details: nameUpdateError?.details,
+        hint: nameUpdateError?.hint,
+        code: nameUpdateError?.code,
+      });
+    } else {
+      (profile as Profile).full_name = pendingFullName;
+    }
+  }
+
   if (!profile.role_global && pendingRole) {
     nextRole = pendingRole;
   }

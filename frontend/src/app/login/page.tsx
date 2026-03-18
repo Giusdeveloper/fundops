@@ -121,6 +121,7 @@ function LoginPageContent() {
   }, []);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -151,10 +152,14 @@ function LoginPageContent() {
 
     try {
       if (mode === "register") {
+        if (!fullName.trim()) {
+          setMessage("Inserisci nome e cognome");
+          return;
+        }
         const { error } = await supabase.auth.signUp({
           email: trimmedEmail,
           password,
-          options: { data: { pending_role: registerRole } },
+          options: { data: { pending_role: registerRole, full_name: fullName.trim() } },
         });
         if (error) {
           setMessage(error.message);
@@ -169,6 +174,7 @@ function LoginPageContent() {
         }
         setMessage("Registrazione avvenuta! Controlla la tua email per confermare.");
         setMode("login");
+        setFullName("");
         setEmail("");
         setPassword("");
         return;
@@ -281,6 +287,16 @@ function LoginPageContent() {
         <form className="login-form-glass" onSubmit={handleSubmit}>
         <div className="login-divider"><span>accedi</span></div>
           <div className="login-inputs-wrapper">
+            {mode === "register" && (
+              <input
+                type="text"
+                placeholder="Nome e cognome"
+                autoComplete="name"
+                required
+                value={fullName}
+                onChange={e => setFullName(e.target.value)}
+              />
+            )}
             <input type="email" placeholder="Email" autoComplete="username" required value={email} onChange={e => setEmail(e.target.value)} />
             <div className="input-password-wrapper">
               <input
