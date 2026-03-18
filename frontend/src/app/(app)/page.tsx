@@ -8,11 +8,16 @@ function getFirstParam(value: string | string[] | undefined): string | undefined
   return Array.isArray(value) ? value[0] : value;
 }
 
-export default function Home({ searchParams }: { searchParams?: SearchParams }) {
-  const code = getFirstParam(searchParams?.code);
-  const error = getFirstParam(searchParams?.error);
-  const errorCode = getFirstParam(searchParams?.error_code);
-  const errorDescription = getFirstParam(searchParams?.error_description);
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<SearchParams>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const code = getFirstParam(resolvedSearchParams?.code);
+  const error = getFirstParam(resolvedSearchParams?.error);
+  const errorCode = getFirstParam(resolvedSearchParams?.error_code);
+  const errorDescription = getFirstParam(resolvedSearchParams?.error_description);
 
   if (code || error || errorCode || errorDescription) {
     const query = new URLSearchParams();
