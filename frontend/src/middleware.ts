@@ -158,12 +158,6 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/api/auth/home-route") ||
     pathname.startsWith("/api/auth/set-role");
 
-  if (isRoleMissing && isProtectedPath(pathname) && !isChooseRolePath && !isRoleApiPath) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/onboarding/choose-role";
-    return NextResponse.redirect(url);
-  }
-
   if (!isRoleMissing && isChooseRolePath) {
     const { data: homeRouteData } = await supabase.rpc("get_home_route");
     const homeRoute =

@@ -72,3 +72,5 @@ Linee guida per agenti AI che lavorano su questo repository.
 - 2026-03-17 | Codex | Fix onboarding ruolo (scelta startup/supporter), template CSV supporter con istruzioni, LOI: spinner numero round, draft sempre visibili, numero LOI generato e doppio prefisso evitato; migrazioni per policy insert LOI e allineamento schema (expiry_date/title/round_name).
 - 2026-03-17 | Codex | Centralizzata notifica email FundOps via backend: helper Resend condiviso e nuova API interna `/api/fundops/notify` con `INTERNAL_API_SECRET`.
 - 2026-03-17 | Codex | Validazioni email rafforzate in UI/API e trigger reset password da login per evitare invii Supabase con email invalide.
+- 2026-03-18 | Codex | Documentata configurazione SMTP Supabase via Resend e template email brandizzati.
+- 2026-03-18 | Codex | Auto-assegnazione role_global da metadata/presenza account e rimozione redirect forzato su onboarding choose-role.

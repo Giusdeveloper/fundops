@@ -151,7 +151,11 @@ function LoginPageContent() {
 
     try {
       if (mode === "register") {
-        const { error } = await supabase.auth.signUp({ email: trimmedEmail, password });
+        const { error } = await supabase.auth.signUp({
+          email: trimmedEmail,
+          password,
+          options: { data: { pending_role: registerRole } },
+        });
         if (error) {
           setMessage(error.message);
           return;
