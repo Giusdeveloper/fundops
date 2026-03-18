@@ -157,10 +157,18 @@ function LoginPageContent() {
           setMessage("Inserisci nome e cognome");
           return;
         }
+        const origin =
+          typeof window !== "undefined"
+            ? window.location.origin
+            : process.env.NEXT_PUBLIC_SITE_URL ?? "";
+        const emailRedirectTo = origin ? `${origin}/auth/callback` : undefined;
         const { error } = await supabase.auth.signUp({
           email: trimmedEmail,
           password,
-          options: { data: { pending_role: registerRole, full_name: fullName.trim() } },
+          options: {
+            data: { pending_role: registerRole, full_name: fullName.trim() },
+            emailRedirectTo,
+          },
         });
         if (error) {
           setMessage(error.message);
@@ -292,9 +300,15 @@ function LoginPageContent() {
     setResendingConfirm(true);
     try {
       const supabase = createClient();
+      const origin =
+        typeof window !== "undefined"
+          ? window.location.origin
+          : process.env.NEXT_PUBLIC_SITE_URL ?? "";
+      const emailRedirectTo = origin ? `${origin}/auth/callback` : undefined;
       const { error } = await supabase.auth.resend({
         type: "signup",
         email: trimmedEmail,
+        options: { emailRedirectTo },
       });
       if (error) {
         setMessage(error.message);

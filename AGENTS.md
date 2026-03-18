@@ -74,6 +74,7 @@ Linee guida per agenti AI che lavorano su questo repository.
 - 2026-03-17 | Codex | Validazioni email rafforzate in UI/API e trigger reset password da login per evitare invii Supabase con email invalide.
 - 2026-03-18 | Codex | Root landing page: redirect verso `/auth/callback` quando presenti `code` o errori nel querystring per gestire magic link e conferme.
 - 2026-03-18 | Codex | Adeguato typing Next.js 15: `searchParams` come Promise nella landing page per build vercel.
+- 2026-03-18 | Codex | Forzato `emailRedirectTo` su signup e resend conferma verso `/auth/callback`.
 - 2026-03-18 | Codex | Documentata configurazione SMTP Supabase via Resend e template email brandizzati.
 - 2026-03-18 | Codex | Auto-assegnazione role_global da metadata/presenza account e rimozione redirect forzato su onboarding choose-role.
 - 2026-03-18 | Codex | Aggiunto reinvio email di conferma dal login per OTP scaduti.
