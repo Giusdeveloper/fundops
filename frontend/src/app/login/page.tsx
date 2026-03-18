@@ -129,6 +129,7 @@ function LoginPageContent() {
   const [registerRole, setRegisterRole] = useState<"founder" | "investor">("founder");
   const [loading, setLoading] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [resendingConfirm, setResendingConfirm] = useState(false);
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") ?? "";
 
@@ -278,6 +279,33 @@ function LoginPageContent() {
     }
   }
 
+  async function handleResendConfirmation(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault();
+    setMessage(null);
+
+    const trimmedEmail = email.trim();
+    if (!isValidEmail(trimmedEmail)) {
+      setMessage("Inserisci un'email valida per reinviare la conferma.");
+      return;
+    }
+
+    setResendingConfirm(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: trimmedEmail,
+      });
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+      setMessage("Email di conferma reinviata. Controlla la casella di posta.");
+    } finally {
+      setResendingConfirm(false);
+    }
+  }
+
   return (
     <div className="login-page">
       <canvas ref={canvasRef} className="login-network-bg" />
@@ -336,6 +364,9 @@ function LoginPageContent() {
           )}
           <a href="#" className="login-forgot" onClick={handlePasswordReset}>
             {resetting ? "Invio reset..." : "Password dimenticata?"}
+          </a>
+          <a href="#" className="login-forgot" onClick={handleResendConfirmation}>
+            {resendingConfirm ? "Invio conferma..." : "Reinvia email di conferma"}
           </a>
           <button type="submit" disabled={loading}>
             {loading ? "Attendi…" : mode === "register" ? "Registrati" : "Accedi"}
