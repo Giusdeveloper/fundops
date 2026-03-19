@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const error = searchParams.get("error");
+  const queryError = searchParams.get("error");
   const errorCode = searchParams.get("error_code");
   const errorDescription = searchParams.get("error_description");
   const redirectParam = searchParams.get("redirect");
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   };
 
   if (!code) {
-    if (error || errorCode || errorDescription) {
+    if (queryError || errorCode || errorDescription) {
       const friendlyMessage =
         "Link non valido o scaduto. Se hai gia confermato l'email, prova ad accedere.";
       const query = new URLSearchParams();
@@ -34,8 +34,8 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) {
+  const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+  if (exchangeError) {
     return NextResponse.redirect(`${origin}/login?error=oauth`);
   }
 
