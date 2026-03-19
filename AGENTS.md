@@ -79,6 +79,7 @@ Linee guida per agenti AI che lavorano su questo repository.
 - 2026-03-19 | Codex | Company create: RPC `create_company_with_admin_seat` per founder/imment con seat admin automatico.
 - 2026-03-19 | Codex | Registrazione: rimossa scelta startup/supporter e separati campi nome/cognome obbligatori.
 - 2026-03-19 | Codex | Forzato uso `NEXT_PUBLIC_SITE_URL` per `emailRedirectTo` nelle email di conferma/reset.
+- 2026-03-19 | Codex | Iniziali profilo: usa prima/ultima parola del nome completo, fallback su email.
 - 2026-03-18 | Codex | Documentata configurazione SMTP Supabase via Resend e template email brandizzati.
 - 2026-03-18 | Codex | Auto-assegnazione role_global da metadata/presenza account e rimozione redirect forzato su onboarding choose-role.
 - 2026-03-18 | Codex | Aggiunto reinvio email di conferma dal login per OTP scaduti.

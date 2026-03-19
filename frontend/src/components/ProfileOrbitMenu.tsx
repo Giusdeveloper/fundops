@@ -33,12 +33,23 @@ export default function ProfileOrbitMenu({ uiContext }: ProfileOrbitMenuProps) {
     uiContext.fullName?.trim() || uiContext.email?.split("@")[0] || "Utente";
   const profileEmail = uiContext.email ?? null;
   const profileAvatarUrl = uiContext.avatarUrl ?? null;
-  const profileInitials = profileName
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+  const profileInitials = (() => {
+    const fullName = uiContext.fullName?.trim() ?? "";
+    if (fullName) {
+      const parts = fullName.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) {
+        return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+      }
+      return parts[0][0]?.toUpperCase() ?? "";
+    }
+    const emailLocal = uiContext.email?.split("@")[0] ?? "";
+    if (emailLocal) {
+      const first = emailLocal[0] ?? "";
+      const second = emailLocal[1] ?? "";
+      return `${first}${second}`.toUpperCase();
+    }
+    return "";
+  })();
   const roleLabel = getRoleLabel(uiContext);
   const areaLabel =
     uiContext.effectiveArea === "investor" ? "Vista Supporter" : "Vista Startup";
