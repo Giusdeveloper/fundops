@@ -121,12 +121,12 @@ function LoginPageContent() {
   }, []);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [mode, setMode] = useState<'login' | 'register'>("login");
-  const [registerRole, setRegisterRole] = useState<"founder" | "investor">("founder");
   const [loading, setLoading] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [resendingConfirm, setResendingConfirm] = useState(false);
@@ -160,10 +160,11 @@ function LoginPageContent() {
 
     try {
       if (mode === "register") {
-        if (!fullName.trim()) {
+        if (!firstName.trim() || !lastName.trim()) {
           setMessage("Inserisci nome e cognome");
           return;
         }
+        const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
         const origin =
           typeof window !== "undefined"
             ? window.location.origin
@@ -173,7 +174,11 @@ function LoginPageContent() {
           email: trimmedEmail,
           password,
           options: {
-            data: { pending_role: registerRole, full_name: fullName.trim() },
+            data: {
+              full_name: fullName,
+              first_name: firstName.trim(),
+              last_name: lastName.trim(),
+            },
             emailRedirectTo,
           },
         });
@@ -181,16 +186,10 @@ function LoginPageContent() {
           setMessage(error.message);
           return;
         }
-        try {
-          if (typeof window !== "undefined") {
-            window.localStorage.setItem("fundops_pending_role", registerRole);
-          }
-        } catch {
-          // no-op: localStorage not available
-        }
         setMessage("Registrazione avvenuta! Controlla la tua email per confermare.");
         setMode("login");
-        setFullName("");
+        setFirstName("");
+        setLastName("");
         setEmail("");
         setPassword("");
         return;
@@ -206,31 +205,6 @@ function LoginPageContent() {
         return;
       }
       setMessage("Login effettuato! Benvenuto.");
-
-      // Se l'utente ha scelto un ruolo in fase di registrazione, lo applichiamo al primo login
-      try {
-        if (typeof window !== "undefined") {
-          const pendingRole = window.localStorage.getItem("fundops_pending_role");
-          if (pendingRole === "founder" || pendingRole === "investor") {
-            const roleRes = await fetch("/api/profile/view-mode", { cache: "no-store" });
-            const roleJson = await roleRes.json().catch(() => null);
-            if (roleRes.ok && roleJson?.role_global == null) {
-              const setRoleRes = await fetch("/api/auth/set-role", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ role: pendingRole }),
-              });
-              if (setRoleRes.ok) {
-                window.localStorage.removeItem("fundops_pending_role");
-              }
-            } else if (roleRes.ok && roleJson?.role_global) {
-              window.localStorage.removeItem("fundops_pending_role");
-            }
-          }
-        }
-      } catch {
-        // non bloccare il login per il set ruolo
-      }
 
       // 1) se l'URL contiene ?redirect=..., lo rispettiamo (deep link)
       const redirectNow =
@@ -337,14 +311,24 @@ function LoginPageContent() {
         <div className="login-divider"><span>accedi</span></div>
           <div className="login-inputs-wrapper">
             {mode === "register" && (
-              <input
-                type="text"
-                placeholder="Nome e cognome"
-                autoComplete="name"
-                required
-                value={fullName}
-                onChange={e => setFullName(e.target.value)}
-              />
+              <>
+                <input
+                  type="text"
+                  placeholder="Nome"
+                  autoComplete="given-name"
+                  required
+                  value={firstName}
+                  onChange={e => setFirstName(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Cognome"
+                  autoComplete="family-name"
+                  required
+                  value={lastName}
+                  onChange={e => setLastName(e.target.value)}
+                />
+              </>
             )}
             <input type="email" placeholder="Email" autoComplete="username" required value={email} onChange={e => setEmail(e.target.value)} />
             <div className="input-password-wrapper">
@@ -362,27 +346,6 @@ function LoginPageContent() {
               </span>
             </div>
           </div>
-          {mode === "register" && (
-            <div className="login-role-select">
-              <div className="login-role-label">Sei una startup o un supporter?</div>
-              <div className="login-role-buttons" role="group" aria-label="Seleziona il profilo">
-                <button
-                  type="button"
-                  className={`login-role-btn ${registerRole === "founder" ? "active" : ""}`}
-                  onClick={() => setRegisterRole("founder")}
-                >
-                  Startup
-                </button>
-                <button
-                  type="button"
-                  className={`login-role-btn ${registerRole === "investor" ? "active" : ""}`}
-                  onClick={() => setRegisterRole("investor")}
-                >
-                  Supporter
-                </button>
-              </div>
-            </div>
-          )}
           <a href="#" className="login-forgot" onClick={handlePasswordReset}>
             {resetting ? "Invio reset..." : "Password dimenticata?"}
           </a>
