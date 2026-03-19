@@ -56,7 +56,9 @@ export async function POST(request: Request) {
     if (!roleContext.isActive) {
       return NextResponse.json({ error: "Accesso disabilitato" }, { status: 403 });
     }
-    if (!isGlobalFundopsRole(roleContext.role)) {
+    const canCreateCompany =
+      isGlobalFundopsRole(roleContext.role) || roleContext.role === "founder";
+    if (!canCreateCompany) {
       return NextResponse.json({ error: "Permessi insufficienti" }, { status: 403 });
     }
 
@@ -69,14 +71,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const { data, error } = await supabase
-      .from('fundops_companies')
-      .insert({ name, legal_name, vat_number, address })
-      .select()
-      .single();
+    const { data, error } = await supabase.rpc(
+      "create_company_with_admin_seat",
+      {
+        p_name: name,
+        p_legal_name: legal_name,
+        p_vat_number: vat_number,
+        p_address: address,
+      }
+    );
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      const status = error.message.includes("insufficient permissions") ? 403 : 500;
+      return NextResponse.json({ error: error.message }, { status });
     }
 
     return NextResponse.json({ data }, { status: 201 });

@@ -76,6 +76,7 @@ Linee guida per agenti AI che lavorano su questo repository.
 - 2026-03-18 | Codex | Adeguato typing Next.js 15: `searchParams` come Promise nella landing page per build vercel.
 - 2026-03-18 | Codex | Forzato `emailRedirectTo` su signup e resend conferma verso `/auth/callback`.
 - 2026-03-19 | Codex | Gestione errori `otp_expired` in callback auth: redirect a login con messaggio utente.
+- 2026-03-19 | Codex | Company create: RPC `create_company_with_admin_seat` per founder/imment con seat admin automatico.
 - 2026-03-18 | Codex | Documentata configurazione SMTP Supabase via Resend e template email brandizzati.
 - 2026-03-18 | Codex | Auto-assegnazione role_global da metadata/presenza account e rimozione redirect forzato su onboarding choose-role.
 - 2026-03-18 | Codex | Aggiunto reinvio email di conferma dal login per OTP scaduti.
