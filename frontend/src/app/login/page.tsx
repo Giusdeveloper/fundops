@@ -166,9 +166,8 @@ function LoginPageContent() {
         }
         const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
         const origin =
-          typeof window !== "undefined"
-            ? window.location.origin
-            : process.env.NEXT_PUBLIC_SITE_URL ?? "";
+          process.env.NEXT_PUBLIC_SITE_URL ??
+          (typeof window !== "undefined" ? window.location.origin : "");
         const emailRedirectTo = origin ? `${origin}/auth/callback` : undefined;
         const { error } = await supabase.auth.signUp({
           email: trimmedEmail,
@@ -282,9 +281,8 @@ function LoginPageContent() {
     try {
       const supabase = createClient();
       const origin =
-        typeof window !== "undefined"
-          ? window.location.origin
-          : process.env.NEXT_PUBLIC_SITE_URL ?? "";
+        process.env.NEXT_PUBLIC_SITE_URL ??
+        (typeof window !== "undefined" ? window.location.origin : "");
       const emailRedirectTo = origin ? `${origin}/auth/callback` : undefined;
       const { error } = await supabase.auth.resend({
         type: "signup",
