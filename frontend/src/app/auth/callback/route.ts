@@ -8,6 +8,9 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
+  const error = searchParams.get("error");
+  const errorCode = searchParams.get("error_code");
+  const errorDescription = searchParams.get("error_description");
   const redirectParam = searchParams.get("redirect");
   const redirectCookie = request.cookies.get("fundops_redirect")?.value ?? null;
 
@@ -19,6 +22,14 @@ export async function GET(request: NextRequest) {
   };
 
   if (!code) {
+    if (error || errorCode || errorDescription) {
+      const friendlyMessage =
+        "Link non valido o scaduto. Se hai gia confermato l'email, prova ad accedere.";
+      const query = new URLSearchParams();
+      query.set("message", friendlyMessage);
+      if (errorCode) query.set("error_code", errorCode);
+      return NextResponse.redirect(`${origin}/login?${query.toString()}`);
+    }
     return NextResponse.redirect(`${origin}/login?error=oauth`);
   }
 

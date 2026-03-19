@@ -137,6 +137,13 @@ function LoginPageContent() {
     if (searchParams.get("mode") === "register") setMode("register");
   }, [searchParams]);
 
+  useEffect(() => {
+    const incomingMessage = searchParams.get("message");
+    if (incomingMessage) {
+      setMessage(incomingMessage);
+    }
+  }, [searchParams]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
