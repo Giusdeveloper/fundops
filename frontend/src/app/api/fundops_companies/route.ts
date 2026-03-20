@@ -57,7 +57,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Accesso disabilitato" }, { status: 403 });
     }
     const canCreateCompany =
-      isGlobalFundopsRole(roleContext.role) || roleContext.role === "founder";
+      isGlobalFundopsRole(roleContext.role) ||
+      roleContext.role === "founder" ||
+      roleContext.role == null;
     if (!canCreateCompany) {
       return NextResponse.json({ error: "Permessi insufficienti" }, { status: 403 });
     }

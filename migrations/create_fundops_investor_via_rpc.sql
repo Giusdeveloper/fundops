@@ -1,4 +1,4 @@
--- Crea un supporter (fundops_investors) con controllo seat admin o team Imment
+-- Crea un supporter (fundops_investors) con controllo seat attivo o team Imment
 -- Eseguire via migration Supabase
 
 CREATE OR REPLACE FUNCTION public.create_fundops_investor(
@@ -41,7 +41,6 @@ BEGIN
       WHERE cu.user_id = v_user_id
         AND cu.company_id = p_company_id
         AND cu.is_active = true
-        AND cu.role = 'company_admin'
     ) THEN
       RAISE EXCEPTION 'insufficient permissions';
     END IF;

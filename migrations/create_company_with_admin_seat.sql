@@ -1,4 +1,6 @@
--- Crea company + seat admin per l'utente autenticato (founder o team Imment)
+-- Crea company + seat admin per l'utente autenticato.
+-- Se il ruolo non e' ancora stato scelto, l'intento di creare una company
+-- viene trattato come onboarding startup e il profilo viene promosso a founder.
 -- Eseguire via migration Supabase
 
 CREATE OR REPLACE FUNCTION public.create_company_with_admin_seat(
@@ -25,7 +27,18 @@ BEGIN
   FROM public.profiles
   WHERE id = v_user_id;
 
-  IF v_role IS NULL OR v_role NOT IN ('imment_admin', 'imment_operator', 'founder') THEN
+  IF v_role = 'investor' THEN
+    RAISE EXCEPTION 'insufficient permissions';
+  END IF;
+
+  IF v_role IS NULL THEN
+    UPDATE public.profiles
+    SET role_global = 'founder'
+    WHERE id = v_user_id;
+    v_role := 'founder';
+  END IF;
+
+  IF v_role NOT IN ('imment_admin', 'imment_operator', 'founder') THEN
     RAISE EXCEPTION 'insufficient permissions';
   END IF;
 
