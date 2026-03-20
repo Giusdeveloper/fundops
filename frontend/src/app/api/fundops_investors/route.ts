@@ -111,24 +111,20 @@ export async function POST(request: Request) {
       typeof notes === "string" && notes.trim() ? notes.trim() : null,
     ].filter(Boolean);
 
-    const { data, error } = await supabase
-      .from('fundops_investors')
-      .insert({
-        company_id: normalizedCompanyId,
-        client_company_id: normalizedCompanyId,
-        full_name,
-        email: String(email).trim().toLowerCase(),
-        phone,
-        category,
-        investor_type: investor_type ?? category ?? null,
-        linkedin: typeof linkedin === "string" && linkedin.trim() ? linkedin.trim() : null,
-        notes: noteParts.length > 0 ? noteParts.join("\n\n") : null,
-      })
-      .select()
-      .single();
+    const { data, error } = await supabase.rpc("create_fundops_investor", {
+      p_company_id: normalizedCompanyId,
+      p_full_name: full_name,
+      p_email: String(email).trim().toLowerCase(),
+      p_phone: phone ?? null,
+      p_category: category ?? null,
+      p_investor_type: investor_type ?? category ?? null,
+      p_linkedin: typeof linkedin === "string" && linkedin.trim() ? linkedin.trim() : null,
+      p_notes: noteParts.length > 0 ? noteParts.join("\n\n") : null,
+    });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      const status = error.message.includes("permissions") ? 403 : 500;
+      return NextResponse.json({ error: error.message }, { status });
     }
 
     return NextResponse.json({ data }, { status: 201 });
