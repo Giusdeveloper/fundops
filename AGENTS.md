@@ -82,6 +82,7 @@ Linee guida per agenti AI che lavorano su questo repository.
 - 2026-03-19 | Codex | Iniziali profilo: usa prima/ultima parola del nome completo, fallback su email.
 - 2026-03-20 | Codex | Supporter create: RPC `create_fundops_investor` con check seat admin o team Imment.
 - 2026-03-20 | Codex | Allineati permessi company/supporter al nuovo onboarding: company creabile con ruolo nullo, supporter con seat attivo.
+- 2026-03-20 | Codex | Supporter list: query GET allineata al create usando `client_company_id OR company_id` dopo verifica accesso company.
 - 2026-03-18 | Codex | Documentata configurazione SMTP Supabase via Resend e template email brandizzati.
 - 2026-03-18 | Codex | Auto-assegnazione role_global da metadata/presenza account e rimozione redirect forzato su onboarding choose-role.
 - 2026-03-18 | Codex | Aggiunto reinvio email di conferma dal login per OTP scaduti.

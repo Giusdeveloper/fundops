@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { canAccessCompany, getUserRoleContext, isGlobalFundopsRole } from '@/lib/companyAccess';
+import { canAccessCompany, getUserRoleContext } from '@/lib/companyAccess';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -36,11 +36,7 @@ export async function GET(request: Request) {
       .from('fundops_investors')
       .select('*');
 
-    if (isGlobalFundopsRole(roleContext.role)) {
-      query.or(`client_company_id.eq.${companyId},company_id.eq.${companyId}`);
-    } else {
-      query.eq('client_company_id', companyId);
-    }
+    query.or(`client_company_id.eq.${companyId},company_id.eq.${companyId}`);
 
     const { data, error } = await query;
 
